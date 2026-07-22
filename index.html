@@ -988,23 +988,21 @@ body {
             </div>
             <div class="card-meta">目標：500人</div>
           </div>
-          <div style="display:flex;align-items:flex-end;gap:4px;height:80px;">
-            ${[68,72,71,75,78,77,80,83,82,86,88,87,91,93,92,95,98,97,100,103,102,106,109,108,112,115,114,118,121,124].map((v,i) => `
-              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
-                <div style="width:100%;border-radius:3px 3px 0 0;background:${i===29?'var(--navy)':'var(--blue)'};height:${Math.round(v/124*100)}%;opacity:${i===29?1:0.6};transition:all 0.3s;"></div>
-              </div>
-            `).join('')}
+          <div id="follower-graph" style="display:flex;align-items:flex-end;gap:4px;height:80px;">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--navy);height:10%;opacity:1;"></div>
+            </div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-light);font-family:'Inter',sans-serif;">
-            <span>6月21日</span>
-            <span>今日 124人</span>
+            <span id="follower-start-date">データ取得中...</span>
+            <span id="follower-latest">取得中</span>
           </div>
           <div style="margin-top:10px;background:var(--bg);border-radius:7px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;color:var(--text-mid);">500人まで あと 376人</span>
+            <span style="font-size:11px;color:var(--text-mid);" id="follower-remaining">500人まで あと 500人</span>
             <div style="flex:1;margin:0 12px;height:5px;background:var(--bg-mid);border-radius:3px;overflow:hidden;">
-              <div style="width:24.8%;height:100%;background:var(--navy);border-radius:3px;"></div>
+              <div id="follower-progress-bar" style="width:0%;height:100%;background:var(--navy);border-radius:3px;"></div>
             </div>
-            <span style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);">24.8%</span>
+            <span id="follower-progress-pct" style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);">0%</span>
           </div>
         </div>
 
@@ -1090,17 +1088,61 @@ body {
             <div class="card-meta">AIが最適時間を推奨</div>
           </div>
           <div style="display:flex;gap:6px;align-items:flex-end;height:100px;">
-            ${[
-              {h:'6時',v:28},{h:'7時',v:72},{h:'8時',v:61},{h:'9時',v:45},
-              {h:'12時',v:58},{h:'13時',v:41},{h:'18時',v:52},{h:'19時',v:48},
-              {h:'21時',v:35},{h:'22時',v:29},{h:'23時',v:22}
-            ].map(({h,v}) => `
-              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-                <div style="font-size:9px;font-family:'Inter',sans-serif;color:${v===72?'var(--success)':'var(--text-light)'};">${v}%</div>
-                <div style="width:100%;border-radius:3px 3px 0 0;background:${v===72?'var(--success)':v>50?'var(--blue)':'var(--blue-light)'};height:${v}%;"></div>
-                <div style="font-size:9px;font-family:'Inter',sans-serif;color:${v===72?'var(--navy)':'var(--text-light)'};font-weight:${v===72?700:400};">${h}</div>
-              </div>
-            `).join('')}
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">28%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:28%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">6時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--success);">72%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--success);height:72%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--navy);font-weight:700;">7時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">61%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:61%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">8時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">45%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:45%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">9時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">58%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:58%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">12時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">41%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:41%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">13時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">52%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:52%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">18時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">48%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:48%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">19時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">35%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:35%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">21時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">29%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:29%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">22時</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">22%</div>
+              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:22%;"></div>
+              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">23時</div>
+            </div>
           </div>
           <div style="margin-top:12px;padding:10px 12px;background:rgba(74,155,127,0.08);border-radius:8px;border-left:3px solid var(--success);">
             <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:3px;">✅ おすすめ投稿時間</div>
@@ -1212,21 +1254,41 @@ body {
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;">
-            ${[
-              {day:'月曜',time:'07:00',type:'あるある共感型',theme:'時間がないの本当の原因'},
-              {day:'水曜',time:'07:00',type:'Before/After型',theme:'情報収集の時間変化（数字あり）'},
-              {day:'木曜',time:'07:00',type:'あるある共感型',theme:'AIを使ってみたけど微妙だった経験'},
-              {day:'金曜',time:'12:00',type:'Tips型',theme:'Claude活用で変わった習慣3つ'},
-              {day:'土曜',time:'09:00',type:'逆効果指摘型',theme:'やってはいけないAI活用法'},
-            ].map(({day,time,type,theme}) => `
-              <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
-                <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">${day}</div>
-                <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">${time}</div>
-                <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">${type}</div>
-                <div style="font-size:12px;color:var(--text);flex:1;">${theme}</div>
-                <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
-              </div>
-            `).join('')}
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
+              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">月曜</div>
+              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div>
+              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">あるある共感型</div>
+              <div style="font-size:12px;color:var(--text);flex:1;">時間がないの本当の原因</div>
+              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
+              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">水曜</div>
+              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div>
+              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">Before/After型</div>
+              <div style="font-size:12px;color:var(--text);flex:1;">情報収集の時間変化（数字あり）</div>
+              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
+              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">木曜</div>
+              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div>
+              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">あるある共感型</div>
+              <div style="font-size:12px;color:var(--text);flex:1;">AIを使ってみたけど微妙だった経験</div>
+              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
+              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">金曜</div>
+              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">12:00</div>
+              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">Tips型</div>
+              <div style="font-size:12px;color:var(--text);flex:1;">Claude活用で変わった習慣3つ</div>
+              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
+              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">土曜</div>
+              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">09:00</div>
+              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">逆効果指摘型</div>
+              <div style="font-size:12px;color:var(--text);flex:1;">やってはいけないAI活用法</div>
+              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1298,29 +1360,37 @@ function updateDashboard(data) {
 
 function updateFollowerGraph(followers) {
   if (!followers || followers.length === 0) return;
-  const wrap = document.querySelector('.card .bar-chart-wrap') || 
-               document.querySelector('[style*="display:flex;align-items:flex-end"]');
-  if (!wrap) return;
 
-  const max = Math.max(...followers.map(f => Number(f.count) || 0), 1);
-  const bars = followers.slice(-30).map((f, i, arr) => {
-    const h = Math.round((Number(f.count) / max) * 100);
+  const graph = document.getElementById('follower-graph');
+  if (!graph) return;
+
+  const recent = followers.slice(-30);
+  const max = Math.max(...recent.map(f => Number(f.count) || 0), 1);
+  
+  graph.innerHTML = recent.map((f, i, arr) => {
+    const h = Math.max(Math.round((Number(f.count) / max) * 100), 2);
     const isLast = i === arr.length - 1;
     return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
-      <div style="width:100%;border-radius:3px 3px 0 0;background:${isLast ? 'var(--navy)' : 'var(--blue)'};height:${h}%;opacity:${isLast ? 1 : 0.6};"></div>
+      <div style="width:100%;border-radius:3px 3px 0 0;background:${isLast ? 'var(--navy)' : 'var(--blue)'};height:${h}%;opacity:${isLast ? 1 : 0.6};transition:all 0.3s;"></div>
     </div>`;
   }).join('');
 
-  const latestCount = followers[followers.length-1]?.count || 0;
-  const progress = Math.round(latestCount / 500 * 100 * 10) / 10;
-  
-  // 目標バーを更新
-  const progressEl = document.querySelector('[style*="24.8%"]');
-  if (progressEl) {
-    progressEl.style.width = `${Math.min(progress, 100)}%`;
-    const pctEl = document.querySelector('[style*="font-weight:700;font-family"]');
-    if (pctEl) pctEl.textContent = `${progress}%`;
-  }
+  const latestCount = Number(followers[followers.length-1]?.count) || 0;
+  const startDate = followers[0]?.date ? new Date(followers[0].date).toLocaleDateString('ja-JP') : '';
+  const progress = Math.round(latestCount / 500 * 1000) / 10;
+  const remaining = Math.max(500 - latestCount, 0);
+
+  const startEl = document.getElementById('follower-start-date');
+  const latestEl = document.getElementById('follower-latest');
+  const remainEl = document.getElementById('follower-remaining');
+  const barEl = document.getElementById('follower-progress-bar');
+  const pctEl = document.getElementById('follower-progress-pct');
+
+  if (startEl) startEl.textContent = startDate;
+  if (latestEl) latestEl.textContent = `今日 ${latestCount}人`;
+  if (remainEl) remainEl.textContent = `500人まで あと ${remaining}人`;
+  if (barEl) barEl.style.width = `${Math.min(progress, 100)}%`;
+  if (pctEl) pctEl.textContent = `${progress}%`;
 }
 
 function updatePostRanking(posts) {
