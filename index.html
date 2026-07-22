@@ -1544,10 +1544,8 @@ async function postNow(btn, text) {
   btn.disabled = true;
   
   try {
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'postNow', text }),
-    });
+    const url = GAS_URL + '?action=postNow&text=' + encodeURIComponent(text);
+    const res = await fetch(url, { redirect: 'follow' });
     const data = await res.json();
     
     if (data.success) {
@@ -1556,7 +1554,7 @@ async function postNow(btn, text) {
     } else {
       btn.textContent = '❌ 失敗';
       btn.disabled = false;
-      alert('投稿失敗：' + data.error);
+      alert('投稿失敗：' + (data.error || '不明なエラー'));
     }
   } catch(e) {
     btn.textContent = '❌ エラー';
@@ -1581,10 +1579,8 @@ async function schedulePost(btn, text, datetimeId) {
   btn.disabled = true;
   
   try {
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'schedule', text, datetime }),
-    });
+    const url = GAS_URL + '?action=schedule&text=' + encodeURIComponent(text) + '&datetime=' + encodeURIComponent(datetime);
+    const res = await fetch(url, { redirect: 'follow' });
     const data = await res.json();
     
     if (data.success) {
@@ -1593,7 +1589,7 @@ async function schedulePost(btn, text, datetimeId) {
     } else {
       btn.textContent = '❌ 失敗';
       btn.disabled = false;
-      alert('予約失敗：' + data.error);
+      alert('予約失敗：' + (data.error || '不明なエラー'));
     }
   } catch(e) {
     btn.textContent = '❌ エラー';
