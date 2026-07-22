@@ -1496,16 +1496,23 @@ function generatePosts() {
     posts.forEach((post, i) => {
       const el = document.createElement('div');
       el.className = 'gen-post';
+      const postId = `post-${Date.now()}-${i}`;
       el.innerHTML = `
         <div class="gen-post-header">
           <div class="gen-type">${post.type} — パターン${i+1}</div>
           <div class="gen-actions">
             <button class="gen-btn" onclick="copyPost(this, ${JSON.stringify(post.text)})">コピー</button>
-            <button class="gen-btn post" onclick="alert('Threads APIで投稿しました！（デモ）')">投稿する</button>
+            <button class="gen-btn post" onclick="postNow(this, ${JSON.stringify(post.text)})">今すぐ投稿</button>
           </div>
         </div>
         <div style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-line;">${post.text}</div>
-        <div style="margin-top:8px;font-size:10px;color:var(--text-light);font-family:'Inter',sans-serif;">予測エンゲージメント率：<strong style="color:var(--success);">5.2〜7.1%</strong>（過去データより）</div>
+        <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <input type="datetime-local" id="${postId}-dt"
+            style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;background:var(--bg);"
+            value="${getDefaultDatetime()}">
+          <button class="gen-btn post" onclick="schedulePost(this, ${JSON.stringify(post.text)}, '${postId}-dt')">📅 予約する</button>
+        </div>
+        <div style="margin-top:6px;font-size:10px;color:var(--text-light);font-family:'Inter',sans-serif;">予測エンゲージメント率：<strong style="color:var(--success);">5.2〜7.1%</strong>（過去データより）</div>
       `;
       container.appendChild(el);
     });
@@ -1519,6 +1526,80 @@ function copyPost(btn, text) {
     btn.textContent = 'コピー済み！';
     setTimeout(() => btn.textContent = 'コピー', 1500);
   });
+}
+
+// デフォルトの日時（翌日朝7時）を返す
+function getDefaultDatetime() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(7, 0, 0, 0);
+  return d.toISOString().slice(0, 16);
+}
+
+// 今すぐ投稿
+async function postNow(btn, text) {
+  if (!confirm(`以下の内容をThreadsに今すぐ投稿しますか？\n\n${text.substring(0, 50)}...`)) return;
+  
+  btn.textContent = '投稿中...';
+  btn.disabled = true;
+  
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'postNow', text }),
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      btn.textContent = '✅ 投稿済み';
+      btn.style.background = 'var(--success)';
+    } else {
+      btn.textContent = '❌ 失敗';
+      btn.disabled = false;
+      alert('投稿失敗：' + data.error);
+    }
+  } catch(e) {
+    btn.textContent = '❌ エラー';
+    btn.disabled = false;
+    alert('エラー：' + e.message);
+  }
+}
+
+// 予約投稿
+async function schedulePost(btn, text, datetimeId) {
+  const dtInput = document.getElementById(datetimeId);
+  if (!dtInput || !dtInput.value) {
+    alert('日時を選択してください。');
+    return;
+  }
+  
+  const datetime = new Date(dtInput.value).toISOString();
+  
+  if (!confirm(`以下の内容を予約しますか？\n\n日時：${dtInput.value}\n\n${text.substring(0, 50)}...`)) return;
+  
+  btn.textContent = '予約中...';
+  btn.disabled = true;
+  
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'schedule', text, datetime }),
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      btn.textContent = '✅ 予約済み';
+      btn.style.background = 'var(--success)';
+    } else {
+      btn.textContent = '❌ 失敗';
+      btn.disabled = false;
+      alert('予約失敗：' + data.error);
+    }
+  } catch(e) {
+    btn.textContent = '❌ エラー';
+    btn.disabled = false;
+    alert('エラー：' + e.message);
+  }
 }
 </script>
 </body>
