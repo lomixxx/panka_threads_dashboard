@@ -529,13 +529,15 @@ function generatePosts() {
       const el = document.createElement('div');
       el.className = 'gen-post';
       const postId = 'post-' + Date.now() + '-' + i;
-      const textJson = JSON.stringify(post.text);
+      // データ属性に安全に保存
+      el.dataset.text = post.text;
+      el.dataset.postId = postId;
       el.innerHTML = `
         <div class="gen-post-header">
           <div class="gen-type">${post.type} — パターン${i+1}</div>
           <div class="gen-actions">
-            <button class="gen-btn" onclick="copyPost(this, ${textJson})">コピー</button>
-            <button class="gen-btn post" onclick="postNow(this, ${textJson})">今すぐ投稿</button>
+            <button class="gen-btn copy-btn">コピー</button>
+            <button class="gen-btn post now-btn">今すぐ投稿</button>
           </div>
         </div>
         <div style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-line;">${post.text}</div>
@@ -543,9 +545,21 @@ function generatePosts() {
           <input type="datetime-local" id="${postId}-dt"
             style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);"
             value="${getDefaultDatetime()}">
-          <button class="gen-btn post" onclick="schedulePost(this, ${textJson}, '${postId}-dt')">📅 予約する</button>
+          <button class="gen-btn post schedule-btn">📅 予約する</button>
         </div>
         <div style="margin-top:6px;font-size:10px;color:var(--text-light);">予測エンゲージメント率：<strong style="color:var(--success);">5.2〜7.1%</strong></div>`;
+
+      // イベントリスナーで安全に処理
+      el.querySelector('.copy-btn').addEventListener('click', function() {
+        copyPost(this, post.text);
+      });
+      el.querySelector('.now-btn').addEventListener('click', function() {
+        postNow(this, post.text);
+      });
+      el.querySelector('.schedule-btn').addEventListener('click', function() {
+        schedulePost(this, post.text, postId + '-dt');
+      });
+
       container.appendChild(el);
     });
     document.getElementById('generated-area').style.display = 'block';
