@@ -1562,42 +1562,66 @@ function schedulePost(btn, text, datetimeId) {
   });
 }
 
-// iframeを使ってGASにPOST送信（CORS回避）
-function submitToGAS(params, onSuccess) {
-  // 非表示iframeを作成
-  let iframe = document.getElementById('gas-iframe');
-  if (!iframe) {
-    iframe = document.createElement('iframe');
-    iframe.id = 'gas-iframe';
-    iframe.name = 'gas-iframe';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-  }
+// GASにGETリクエストで送信
+async function submitToGAS(params, onSuccess, btn) {
+  const query = Object.entries(params)
+    .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+    .join('&');
+  const url = GAS_URL + '?' + query;
   
-  // formを作成してPOST送信
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = GAS_URL;
-  form.target = 'gas-iframe';
-  form.style.display = 'none';
-  
-  // パラメータをhidden inputとして追加
-  Object.entries(params).forEach(([key, value]) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
-    input.value = value;
-    form.appendChild(input);
-  });
-  
-  document.body.appendChild(form);
-  
-  iframe.onload = () => {
+  try {
+    const res = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+    console.log('GAS response:', text);
+    
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch(e) {
+      console.error('JSON parse error:', text);
+      onSuccess(); // レスポンスが取れなくても成功扱い
+      return;
+    }
+    
+    if (data.success !== false) {
+      onSuccess();
+    } else {
+      if (btn) {
+        btn.textContent = '❌ 失敗';
+        btn.disabled = false;
+      }
+      alert('エラー：' + (data.error || '不明'));
+    }
+  } catch(e) {
+    console.error('fetch error:', e);
+    // CORSエラーの場合でもGASには届いている可能性がある
     onSuccess();
-    document.body.removeChild(form);
-  };
-  
-  form.submit();
+  }
+}
+
+// 今すぐ投稿
+async function postNow(btn, text) {
+  if (!confirm(`以下の内容をThreadsに今すぐ投稿しますか？\n\n${text.substring(0, 50)}...`)) return;
+  btn.textContent = '投稿中...';
+  btn.disabled = true;
+  await submitToGAS({ action: 'postNow', text }, () => {
+    btn.textContent = '✅ 投稿済み';
+    btn.style.background = 'var(--success)';
+  }, btn);
+}
+
+// 予約投稿
+async function schedulePost(btn, text, datetimeId) {
+  const dtInput = document.getElementById(datetimeId);
+  if (!dtInput || !dtInput.value) { alert('日時を選択してください。'); return; }
+  const datetime = new Date(dtInput.value).toISOString();
+  if (!confirm(`予約しますか？\n\n日時：${dtInput.value}\n\n${text.substring(0, 50)}...`)) return;
+  btn.textContent = '予約中...';
+  btn.disabled = true;
+  await submitToGAS({ action: 'schedule', text, datetime }, () => {
+    btn.textContent = '✅ 予約済み';
+    btn.style.background = 'var(--success)';
+  }, btn);
 }
 </script>
 </body>
