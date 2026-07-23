@@ -517,53 +517,66 @@ const samplePosts = {
 };
 
 function generatePosts() {
+  const input = document.getElementById('compose-input').value.trim();
   const activeType = document.querySelector('.type-chip.active')?.textContent || 'あるある共感';
+
   document.getElementById('generated-area').style.display = 'none';
   document.getElementById('generating-loader').style.display = 'block';
-  setTimeout(() => {
-    document.getElementById('generating-loader').style.display = 'none';
-    const posts = samplePosts[activeType] || samplePosts['あるある共感'];
-    const container = document.getElementById('generated-posts');
-    container.innerHTML = '';
-    posts.forEach((post, i) => {
-      const el = document.createElement('div');
-      el.className = 'gen-post';
-      const postId = 'post-' + Date.now() + '-' + i;
-      // データ属性に安全に保存
-      el.dataset.text = post.text;
-      el.dataset.postId = postId;
-      el.innerHTML = `
-        <div class="gen-post-header">
-          <div class="gen-type">${post.type} — パターン${i+1}</div>
-          <div class="gen-actions">
-            <button class="gen-btn copy-btn">コピー</button>
-            <button class="gen-btn post now-btn">今すぐ投稿</button>
-          </div>
-        </div>
-        <div style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-line;">${post.text}</div>
-        <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <input type="datetime-local" id="${postId}-dt"
-            style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);"
-            value="${getDefaultDatetime()}">
-          <button class="gen-btn post schedule-btn">📅 予約する</button>
-        </div>
-        <div style="margin-top:6px;font-size:10px;color:var(--text-light);">予測エンゲージメント率：<strong style="color:var(--success);">5.2〜7.1%</strong></div>`;
 
-      // イベントリスナーで安全に処理
-      el.querySelector('.copy-btn').addEventListener('click', function() {
-        copyPost(this, post.text);
-      });
-      el.querySelector('.now-btn').addEventListener('click', function() {
-        postNow(this, post.text);
-      });
-      el.querySelector('.schedule-btn').addEventListener('click', function() {
-        schedulePost(this, post.text, postId + '-dt');
-      });
+  const url = GAS_URL + '?action=generate&theme=' + encodeURIComponent(input || 'AIで時間をつくる方法') + '&type=' + encodeURIComponent(activeType);
 
-      container.appendChild(el);
+  fetch(url, { redirect: 'follow' })
+    .then(res => res.text())
+    .then(text => {
+      console.log('Gemini生成結果:', text);
+      let data;
+      try { data = JSON.parse(text); } catch(e) { data = null; }
+      document.getElementById('generating-loader').style.display = 'none';
+      const posts = (data && data.success && data.text)
+        ? [{ type: activeType + '型', text: data.text }]
+        : (samplePosts[activeType] || samplePosts['あるある共感']);
+      renderPosts(posts, !!(data && data.success));
+    })
+    .catch(e => {
+      console.log('Gemini取得エラー（サンプル使用）:', e);
+      document.getElementById('generating-loader').style.display = 'none';
+      renderPosts(samplePosts[activeType] || samplePosts['あるある共感'], false);
     });
-    document.getElementById('generated-area').style.display = 'block';
-  }, 1800);
+}
+
+function renderPosts(posts, isGemini) {
+  const container = document.getElementById('generated-posts');
+  container.innerHTML = '';
+
+  posts.forEach((post, i) => {
+    const el = document.createElement('div');
+    el.className = 'gen-post';
+    const postId = 'post-' + Date.now() + '-' + i;
+    el.innerHTML = `
+      <div class="gen-post-header">
+        <div class="gen-type">${post.type} — パターン${i+1}</div>
+        <div class="gen-actions">
+          <button class="gen-btn copy-btn">コピー</button>
+          <button class="gen-btn post now-btn">今すぐ投稿</button>
+        </div>
+      </div>
+      <div style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-line;">${post.text}</div>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <input type="datetime-local" id="${postId}-dt"
+          style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);"
+          value="${getDefaultDatetime()}">
+        <button class="gen-btn post schedule-btn">📅 予約する</button>
+      </div>
+      <div style="margin-top:6px;font-size:10px;color:var(--text-light);">${isGemini ? '✨ Gemini AIが生成' : '📝 サンプル投稿'}</div>`;
+
+    el.querySelector('.copy-btn').addEventListener('click', function() { copyPost(this, post.text); });
+    el.querySelector('.now-btn').addEventListener('click', function() { postNow(this, post.text); });
+    el.querySelector('.schedule-btn').addEventListener('click', function() { schedulePost(this, post.text, postId + '-dt'); });
+
+    container.appendChild(el);
+  });
+
+  document.getElementById('generated-area').style.display = 'block';
 }
 
 function getDefaultDatetime() {
