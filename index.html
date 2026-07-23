@@ -1537,7 +1537,6 @@ function getDefaultDatetime() {
 }
 
 // 今すぐ投稿
-// 今すぐ投稿
 function postNow(btn, text) {
   if (!confirm(`以下の内容をThreadsに今すぐ投稿しますか？\n\n${text.substring(0, 50)}...`)) return;
   btn.textContent = '投稿中...';
