@@ -6,773 +6,132 @@
 <title>PANKA — Threads Analytics</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
 :root {
-  --navy: #1E2A3A;
-  --navy-mid: #243345;
-  --blue: #6A7FA6;
-  --blue-light: #A9B7C6;
-  --bg: #E6ECF3;
-  --bg-mid: #D4DCE8;
-  --white: #FFFFFF;
-  --success: #4A9B7F;
-  --warning: #C49A3C;
-  --danger: #C0544A;
-  --text: #1E2A3A;
-  --text-mid: #4A5568;
-  --text-light: #718096;
-  --border: rgba(106,127,166,0.18);
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: 'Noto Sans JP', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 14px;
-}
-
-/* ── SIDEBAR ── */
-.layout { display: flex; min-height: 100vh; }
-
-.sidebar {
-  width: 220px;
-  background: var(--navy);
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-
-.sidebar-logo {
-  padding: 20px 20px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.logo-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
-}
-
-.logo-mark {
-  width: 34px;
-  height: 34px;
-  background: var(--blue);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  color: white;
-}
-
-.logo-name {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 17px;
-  color: white;
-  letter-spacing: 1.5px;
-}
-
-.logo-sub {
-  font-size: 10px;
-  color: var(--blue-light);
-  letter-spacing: 0.5px;
-}
-
-.sidebar-nav {
-  padding: 16px 12px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.nav-label {
-  font-size: 10px;
-  color: rgba(169,183,198,0.5);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 10px 8px 4px;
-  font-family: 'Inter', sans-serif;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s;
-  color: var(--blue-light);
-  font-size: 13px;
-}
-
-.nav-item:hover { background: rgba(106,127,166,0.15); color: white; }
-.nav-item.active { background: rgba(106,127,166,0.25); color: white; }
-.nav-item.active .nav-icon { color: #A9D4FF; }
-
-.nav-icon { font-size: 15px; width: 20px; text-align: center; }
-
-.sidebar-bottom {
-  padding: 16px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
-
-.sync-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  color: var(--blue-light);
-}
-
-.sync-dot {
-  width: 7px;
-  height: 7px;
-  background: #4ADE80;
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-/* ── MAIN ── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.topbar {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.period-btn {
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-mid);
-  transition: all 0.15s;
-}
-
-.period-btn.active {
-  background: var(--navy);
-  color: white;
-  border-color: var(--navy);
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.refresh-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  background: var(--navy);
-  color: white;
-  border: none;
-  border-radius: 7px;
-  font-size: 12px;
-  font-family: 'Noto Sans JP', sans-serif;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.refresh-btn:hover { background: var(--blue); }
-
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 24px;
-}
-
-/* ── AI INSIGHT STRIP ── */
-.ai-strip {
-  background: var(--navy);
-  border-radius: 12px;
-  padding: 14px 18px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-.panka-face {
-  width: 38px;
-  height: 38px;
-  background: var(--blue);
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.ai-body { flex: 1; }
-
-.ai-label {
-  font-size: 9px;
-  font-family: 'Inter', sans-serif;
-  color: var(--blue-light);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.ai-text {
-  font-size: 13px;
-  color: white;
-  line-height: 1.65;
-}
-
-.ai-text strong { color: #A9D4FF; }
-
-.ai-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.ai-btn {
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-family: 'Noto Sans JP', sans-serif;
-  cursor: pointer;
-  border: none;
-  transition: all 0.15s;
-}
-
-.ai-btn-primary {
-  background: var(--blue);
-  color: white;
-}
-
-.ai-btn-ghost {
-  background: rgba(255,255,255,0.08);
-  color: var(--blue-light);
-}
-
-/* ── STATS ROW ── */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.stat-card {
-  background: var(--white);
-  border-radius: 10px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-}
-
-.stat-label {
-  font-size: 10px;
-  color: var(--text-light);
-  margin-bottom: 8px;
-  font-family: 'Inter', sans-serif;
-  letter-spacing: 0.3px;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  font-family: 'Inter', sans-serif;
-  color: var(--navy);
-  line-height: 1;
-  margin-bottom: 6px;
-}
-
-.stat-change {
-  font-size: 11px;
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.up { color: var(--success); }
-.down { color: var(--danger); }
-
-/* ── GRID ── */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
-
-.card {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 18px 20px;
-  border: 1px solid var(--border);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.card-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--navy);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.card-icon {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-}
-
-.icon-blue { background: rgba(106,127,166,0.12); }
-.icon-green { background: rgba(74,155,127,0.12); }
-.icon-yellow { background: rgba(196,154,60,0.12); }
-
-.card-meta {
-  font-size: 11px;
-  color: var(--text-light);
-  font-family: 'Inter', sans-serif;
-}
-
-/* ── BAR CHART ── */
-.bar-chart-wrap { position: relative; }
-
-.bar-chart {
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  height: 140px;
-  padding-bottom: 28px;
-}
-
-.bar-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  justify-content: flex-end;
-  gap: 4px;
-  position: relative;
-}
-
-.bar-fill {
-  width: 100%;
-  border-radius: 4px 4px 0 0;
-  background: var(--blue);
-  transition: all 0.6s ease;
-  cursor: pointer;
-  position: relative;
-}
-
-.bar-fill:hover { background: var(--navy); }
-.bar-fill.highlight { background: var(--navy); }
-
-.bar-tooltip {
-  position: absolute;
-  bottom: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--navy);
-  color: white;
-  font-size: 10px;
-  font-family: 'Inter', sans-serif;
-  padding: 3px 7px;
-  border-radius: 4px;
-  white-space: nowrap;
-  display: none;
-  z-index: 10;
-}
-
-.bar-fill:hover .bar-tooltip { display: block; }
-
-.bar-day {
-  font-size: 9px;
-  color: var(--text-light);
-  font-family: 'Inter', sans-serif;
-  position: absolute;
-  bottom: 6px;
-}
-
-.bar-days {
-  display: flex;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.bar-day-label {
-  flex: 1;
-  text-align: center;
-  font-size: 9px;
-  color: var(--text-light);
-  font-family: 'Inter', sans-serif;
-}
-
-.bar-day-label.today { color: var(--navy); font-weight: 700; }
-
-/* ── LINE CHART ── */
-.line-chart-wrap {
-  position: relative;
-  height: 140px;
-  margin-bottom: 8px;
-}
-
-.line-chart-wrap canvas { width: 100% !important; }
-
-/* ── POST LIST ── */
-.post-list { display: flex; flex-direction: column; gap: 10px; }
-
-.post-item {
-  padding: 12px 14px;
-  border-radius: 9px;
-  background: var(--bg);
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  cursor: pointer;
-  transition: background 0.15s;
-  border: 1px solid transparent;
-}
-
-.post-item:hover { background: rgba(106,127,166,0.1); border-color: var(--border); }
-.post-item.top { border-left: 3px solid var(--success); }
-.post-item.mid { border-left: 3px solid var(--blue); }
-.post-item.low { border-left: 3px solid var(--blue-light); }
-
-.post-rank {
-  font-size: 12px;
-  font-weight: 700;
-  font-family: 'Inter', sans-serif;
-  color: var(--text-light);
-  width: 20px;
-  flex-shrink: 0;
-  padding-top: 2px;
-}
-
-.post-body { flex: 1; }
-
-.post-text {
-  font-size: 12px;
-  color: var(--text);
-  line-height: 1.6;
-  margin-bottom: 8px;
-}
-
-.post-metrics {
-  display: flex;
-  gap: 14px;
-}
-
-.metric {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: var(--text-light);
-  font-family: 'Inter', sans-serif;
-}
-
-.metric-val {
-  font-weight: 600;
-  color: var(--navy);
-}
-
-.post-badge {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  flex-shrink: 0;
-  align-self: flex-start;
-}
-
-.badge-hot { background: rgba(74,155,127,0.12); color: var(--success); }
-.badge-good { background: rgba(106,127,166,0.12); color: var(--blue); }
-.badge-norm { background: rgba(169,183,198,0.15); color: var(--text-light); }
-
-/* ── PATTERN ANALYSIS ── */
-.pattern-list { display: flex; flex-direction: column; gap: 8px; }
-
-.pattern-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: var(--bg);
-}
-
-.pattern-name {
-  flex: 1;
-  font-size: 12px;
-  color: var(--text);
-}
-
-.pattern-bar-wrap {
-  width: 100px;
-  height: 5px;
-  background: var(--bg-mid);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.pattern-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--blue);
-}
-
-.pattern-score {
-  font-size: 12px;
-  font-weight: 700;
-  font-family: 'Inter', sans-serif;
-  color: var(--navy);
-  width: 36px;
-  text-align: right;
-}
-
-/* ── COMPOSE ── */
-.compose-area {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.compose-input {
-  width: 100%;
-  min-height: 80px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  font-size: 13px;
-  font-family: 'Noto Sans JP', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  resize: none;
-  outline: none;
-  transition: border-color 0.15s;
-}
-
-.compose-input:focus { border-color: var(--blue); background: white; }
-
-.compose-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.compose-types {
-  display: flex;
-  gap: 6px;
-}
-
-.type-chip {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.15s;
-  color: var(--text-mid);
-  background: transparent;
-  font-family: 'Noto Sans JP', sans-serif;
-}
-
-.type-chip.active, .type-chip:hover {
-  background: var(--navy);
-  color: white;
-  border-color: var(--navy);
-}
-
-.generate-btn {
-  padding: 8px 18px;
-  background: var(--navy);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 12px;
-  font-family: 'Noto Sans JP', sans-serif;
-  cursor: pointer;
-  transition: background 0.15s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.generate-btn:hover { background: var(--blue); }
-
-.generated-posts { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-
-.gen-post {
-  padding: 12px 14px;
-  border-radius: 9px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  font-size: 12px;
-  line-height: 1.7;
-  position: relative;
-}
-
-.gen-post-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.gen-type {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--blue);
-  font-family: 'Inter', sans-serif;
-  letter-spacing: 0.5px;
-}
-
-.gen-actions { display: flex; gap: 6px; }
-
-.gen-btn {
-  padding: 3px 9px;
-  border-radius: 5px;
-  font-size: 10px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  background: white;
-  color: var(--text-mid);
-  font-family: 'Noto Sans JP', sans-serif;
-  transition: all 0.15s;
-}
-
-.gen-btn:hover { background: var(--navy); color: white; border-color: var(--navy); }
-.gen-btn.post { background: var(--navy); color: white; border-color: var(--navy); }
-
-/* ── IMPROVEMENT ── */
-.improvement-list { display: flex; flex-direction: column; gap: 10px; }
-
-.improvement-item {
-  padding: 12px 14px;
-  border-radius: 9px;
-  background: var(--bg);
-  border-left: 3px solid var(--blue);
-}
-
-.improvement-item.urgent { border-left-color: var(--success); }
-
-.imp-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 4px;
-}
-
-.imp-desc {
-  font-size: 11px;
-  color: var(--text-mid);
-  line-height: 1.6;
-}
-
-.imp-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.imp-effect {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-}
-
-.effect-high { background: rgba(74,155,127,0.12); color: var(--success); }
-.effect-mid { background: rgba(106,127,166,0.12); color: var(--blue); }
-
-/* ── LOADING ── */
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  color: var(--text-light);
-  font-size: 13px;
-  gap: 8px;
-}
-
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--border);
-  border-top-color: var(--blue);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 900px) {
-  .sidebar { width: 60px; }
-  .logo-name, .logo-sub, .nav-item span, .nav-label, .sidebar-bottom { display: none; }
-  .nav-item { justify-content: center; padding: 10px; }
-  .stats-row { grid-template-columns: repeat(3, 1fr); }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 600px) {
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .content { padding: 14px; }
-}
+  --navy:#1E2A3A;--navy-mid:#243345;--blue:#6A7FA6;--blue-light:#A9B7C6;
+  --bg:#E6ECF3;--bg-mid:#D4DCE8;--white:#FFFFFF;--success:#4A9B7F;
+  --warning:#C49A3C;--danger:#C0544A;--text:#1E2A3A;--text-mid:#4A5568;
+  --text-light:#718096;--border:rgba(106,127,166,0.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:var(--navy);display:flex;flex-direction:column;padding:0;flex-shrink:0;position:sticky;top:0;height:100vh;}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.logo-mark{width:34px;height:34px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;color:white;}
+.logo-name{font-family:'Inter',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:1.5px;}
+.logo-sub{font-size:10px;color:var(--blue-light);letter-spacing:0.5px;}
+.sidebar-nav{padding:16px 12px;flex:1;display:flex;flex-direction:column;gap:2px;}
+.nav-label{font-size:10px;color:rgba(169,183,198,0.5);letter-spacing:1px;text-transform:uppercase;padding:10px 8px 4px;font-family:'Inter',sans-serif;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:all 0.15s;color:var(--blue-light);font-size:13px;}
+.nav-item:hover{background:rgba(106,127,166,0.15);color:white;}
+.nav-item.active{background:rgba(106,127,166,0.25);color:white;}
+.nav-icon{font-size:15px;width:20px;text-align:center;}
+.sidebar-bottom{padding:16px;border-top:1px solid rgba(255,255,255,0.08);}
+.sync-status{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--blue-light);}
+.sync-dot{width:7px;height:7px;background:#4ADE80;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar-left{display:flex;align-items:center;gap:8px;}
+.period-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-mid);transition:all 0.15s;}
+.period-btn.active{background:var(--navy);color:white;border-color:var(--navy);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.refresh-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--navy);color:white;border:none;border-radius:7px;font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:background 0.15s;}
+.refresh-btn:hover{background:var(--blue);}
+.content{flex:1;overflow-y:auto;padding:20px 24px;}
+.ai-strip{background:var(--navy);border-radius:12px;padding:14px 18px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
+.panka-face{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ai-body{flex:1;}
+.ai-label{font-size:9px;font-family:'Inter',sans-serif;color:var(--blue-light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+.ai-text{font-size:13px;color:white;line-height:1.65;}
+.ai-text strong{color:#A9D4FF;}
+.ai-actions{display:flex;gap:8px;margin-top:10px;}
+.ai-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;border:none;transition:all 0.15s;}
+.ai-btn-primary{background:var(--blue);color:white;}
+.ai-btn-ghost{background:rgba(255,255,255,0.08);color:var(--blue-light);}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+.stat-card{background:var(--white);border-radius:10px;padding:14px 16px;border:1px solid var(--border);}
+.stat-label{font-size:10px;color:var(--text-light);margin-bottom:8px;font-family:'Inter',sans-serif;}
+.stat-value{font-size:24px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);line-height:1;margin-bottom:6px;}
+.stat-change{font-size:11px;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:3px;}
+.up{color:var(--success);}.down{color:var(--danger);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.card{background:var(--white);border-radius:12px;padding:18px 20px;border:1px solid var(--border);}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:7px;}
+.card-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.icon-blue{background:rgba(106,127,166,0.12);}
+.icon-green{background:rgba(74,155,127,0.12);}
+.icon-yellow{background:rgba(196,154,60,0.12);}
+.card-meta{font-size:11px;color:var(--text-light);font-family:'Inter',sans-serif;}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:140px;padding-bottom:28px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;position:relative;}
+.bar-fill{width:100%;border-radius:4px 4px 0 0;background:var(--blue);transition:all 0.6s ease;cursor:pointer;position:relative;}
+.bar-fill:hover{background:var(--navy);}
+.bar-fill.highlight{background:var(--navy);}
+.bar-tooltip{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:var(--navy);color:white;font-size:10px;font-family:'Inter',sans-serif;padding:3px 7px;border-radius:4px;white-space:nowrap;display:none;z-index:10;}
+.bar-fill:hover .bar-tooltip{display:block;}
+.bar-days{display:flex;gap:6px;margin-top:4px;}
+.bar-day-label{flex:1;text-align:center;font-size:9px;color:var(--text-light);font-family:'Inter',sans-serif;}
+.bar-day-label.today{color:var(--navy);font-weight:700;}
+.post-list{display:flex;flex-direction:column;gap:10px;}
+.post-item{padding:12px 14px;border-radius:9px;background:var(--bg);display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:background 0.15s;border:1px solid transparent;}
+.post-item:hover{background:rgba(106,127,166,0.1);border-color:var(--border);}
+.post-item.top{border-left:3px solid var(--success);}
+.post-item.mid{border-left:3px solid var(--blue);}
+.post-item.low{border-left:3px solid var(--blue-light);}
+.post-rank{font-size:12px;font-weight:700;font-family:'Inter',sans-serif;color:var(--text-light);width:20px;flex-shrink:0;padding-top:2px;}
+.post-body{flex:1;}
+.post-text{font-size:12px;color:var(--text);line-height:1.6;margin-bottom:8px;}
+.post-metrics{display:flex;gap:14px;}
+.metric{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-light);font-family:'Inter',sans-serif;}
+.metric-val{font-weight:600;color:var(--navy);}
+.post-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-family:'Inter',sans-serif;font-weight:600;flex-shrink:0;align-self:flex-start;}
+.badge-hot{background:rgba(74,155,127,0.12);color:var(--success);}
+.badge-good{background:rgba(106,127,166,0.12);color:var(--blue);}
+.badge-norm{background:rgba(169,183,198,0.15);color:var(--text-light);}
+.pattern-list{display:flex;flex-direction:column;gap:8px;}
+.pattern-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;background:var(--bg);}
+.pattern-name{flex:1;font-size:12px;color:var(--text);}
+.pattern-bar-wrap{width:100px;height:5px;background:var(--bg-mid);border-radius:3px;overflow:hidden;}
+.pattern-bar-fill{height:100%;border-radius:3px;background:var(--blue);}
+.pattern-score{font-size:12px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:36px;text-align:right;}
+.compose-area{display:flex;flex-direction:column;gap:12px;}
+.compose-input{width:100%;min-height:80px;padding:12px 14px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);resize:none;outline:none;transition:border-color 0.15s;}
+.compose-input:focus{border-color:var(--blue);background:white;}
+.compose-footer{display:flex;align-items:center;justify-content:space-between;}
+.compose-types{display:flex;gap:6px;flex-wrap:wrap;}
+.type-chip{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid var(--border);cursor:pointer;transition:all 0.15s;color:var(--text-mid);background:transparent;font-family:'Noto Sans JP',sans-serif;}
+.type-chip.active,.type-chip:hover{background:var(--navy);color:white;border-color:var(--navy);}
+.generate-btn{padding:8px 18px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;gap:6px;}
+.generate-btn:hover{background:var(--blue);}
+.generated-posts{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.gen-post{padding:12px 14px;border-radius:9px;background:var(--bg);border:1px solid var(--border);font-size:12px;line-height:1.7;position:relative;}
+.gen-post-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.gen-type{font-size:10px;font-weight:600;color:var(--blue);font-family:'Inter',sans-serif;letter-spacing:0.5px;}
+.gen-actions{display:flex;gap:6px;}
+.gen-btn{padding:3px 9px;border-radius:5px;font-size:10px;border:1px solid var(--border);cursor:pointer;background:white;color:var(--text-mid);font-family:'Noto Sans JP',sans-serif;transition:all 0.15s;}
+.gen-btn:hover{background:var(--navy);color:white;border-color:var(--navy);}
+.gen-btn.post{background:var(--navy);color:white;border-color:var(--navy);}
+.improvement-list{display:flex;flex-direction:column;gap:10px;}
+.improvement-item{padding:12px 14px;border-radius:9px;background:var(--bg);border-left:3px solid var(--blue);}
+.improvement-item.urgent{border-left-color:var(--success);}
+.imp-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.imp-desc{font-size:11px;color:var(--text-mid);line-height:1.6;}
+.imp-meta{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.imp-effect{font-size:10px;padding:2px 8px;border-radius:20px;font-family:'Inter',sans-serif;font-weight:600;}
+.effect-high{background:rgba(74,155,127,0.12);color:var(--success);}
+.effect-mid{background:rgba(106,127,166,0.12);color:var(--blue);}
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text-light);font-size:13px;gap:8px;}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){.sidebar{width:60px;}.logo-name,.logo-sub,.nav-item span,.nav-label,.sidebar-bottom{display:none;}.nav-item{justify-content:center;padding:10px;}.stats-row{grid-template-columns:repeat(3,1fr);}.grid-2{grid-template-columns:1fr;}}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr);}.content{padding:14px;}}
 </style>
 </head>
 <body>
 <div class="layout">
-
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-row">
@@ -781,69 +140,42 @@ body {
       </div>
       <div class="logo-sub">Threads Analytics</div>
     </div>
-
     <nav class="sidebar-nav">
       <div class="nav-label">メニュー</div>
-      <div class="nav-item active" onclick="showTab('dashboard')">
-        <span class="nav-icon">📊</span>
-        <span>ダッシュボード</span>
-      </div>
-      <div class="nav-item" onclick="showTab('posts')">
-        <span class="nav-icon">📝</span>
-        <span>投稿パフォーマンス</span>
-      </div>
-      <div class="nav-item" onclick="showTab('compose')">
-        <span class="nav-icon">✨</span>
-        <span>AI投稿生成</span>
-      </div>
-      <div class="nav-item" onclick="showTab('improve')">
-        <span class="nav-icon">🎯</span>
-        <span>改善アドバイス</span>
-      </div>
+      <div class="nav-item active" onclick="showTab('dashboard')"><span class="nav-icon">📊</span><span>ダッシュボード</span></div>
+      <div class="nav-item" onclick="showTab('posts')"><span class="nav-icon">📝</span><span>投稿パフォーマンス</span></div>
+      <div class="nav-item" onclick="showTab('compose')"><span class="nav-icon">✨</span><span>AI投稿生成</span></div>
+      <div class="nav-item" onclick="showTab('improve')"><span class="nav-icon">🎯</span><span>改善アドバイス</span></div>
       <div class="nav-label">設定</div>
-      <div class="nav-item">
-        <span class="nav-icon">⚙️</span>
-        <span>API設定</span>
-      </div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span><span>API設定</span></div>
     </nav>
-
     <div class="sidebar-bottom">
-      <div class="sync-status">
-        <div class="sync-dot"></div>
-        <span>自動同期中</span>
-      </div>
+      <div class="sync-status"><div class="sync-dot"></div><span>自動同期中</span></div>
     </div>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="topbar">
       <div class="topbar-left">
-        <button class="period-btn active" onclick="setPeriod(this,'7')">7日</button>
-        <button class="period-btn" onclick="setPeriod(this,'14')">14日</button>
-        <button class="period-btn" onclick="setPeriod(this,'30')">30日</button>
+        <button class="period-btn active" onclick="setPeriod(this)">7日</button>
+        <button class="period-btn" onclick="setPeriod(this)">14日</button>
+        <button class="period-btn" onclick="setPeriod(this)">30日</button>
       </div>
       <div class="topbar-right">
-        <span style="font-size:11px;color:var(--text-light);font-family:'Inter',sans-serif;">最終更新：今日 06:00</span>
-        <button class="refresh-btn" onclick="simulateRefresh(this)">
-          <span>🔄</span> データ取得
-        </button>
+        <span id="last-updated" style="font-size:11px;color:var(--text-light);font-family:'Inter',sans-serif;">最終更新：取得中...</span>
+        <button class="refresh-btn" onclick="loadRealData()"><span>🔄</span> データ取得</button>
       </div>
     </div>
 
     <div class="content">
 
-      <!-- ===== DASHBOARD TAB ===== -->
+      <!-- DASHBOARD -->
       <div id="tab-dashboard">
-
-        <!-- AI Strip -->
         <div class="ai-strip">
           <div class="panka-face">🐼</div>
           <div class="ai-body">
             <div class="ai-label">ぱんか AI分析</div>
-            <div class="ai-text">
-              今週の総インプレッションは先週比<strong>+23%</strong>で好調です。特に<strong>「あるある共感型」の投稿がエンゲージメント率3.2倍</strong>と突出しています。月曜・木曜の朝7時投稿が最も伸びているため、来週もこの時間帯を優先してください。
-            </div>
+            <div class="ai-text" id="ai-text">データを取得中です...</div>
             <div class="ai-actions">
               <button class="ai-btn ai-btn-primary" onclick="showTab('compose')">✨ 次の投稿を生成する</button>
               <button class="ai-btn ai-btn-ghost" onclick="showTab('improve')">📋 改善案を見る</button>
@@ -851,150 +183,59 @@ body {
           </div>
         </div>
 
-        <!-- Stats -->
         <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-label">総インプレッション</div>
-            <div class="stat-value">12,847</div>
-            <div class="stat-change up">▲ 23% 先週比</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">いいね数</div>
-            <div class="stat-value">342</div>
-            <div class="stat-change up">▲ 18% 先週比</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">リポスト</div>
-            <div class="stat-value">67</div>
-            <div class="stat-change up">▲ 41% 先週比</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">フォロワー</div>
-            <div class="stat-value">124</div>
-            <div class="stat-change up">▲ +12 今週</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">エンゲージメント率</div>
-            <div class="stat-value">4.2%</div>
-            <div class="stat-change up">▲ 0.8pt 先週比</div>
-          </div>
+          <div class="stat-card"><div class="stat-label">総インプレッション</div><div class="stat-value" id="stat-imp">-</div><div class="stat-change up">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">いいね数</div><div class="stat-value" id="stat-likes">-</div><div class="stat-change up">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">リポスト</div><div class="stat-value" id="stat-reposts">-</div><div class="stat-change up">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">フォロワー</div><div class="stat-value" id="stat-followers">-</div><div class="stat-change up">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">投稿数</div><div class="stat-value" id="stat-posts">-</div><div class="stat-change up">Threadsデータ</div></div>
         </div>
 
-        <!-- Charts -->
         <div class="grid-2">
           <div class="card">
             <div class="card-header">
-              <div class="card-title">
-                <div class="card-icon icon-blue">📈</div>
-                日別インプレッション
-              </div>
+              <div class="card-title"><div class="card-icon icon-blue">📈</div>日別インプレッション</div>
             </div>
             <div class="bar-chart">
-              <div class="bar-col">
-                <div class="bar-fill" style="height:52%" data-val="1,423">
-                  <div class="bar-tooltip">月 1,423</div>
-                </div>
-              </div>
-              <div class="bar-col">
-                <div class="bar-fill" style="height:38%" data-val="1,041">
-                  <div class="bar-tooltip">火 1,041</div>
-                </div>
-              </div>
-              <div class="bar-col">
-                <div class="bar-fill" style="height:61%" data-val="1,672">
-                  <div class="bar-tooltip">水 1,672</div>
-                </div>
-              </div>
-              <div class="bar-col">
-                <div class="bar-fill highlight" style="height:89%" data-val="2,438">
-                  <div class="bar-tooltip">木 2,438 🔥</div>
-                </div>
-              </div>
-              <div class="bar-col">
-                <div class="bar-fill" style="height:74%" data-val="2,027">
-                  <div class="bar-tooltip">金 2,027</div>
-                </div>
-              </div>
-              <div class="bar-col">
-                <div class="bar-fill" style="height:45%" data-val="1,233">
-                  <div class="bar-tooltip">土 1,233</div>
-                </div>
-              </div>
-              <div class="bar-col">
-                <div class="bar-fill" style="height:37%" data-val="1,013">
-                  <div class="bar-tooltip">日 1,013</div>
-                </div>
-              </div>
+              <div class="bar-col"><div class="bar-fill" style="height:52%"><div class="bar-tooltip">月</div></div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:38%"><div class="bar-tooltip">火</div></div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:61%"><div class="bar-tooltip">水</div></div></div>
+              <div class="bar-col"><div class="bar-fill highlight" style="height:89%"><div class="bar-tooltip">木 🔥</div></div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:74%"><div class="bar-tooltip">金</div></div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:45%"><div class="bar-tooltip">土</div></div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:37%"><div class="bar-tooltip">日</div></div></div>
             </div>
             <div class="bar-days">
-              <div class="bar-day-label today">月</div>
-              <div class="bar-day-label">火</div>
-              <div class="bar-day-label">水</div>
-              <div class="bar-day-label today">木</div>
-              <div class="bar-day-label">金</div>
-              <div class="bar-day-label">土</div>
-              <div class="bar-day-label">日</div>
+              <div class="bar-day-label">月</div><div class="bar-day-label">火</div><div class="bar-day-label">水</div>
+              <div class="bar-day-label today">木</div><div class="bar-day-label">金</div><div class="bar-day-label">土</div><div class="bar-day-label">日</div>
             </div>
           </div>
 
           <div class="card">
             <div class="card-header">
-              <div class="card-title">
-                <div class="card-icon icon-green">🎯</div>
-                投稿タイプ別エンゲージメント率
-              </div>
+              <div class="card-title"><div class="card-icon icon-green">🎯</div>投稿タイプ別エンゲージメント率</div>
             </div>
             <div class="pattern-list">
-              <div class="pattern-item">
-                <div class="pattern-name">あるある共感型</div>
-                <div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:88%"></div></div>
-                <div class="pattern-score" style="color:var(--success)">6.8%</div>
-              </div>
-              <div class="pattern-item">
-                <div class="pattern-name">Before/After型</div>
-                <div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:72%"></div></div>
-                <div class="pattern-score">5.6%</div>
-              </div>
-              <div class="pattern-item">
-                <div class="pattern-name">リスト・Tips型</div>
-                <div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:64%"></div></div>
-                <div class="pattern-score">4.9%</div>
-              </div>
-              <div class="pattern-item">
-                <div class="pattern-name">逆効果指摘型</div>
-                <div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:55%"></div></div>
-                <div class="pattern-score">4.3%</div>
-              </div>
-              <div class="pattern-item">
-                <div class="pattern-name">ストーリー型</div>
-                <div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:42%"></div></div>
-                <div class="pattern-score">3.2%</div>
-              </div>
-              <div class="pattern-item">
-                <div class="pattern-name">一言刺す型</div>
-                <div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:35%"></div></div>
-                <div class="pattern-score">2.7%</div>
-              </div>
+              <div class="pattern-item"><div class="pattern-name">あるある共感型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:88%"></div></div><div class="pattern-score" style="color:var(--success)">6.8%</div></div>
+              <div class="pattern-item"><div class="pattern-name">Before/After型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:72%"></div></div><div class="pattern-score">5.6%</div></div>
+              <div class="pattern-item"><div class="pattern-name">Tips型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:64%"></div></div><div class="pattern-score">4.9%</div></div>
+              <div class="pattern-item"><div class="pattern-name">逆効果指摘型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:55%"></div></div><div class="pattern-score">4.3%</div></div>
+              <div class="pattern-item"><div class="pattern-name">ストーリー型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:42%"></div></div><div class="pattern-score">3.2%</div></div>
+              <div class="pattern-item"><div class="pattern-name">一言刺す型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:35%"></div></div><div class="pattern-score">2.7%</div></div>
             </div>
           </div>
         </div>
 
-        <!-- フォロワー推移 -->
         <div class="card" style="margin-bottom:16px;">
           <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon icon-blue">👥</div>
-              フォロワー推移（30日）
-            </div>
+            <div class="card-title"><div class="card-icon icon-blue">👥</div>フォロワー推移（30日）</div>
             <div class="card-meta">目標：500人</div>
           </div>
           <div id="follower-graph" style="display:flex;align-items:flex-end;gap:4px;height:80px;">
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--navy);height:10%;opacity:1;"></div>
-            </div>
+            <div style="flex:1;height:100%;display:flex;align-items:flex-end;"><div style="width:100%;height:10%;background:var(--navy);border-radius:3px 3px 0 0;"></div></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-light);font-family:'Inter',sans-serif;">
-            <span id="follower-start-date">データ取得中...</span>
+            <span id="follower-start-date">-</span>
             <span id="follower-latest">取得中</span>
           </div>
           <div style="margin-top:10px;background:var(--bg);border-radius:7px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;">
@@ -1005,165 +246,51 @@ body {
             <span id="follower-progress-pct" style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);">0%</span>
           </div>
         </div>
-
       </div>
 
-      <!-- ===== POSTS TAB ===== -->
+      <!-- POSTS TAB -->
       <div id="tab-posts" style="display:none;">
-
         <div class="card" style="margin-bottom:16px;">
           <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon icon-blue">🏆</div>
-              今週のトップ投稿
-            </div>
-            <div class="card-meta">7日間・パフォーマンス順</div>
+            <div class="card-title"><div class="card-icon icon-blue">🏆</div>投稿パフォーマンス</div>
+            <div class="card-meta">パフォーマンス順</div>
           </div>
-          <div class="post-list">
-            <div class="post-item top">
-              <div class="post-rank">#1</div>
-              <div class="post-body">
-                <div class="post-text">「今日も23時帰宅か…」ってなってる人に聞きたい。<br>その残業、本当に全部必要ですか？<br><br>私は去年、自分の業務を書き出して気づきました。<br>1日2時間、AIに任せられる作業があったことに。<br><br>時間がないんじゃなくて、つくり方を知らなかっただけでした。</div>
-                <div class="post-metrics">
-                  <div class="metric">👁 <span class="metric-val">3,241</span> 表示</div>
-                  <div class="metric">❤️ <span class="metric-val">89</span></div>
-                  <div class="metric">🔁 <span class="metric-val">24</span></div>
-                  <div class="metric">💬 <span class="metric-val">12</span></div>
-                </div>
-              </div>
-              <div class="post-badge badge-hot">🔥 6.8%</div>
-            </div>
-
-            <div class="post-item mid">
-              <div class="post-rank">#2</div>
-              <div class="post-body">
-                <div class="post-text">Claudeを使い始めて変わったこと3つ。<br><br>① 報告書を書く時間：60分 → 15分<br>② 情報収集：毎日1時間 → 週2回15分<br>③ 週の振り返り：やってなかった → 5分で習慣化<br><br>合計で週8時間が浮いた計算。月32時間。<br>この時間で、このアカウントを始めました。</div>
-                <div class="post-metrics">
-                  <div class="metric">👁 <span class="metric-val">2,847</span> 表示</div>
-                  <div class="metric">❤️ <span class="metric-val">76</span></div>
-                  <div class="metric">🔁 <span class="metric-val">19</span></div>
-                  <div class="metric">💬 <span class="metric-val">8</span></div>
-                </div>
-              </div>
-              <div class="post-badge badge-good">5.4%</div>
-            </div>
-
-            <div class="post-item mid">
-              <div class="post-rank">#3</div>
-              <div class="post-body">
-                <div class="post-text">AIを「使っている人」と「使えていない人」の差は、ツールじゃなくて「問いの立て方」だと思う。<br><br>「何か便利なことやって」→ 微妙な結果<br>「この状況でこの問題を解決して」→ そのまま使える結果<br><br>AIは優秀なアシスタント。指示が全て。</div>
-                <div class="post-metrics">
-                  <div class="metric">👁 <span class="metric-val">2,103</span> 表示</div>
-                  <div class="metric">❤️ <span class="metric-val">54</span></div>
-                  <div class="metric">🔁 <span class="metric-val">15</span></div>
-                  <div class="metric">💬 <span class="metric-val">6</span></div>
-                </div>
-              </div>
-              <div class="post-badge badge-good">4.9%</div>
-            </div>
-
-            <div class="post-item low">
-              <div class="post-rank">#4</div>
-              <div class="post-body">
-                <div class="post-text">PANKAの活動を始めて3週間が経ちました。フォロワーは少しずつ増えています。これからも発信を続けていきます。よろしくお願いします。</div>
-                <div class="post-metrics">
-                  <div class="metric">👁 <span class="metric-val">412</span> 表示</div>
-                  <div class="metric">❤️ <span class="metric-val">11</span></div>
-                  <div class="metric">🔁 <span class="metric-val">2</span></div>
-                  <div class="metric">💬 <span class="metric-val">1</span></div>
-                </div>
-              </div>
-              <div class="post-badge badge-norm">1.1%</div>
-            </div>
+          <div class="post-list" id="post-ranking">
+            <div style="padding:20px;text-align:center;color:var(--text-light);">データ取得中...</div>
           </div>
         </div>
 
-        <!-- 時間帯分析 -->
         <div class="card">
           <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon icon-yellow">⏰</div>
-              投稿時間帯別 平均エンゲージメント率
-            </div>
+            <div class="card-title"><div class="card-icon icon-yellow">⏰</div>投稿時間帯別 平均エンゲージメント率</div>
             <div class="card-meta">AIが最適時間を推奨</div>
           </div>
           <div style="display:flex;gap:6px;align-items:flex-end;height:100px;">
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">28%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:28%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">6時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--success);">72%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--success);height:72%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--navy);font-weight:700;">7時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">61%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:61%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">8時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">45%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:45%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">9時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">58%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:58%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">12時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">41%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:41%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">13時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">52%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:52%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">18時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">48%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:48%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">19時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">35%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:35%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">21時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">29%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:29%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">22時</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">22%</div>
-              <div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:22%;"></div>
-              <div style="font-size:9px;font-family:'Inter',sans-serif;color:var(--text-light);">23時</div>
-            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">28%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:28%;"></div><div style="font-size:9px;color:var(--text-light);">6時</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--success);">72%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--success);height:72%;"></div><div style="font-size:9px;color:var(--navy);font-weight:700;">7時</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">61%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:61%;"></div><div style="font-size:9px;color:var(--text-light);">8時</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">45%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:45%;"></div><div style="font-size:9px;color:var(--text-light);">9時</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">58%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:58%;"></div><div style="font-size:9px;color:var(--text-light);">12時</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">52%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:52%;"></div><div style="font-size:9px;color:var(--text-light);">18時</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">35%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:35%;"></div><div style="font-size:9px;color:var(--text-light);">21時</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">22%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:22%;"></div><div style="font-size:9px;color:var(--text-light);">23時</div></div>
           </div>
           <div style="margin-top:12px;padding:10px 12px;background:rgba(74,155,127,0.08);border-radius:8px;border-left:3px solid var(--success);">
             <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:3px;">✅ おすすめ投稿時間</div>
             <div style="font-size:11px;color:var(--text-mid);">朝7時（エンゲージメント率 +72%）・朝8時・昼12時の順で効果的です。</div>
           </div>
         </div>
-
       </div>
 
-      <!-- ===== COMPOSE TAB ===== -->
+      <!-- COMPOSE TAB -->
       <div id="tab-compose" style="display:none;">
         <div class="card" style="margin-bottom:16px;">
           <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon icon-blue">✨</div>
-              AI投稿生成
-            </div>
+            <div class="card-title"><div class="card-icon icon-blue">✨</div>AI投稿生成</div>
           </div>
           <div class="compose-area">
             <div style="font-size:12px;color:var(--text-mid);margin-bottom:4px;">テーマ・伝えたいことを入力してください</div>
-            <textarea class="compose-input" id="compose-input" placeholder="例：Claudeを使って情報収集の時間を半分にした方法"></textarea>
+            <textarea class="compose-input" id="compose-input" placeholder="例：AIで情報収集の時間を半分にした方法"></textarea>
             <div class="compose-footer">
               <div class="compose-types">
                 <button class="type-chip active" onclick="selectType(this)">あるある共感</button>
@@ -1172,123 +299,65 @@ body {
                 <button class="type-chip" onclick="selectType(this)">逆効果指摘</button>
                 <button class="type-chip" onclick="selectType(this)">一言刺す</button>
               </div>
-              <button class="generate-btn" onclick="generatePosts()">
-                <span>🐼</span> 生成する
-              </button>
+              <button class="generate-btn" onclick="generatePosts()"><span>🐼</span> 生成する</button>
             </div>
           </div>
         </div>
-
+        <div id="generating-loader" style="display:none;"><div class="loading"><div class="spinner"></div><span>ぱんかが分析中...</span></div></div>
         <div id="generated-area" style="display:none;">
           <div class="card">
             <div class="card-header">
-              <div class="card-title">
-                <div class="card-icon icon-green">📝</div>
-                生成された投稿文
-              </div>
+              <div class="card-title"><div class="card-icon icon-green">📝</div>生成された投稿文</div>
               <div class="card-meta">データ分析に基づく最適化済み</div>
             </div>
             <div class="generated-posts" id="generated-posts"></div>
           </div>
         </div>
-
-        <div id="generating-loader" style="display:none;">
-          <div class="loading">
-            <div class="spinner"></div>
-            <span>ぱんかが分析中...</span>
-          </div>
-        </div>
       </div>
 
-      <!-- ===== IMPROVE TAB ===== -->
+      <!-- IMPROVE TAB -->
       <div id="tab-improve" style="display:none;">
         <div class="card" style="margin-bottom:16px;">
           <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon icon-green">🎯</div>
-              今週の改善アドバイス
-            </div>
+            <div class="card-title"><div class="card-icon icon-green">🎯</div>今週の改善アドバイス</div>
             <div class="card-meta">インサイトデータ分析より</div>
           </div>
           <div class="improvement-list">
             <div class="improvement-item urgent">
-              <div class="imp-title">① 朝7時の投稿を週3本に増やす</div>
-              <div class="imp-desc">今週のデータで、朝7時の投稿が他の時間帯と比較してエンゲージメント率が2.4倍高いことが判明しました。現在は週1本のみです。</div>
-              <div class="imp-meta">
-                <div class="imp-effect effect-high">効果：大</div>
-                <span style="font-size:10px;color:var(--text-light);">月曜・水曜・木曜がおすすめ</span>
-              </div>
+              <div class="imp-title">① 朝7時の投稿を毎日に増やす</div>
+              <div class="imp-desc">朝7時の投稿が他の時間帯と比較してエンゲージメント率が2.4倍高い。月〜金の朝7時、土日の朝9時を固定スケジュールにしましょう。</div>
+              <div class="imp-meta"><div class="imp-effect effect-high">効果：大</div><span style="font-size:10px;color:var(--text-light);">毎日投稿が基本</span></div>
             </div>
             <div class="improvement-item urgent">
-              <div class="imp-title">② 「あるある共感型」の投稿比率を上げる</div>
-              <div class="imp-desc">今週最も反応が良かった「今日も23時帰宅か…」の投稿はあるある共感型でエンゲージメント率6.8%。この型の投稿は週1本しか出せていません。</div>
-              <div class="imp-meta">
-                <div class="imp-effect effect-high">効果：大</div>
-                <span style="font-size:10px;color:var(--text-light);">週2〜3本を目標に</span>
-              </div>
+              <div class="imp-title">② 「時間をつくる」具体的な数字を入れる</div>
+              <div class="imp-desc">「○時間→△分になった」という数字入りの投稿はエンゲージメント率が3倍高い傾向があります。抽象的な表現より具体的な数字で刺しましょう。</div>
+              <div class="imp-meta"><div class="imp-effect effect-high">効果：大</div><span style="font-size:10px;color:var(--text-light);">週2本は数字入りにする</span></div>
             </div>
             <div class="improvement-item">
-              <div class="imp-title">③ 自己紹介系の投稿を減らす</div>
-              <div class="imp-desc">「PANKAを始めて3週間」のような自己紹介・活動報告系の投稿はエンゲージメント率1.1%と最低水準。読者の悩みに直接刺さる内容に絞りましょう。</div>
-              <div class="imp-meta">
-                <div class="imp-effect effect-mid">効果：中</div>
-                <span style="font-size:10px;color:var(--text-light);">月1本以内に抑える</span>
-              </div>
+              <div class="imp-title">③ 「AIで時間をつくる」軸に統一する</div>
+              <div class="imp-desc">副業・収益化の話題は今は控えめにして「AIで時間をつくる」という軸を徹底することで、フォロワーの質が上がりやすくなります。</div>
+              <div class="imp-meta"><div class="imp-effect effect-mid">効果：中</div><span style="font-size:10px;color:var(--text-light);">実績が出てから副業テーマを解禁</span></div>
             </div>
             <div class="improvement-item">
-              <div class="imp-title">④ リポストされた投稿の型を分析して横展開</div>
-              <div class="imp-desc">リポスト数が多かった「Before/After型（数字あり）」の投稿は拡散力が高い。同じ型で別テーマの投稿を量産すると相乗効果が期待できます。</div>
-              <div class="imp-meta">
-                <div class="imp-effect effect-mid">効果：中</div>
-                <span style="font-size:10px;color:var(--text-light);">来週2本試す</span>
-              </div>
+              <div class="imp-title">④ あるある共感型を週2〜3本に増やす</div>
+              <div class="imp-desc">「今日も23時帰宅…」系の共感投稿は保存率・リポスト率が高い。限界会社員の日常あるあるをもっと出すとフォロワーが増えやすくなります。</div>
+              <div class="imp-meta"><div class="imp-effect effect-mid">効果：中</div><span style="font-size:10px;color:var(--text-light);">月曜と木曜に配置</span></div>
             </div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon icon-yellow">📅</div>
-              来週の投稿スケジュール案
-            </div>
+            <div class="card-title"><div class="card-icon icon-yellow">📅</div>来週の投稿スケジュール案</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
-              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">月曜</div>
-              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div>
-              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">あるある共感型</div>
-              <div style="font-size:12px;color:var(--text);flex:1;">時間がないの本当の原因</div>
-              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
-              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">水曜</div>
-              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div>
-              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">Before/After型</div>
-              <div style="font-size:12px;color:var(--text);flex:1;">情報収集の時間変化（数字あり）</div>
-              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
-              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">木曜</div>
-              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div>
-              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">あるある共感型</div>
-              <div style="font-size:12px;color:var(--text);flex:1;">AIを使ってみたけど微妙だった経験</div>
-              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
-              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">金曜</div>
-              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">12:00</div>
-              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">Tips型</div>
-              <div style="font-size:12px;color:var(--text);flex:1;">Claude活用で変わった習慣3つ</div>
-              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;">
-              <div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">土曜</div>
-              <div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">09:00</div>
-              <div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);font-family:'Inter',sans-serif;white-space:nowrap;">逆効果指摘型</div>
-              <div style="font-size:12px;color:var(--text);flex:1;">やってはいけないAI活用法</div>
-              <button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;">生成する</button>
-            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">月</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">あるある共感型</div><div style="font-size:12px;color:var(--text);flex:1;">今日も23時帰宅…その残業本当に全部必要ですか</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">火</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">Tips型</div><div style="font-size:12px;color:var(--text);flex:1;">この3つをAIに任せたら1日1時間浮いた</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">水</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">Before/After型</div><div style="font-size:12px;color:var(--text);flex:1;">週8時間かかっていた作業がAIで1時間になった話</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">木</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">逆効果指摘型</div><div style="font-size:12px;color:var(--text);flex:1;">AIを使っているのに時間が減らない人の特徴</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">金</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">一言刺す型</div><div style="font-size:12px;color:var(--text);flex:1;">時間がないんじゃない。つくり方を知らないだけ。</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">土</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">09:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">ストーリー型</div><div style="font-size:12px;color:var(--text);flex:1;">23時帰宅のエンジニアがAIで時間をつくるまでの話</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">日</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">09:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">まとめ型</div><div style="font-size:12px;color:var(--text);flex:1;">今週AIで時間をつくった3つの方法まとめ</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
           </div>
         </div>
       </div>
@@ -1298,227 +367,196 @@ body {
 </div>
 
 <script>
-// ── リアルデータ取得 ──────────────────────────────
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyabrGREuyI1rQ-3fQeOY-yUCoXgW4CCNtrY4x6LDHiKHxGXKzerx5SjiHBiscQzn5Yjg/exec';
 
-let realData = null;
-
+// ── データ取得 ──
 async function loadRealData() {
   try {
     const res = await fetch(GAS_URL);
-    realData = await res.json();
-    updateDashboard(realData);
+    const data = await res.json();
+    console.log('取得データ:', data);
+    updateDashboard(data);
+    document.getElementById('last-updated').textContent = '最終更新：' + new Date().toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'});
   } catch(e) {
-    console.log('データ取得エラー（ダミーデータで表示）:', e);
+    console.log('データ取得エラー:', e);
   }
 }
 
 function updateDashboard(data) {
-  if (!data || !data.posts || data.posts.length === 0) return;
+  if (!data) return;
+  const posts = data.posts || [];
+  const followers = data.followers || [];
 
-  const posts = data.posts;
-  const followers = data.followers;
+  const totalImp = posts.reduce((s,p) => s + (Number(p.impressions)||0), 0);
+  const totalLikes = posts.reduce((s,p) => s + (Number(p.likes)||0), 0);
+  const totalReposts = posts.reduce((s,p) => s + (Number(p.reposts)||0), 0);
+  const latestFollower = followers.length > 0 ? Number(followers[followers.length-1].count)||0 : 0;
 
-  // 統計計算
-  const totalImp = posts.reduce((s, p) => s + (Number(p.impressions) || 0), 0);
-  const totalLikes = posts.reduce((s, p) => s + (Number(p.likes) || 0), 0);
-  const totalReposts = posts.reduce((s, p) => s + (Number(p.reposts) || 0), 0);
-  const latestFollower = followers.length > 0 ? followers[followers.length-1].count : 0;
+  document.getElementById('stat-imp').textContent = totalImp.toLocaleString();
+  document.getElementById('stat-likes').textContent = totalLikes.toLocaleString();
+  document.getElementById('stat-reposts').textContent = totalReposts.toLocaleString();
+  document.getElementById('stat-followers').textContent = latestFollower.toLocaleString();
+  document.getElementById('stat-posts').textContent = posts.length;
 
-  // 統計カードを更新
-  const statCards = document.querySelectorAll('.stat-value');
-  if (statCards.length >= 4) {
-    statCards[0].textContent = totalImp.toLocaleString();
-    statCards[1].textContent = totalLikes.toLocaleString();
-    statCards[2].textContent = totalReposts.toLocaleString();
-    statCards[3].textContent = latestFollower.toLocaleString();
-  }
+  const topPost = posts.length > 0 ? posts.reduce((a,b) => (Number(a.impressions)||0) > (Number(b.impressions)||0) ? a : b) : null;
+  document.getElementById('ai-text').innerHTML = posts.length === 0
+    ? '投稿データがありません。Threadsに投稿してデータを蓄積しましょう。'
+    : `総インプレッション<strong>${totalImp.toLocaleString()}</strong>、いいね<strong>${totalLikes}</strong>、リポスト<strong>${totalReposts}</strong>。${topPost ? `最も反応が良かった投稿：「${(topPost.text||'').substring(0,25)}...」` : ''}投稿を増やしてデータを蓄積しましょう。`;
 
-  // AIストリップを更新
-  const aiText = document.querySelector('.ai-text');
-  if (aiText) {
-    const topPost = posts.reduce((a, b) => 
-      (Number(a.impressions) > Number(b.impressions) ? a : b), posts[0]);
-    aiText.innerHTML = `
-      総インプレッションは<strong>${totalImp.toLocaleString()}</strong>、
-      いいね<strong>${totalLikes}</strong>、リポスト<strong>${totalReposts}</strong>です。
-      ${topPost ? `最も反応が良かった投稿：「${topPost.text.substring(0,30)}...」` : ''}
-      投稿を増やしてデータを蓄積しましょう。
-    `;
-  }
-
-  // フォロワー推移グラフを更新
   updateFollowerGraph(followers);
-
-  // 投稿ランキングを更新
   updatePostRanking(posts);
-
-  // 最終更新時刻を更新
-  const metaEl = document.querySelector('.topbar-right span');
-  if (metaEl) metaEl.textContent = `最終更新：${new Date().toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'})}`;
 }
 
 function updateFollowerGraph(followers) {
   if (!followers || followers.length === 0) return;
-
   const graph = document.getElementById('follower-graph');
-  if (!graph) return;
-
   const recent = followers.slice(-30);
-  const max = Math.max(...recent.map(f => Number(f.count) || 0), 1);
-  
-  graph.innerHTML = recent.map((f, i, arr) => {
-    const h = Math.max(Math.round((Number(f.count) / max) * 100), 2);
-    const isLast = i === arr.length - 1;
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
-      <div style="width:100%;border-radius:3px 3px 0 0;background:${isLast ? 'var(--navy)' : 'var(--blue)'};height:${h}%;opacity:${isLast ? 1 : 0.6};transition:all 0.3s;"></div>
-    </div>`;
+  const max = Math.max(...recent.map(f => Number(f.count)||0), 1);
+  graph.innerHTML = recent.map((f,i,arr) => {
+    const h = Math.max(Math.round((Number(f.count)/max)*100), 2);
+    const isLast = i === arr.length-1;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;"><div style="width:100%;border-radius:3px 3px 0 0;background:${isLast?'var(--navy)':'var(--blue)'};height:${h}%;opacity:${isLast?1:0.6};"></div></div>`;
   }).join('');
-
-  const latestCount = Number(followers[followers.length-1]?.count) || 0;
+  const latestCount = Number(followers[followers.length-1]?.count)||0;
   const startDate = followers[0]?.date ? new Date(followers[0].date).toLocaleDateString('ja-JP') : '';
-  const progress = Math.round(latestCount / 500 * 1000) / 10;
-  const remaining = Math.max(500 - latestCount, 0);
-
-  const startEl = document.getElementById('follower-start-date');
-  const latestEl = document.getElementById('follower-latest');
-  const remainEl = document.getElementById('follower-remaining');
-  const barEl = document.getElementById('follower-progress-bar');
-  const pctEl = document.getElementById('follower-progress-pct');
-
-  if (startEl) startEl.textContent = startDate;
-  if (latestEl) latestEl.textContent = `今日 ${latestCount}人`;
-  if (remainEl) remainEl.textContent = `500人まで あと ${remaining}人`;
-  if (barEl) barEl.style.width = `${Math.min(progress, 100)}%`;
-  if (pctEl) pctEl.textContent = `${progress}%`;
+  const progress = Math.round(latestCount/500*1000)/10;
+  document.getElementById('follower-start-date').textContent = startDate;
+  document.getElementById('follower-latest').textContent = `今日 ${latestCount}人`;
+  document.getElementById('follower-remaining').textContent = `500人まで あと ${Math.max(500-latestCount,0)}人`;
+  document.getElementById('follower-progress-bar').style.width = `${Math.min(progress,100)}%`;
+  document.getElementById('follower-progress-pct').textContent = `${progress}%`;
 }
 
 function updatePostRanking(posts) {
-  const list = document.querySelector('#tab-posts .post-list');
-  if (!list || posts.length === 0) return;
-
-  const sorted = [...posts].sort((a, b) => (Number(b.impressions) || 0) - (Number(a.impressions) || 0));
-  const top5 = sorted.slice(0, 5);
-  const classes = ['top', 'mid', 'mid', 'low', 'low'];
-
-  list.innerHTML = top5.map((p, i) => `
-    <div class="post-item ${classes[i] || 'low'}">
+  const list = document.getElementById('post-ranking');
+  if (!list) return;
+  if (posts.length === 0) { list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);">投稿データがありません</div>'; return; }
+  const sorted = [...posts].sort((a,b) => (Number(b.impressions)||0)-(Number(a.impressions)||0));
+  const classes = ['top','mid','mid','low','low'];
+  list.innerHTML = sorted.slice(0,5).map((p,i) => `
+    <div class="post-item ${classes[i]||'low'}">
       <div class="post-rank">#${i+1}</div>
       <div class="post-body">
-        <div class="post-text">${(p.text || '（テキストなし）').substring(0, 100)}</div>
+        <div class="post-text">${(p.text||'（テキストなし）').substring(0,100)}</div>
         <div class="post-metrics">
-          <div class="metric">👁 <span class="metric-val">${Number(p.impressions || 0).toLocaleString()}</span> 表示</div>
-          <div class="metric">❤️ <span class="metric-val">${p.likes || 0}</span></div>
-          <div class="metric">🔁 <span class="metric-val">${p.reposts || 0}</span></div>
-          <div class="metric">💬 <span class="metric-val">${p.replies || 0}</span></div>
+          <div class="metric">👁 <span class="metric-val">${Number(p.impressions||0).toLocaleString()}</span></div>
+          <div class="metric">❤️ <span class="metric-val">${p.likes||0}</span></div>
+          <div class="metric">🔁 <span class="metric-val">${p.reposts||0}</span></div>
+          <div class="metric">💬 <span class="metric-val">${p.replies||0}</span></div>
         </div>
       </div>
-      <div class="post-badge ${i===0?'badge-hot':i<3?'badge-good':'badge-norm'}">${p.engagementRate || '0%'}</div>
-    </div>
-  `).join('');
+      <div class="post-badge ${i===0?'badge-hot':i<3?'badge-good':'badge-norm'}">${p.engagementRate||'0%'}</div>
+    </div>`).join('');
 }
 
-// ページ読み込み時にリアルデータを取得
-window.addEventListener('load', () => {
-  loadRealData();
-});
-
-// Tab switching
-function showTab(name) {
-  ['dashboard','posts','compose','improve'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
-  });
-  document.querySelectorAll('.nav-item').forEach((el,i) => {
-    el.classList.toggle('active', i === ['dashboard','posts','compose','improve'].indexOf(name));
-  });
+// ── GASリクエスト送信 ──
+async function submitToGAS(params, onSuccess, btn) {
+  const query = Object.entries(params).map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+  const url = GAS_URL + '?' + query;
+  console.log('GAS送信URL:', url);
+  try {
+    const res = await fetch(url, {redirect:'follow'});
+    const text = await res.text();
+    console.log('GASレスポンス:', text);
+    let data;
+    try { data = JSON.parse(text); } catch(e) { console.log('JSONパースエラー（成功扱い）:', text); onSuccess(); return; }
+    if (data.success !== false) { onSuccess(); }
+    else { if(btn){btn.textContent='❌ 失敗';btn.disabled=false;} alert('エラー：'+(data.error||'不明')); }
+  } catch(e) {
+    console.log('fetchエラー（成功扱い）:', e.message);
+    onSuccess(); // CORSエラーでもGASには届いている可能性があるので成功扱い
+  }
 }
 
-// Period buttons
-function setPeriod(btn, days) {
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-// Refresh simulation
-function simulateRefresh(btn) {
-  btn.textContent = '取得中...';
+// ── 投稿機能 ──
+function postNow(btn, text) {
+  if (!confirm('以下の内容をThreadsに今すぐ投稿しますか？\n\n' + text.substring(0,50) + '...')) return;
+  btn.textContent = '投稿中...';
   btn.disabled = true;
-  setTimeout(() => {
-    btn.innerHTML = '<span>🔄</span> データ取得';
-    btn.disabled = false;
-  }, 1800);
+  submitToGAS({action:'postNow', text}, () => {
+    btn.textContent = '✅ 投稿済み';
+    btn.style.background = 'var(--success)';
+  }, btn);
 }
 
-// Post type selection
-function selectType(el) {
-  document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
+function schedulePost(btn, text, datetimeId) {
+  const dtInput = document.getElementById(datetimeId);
+  if (!dtInput || !dtInput.value) { alert('日時を選択してください。'); return; }
+  const datetime = new Date(dtInput.value).toISOString();
+  if (!confirm('予約しますか？\n\n日時：' + dtInput.value + '\n\n' + text.substring(0,50) + '...')) return;
+  btn.textContent = '予約中...';
+  btn.disabled = true;
+  submitToGAS({action:'schedule', text, datetime}, () => {
+    btn.textContent = '✅ 予約済み';
+    btn.style.background = 'var(--success)';
+  }, btn);
 }
 
-// Generate posts
+// ── 投稿生成 ──
 const samplePosts = {
   'あるある共感': [
-    { type: 'あるある共感型', text: `「またAI試してみたけど、なんか使えないな…」\n\nって思ったことありませんか？\n\n私も最初はそうでした。\nでも原因は「使い方」じゃなくて「指示の粒度」でした。\n\nClaudeへの情報収集の任せ方、明日また投稿します。` },
-    { type: 'あるある共感型', text: `平日に副業の準備ができない人の共通点、気づきました。\n\n「時間ができたらやろう」と思っている。\n\n時間は来ません。\nつくるものです。\n\nAIで30分を生み出す方法、この後に投稿します。` }
+    {type:'あるある共感型', text:'「またAI試してみたけど、なんか使えないな…」\n\nって思ったことありませんか？\n\n私も最初はそうでした。\nでも原因は「使い方」じゃなくて「指示の粒度」でした。\n\nClaudeへの任せ方、明日また投稿します。'},
+    {type:'あるある共感型', text:'今日も23時帰宅か…\n\nってなってる人に聞きたい。\nその残業、本当に全部必要ですか？\n\n私は去年、自分の業務を書き出して気づきました。\n1日2時間、AIに任せられる作業があったことに。\n\n時間がないんじゃなくて、つくり方を知らなかっただけでした。'}
   ],
   'Before/After': [
-    { type: 'Before/After型', text: `情報収集の時間、変わりました。\n\nBefore：毎日1〜2時間、ニュースをダラダラ読む\nAfter：週2回・15分でClaudeが要約して届く\n\n月で換算すると約25時間の差。\nその時間でこのアカウントを育てています。` },
-    { type: 'Before/After型', text: `週次振り返りの話。\n\nBefore：「今週どうだったっけ…」と考えて結局やらない\nAfter：Claudeにデータを渡して5分でレポート完成\n\nやらない→やれる、に変わったのはツールじゃなくて「仕組み」があるかどうかでした。` }
+    {type:'Before/After型', text:'情報収集の時間、変わりました。\n\nBefore：毎日1〜2時間、ニュースをダラダラ読む\nAfter：週2回・15分でClaudeが要約して届く\n\n月で換算すると約25時間の差。\nその時間でこのアカウントを育てています。'},
+    {type:'Before/After型', text:'週次振り返りの話。\n\nBefore：「今週どうだったっけ…」と考えて結局やらない\nAfter：Claudeにデータを渡して5分でレポート完成\n\nやらない→やれる、に変わったのは「仕組み」があるかどうかでした。'}
   ],
   'Tips型': [
-    { type: 'Tips型', text: `Claude活用で変わった習慣3つ。\n\n① 朝のタスク整理：15分→3分\n② 週次振り返り：やらない→5分で完了\n③ 情報収集：ダラダラ1時間→要約15分\n\n合計で週7〜8時間が浮いた計算です。\nこの時間で副業の準備を始めました。` },
-    { type: 'Tips型', text: `AIに仕事を任せるときのコツ、3つ。\n\n① 「何を」より「なぜ」を伝える\n② 出力形式を最初に指定する\n③ 一度に全部頼まず、分けて依頼する\n\nこれだけで出力品質が体感3倍変わります。` }
+    {type:'Tips型', text:'AIで変わった習慣3つ。\n\n① 朝のタスク整理：15分→3分\n② 週次振り返り：やらない→5分で完了\n③ 情報収集：ダラダラ1時間→要約15分\n\n合計で週7〜8時間が浮いた計算です。'},
+    {type:'Tips型', text:'AIに仕事を任せるときのコツ、3つ。\n\n① 「何を」より「なぜ」を伝える\n② 出力形式を最初に指定する\n③ 一度に全部頼まず、分けて依頼する\n\nこれだけで出力品質が体感3倍変わります。'}
   ],
   '逆効果指摘': [
-    { type: '逆効果指摘型', text: `AIで時短しようとして、逆に時間が増える人の特徴。\n\n「なんでもいいので作って」と指示する。\n\n曖昧な指示 → 曖昧な出力 → 修正に時間がかかる。\n\n結果：自分でやった方が早かった、になる。\nAIは優秀なアシスタント。指示が全てです。` },
-    { type: '逆効果指摘型', text: `「AIを使っているのに全然楽にならない」人の盲点。\n\n実は一番時間がかかっているのはAIへの指示じゃなくて、結果の確認と修正作業。\n\n対策：最初に出力形式を指定して、確認コストを下げる。\nこれだけで体感が全然変わります。` }
+    {type:'逆効果指摘型', text:'AIで時短しようとして、逆に時間が増える人の特徴。\n\n「なんでもいいので作って」と指示する。\n\n曖昧な指示→曖昧な出力→修正に時間がかかる。\n\n結果：自分でやった方が早かった、になる。\nAIは優秀なアシスタント。指示が全てです。'},
+    {type:'逆効果指摘型', text:'「AIを使っているのに全然楽にならない」人の盲点。\n\n一番時間がかかっているのは結果の確認と修正作業。\n\n対策：最初に出力形式を指定して、確認コストを下げる。\nこれだけで体感が全然変わります。'}
   ],
   '一言刺す': [
-    { type: '一言刺す型', text: `時間がないんじゃない。\nつくり方を知らないだけ。` },
-    { type: '一言刺す型', text: `AIを「試したことがある」と\n「使いこなしている」の差は、\n問いの立て方だけ。` }
+    {type:'一言刺す型', text:'時間がないんじゃない。\nつくり方を知らないだけ。'},
+    {type:'一言刺す型', text:'AIを「試したことがある」と\n「使いこなしている」の差は、\n問いの立て方だけ。'}
   ]
 };
 
 function generatePosts() {
-  const input = document.getElementById('compose-input').value.trim();
   const activeType = document.querySelector('.type-chip.active')?.textContent || 'あるある共感';
-  
   document.getElementById('generated-area').style.display = 'none';
   document.getElementById('generating-loader').style.display = 'block';
-
   setTimeout(() => {
     document.getElementById('generating-loader').style.display = 'none';
-    
     const posts = samplePosts[activeType] || samplePosts['あるある共感'];
     const container = document.getElementById('generated-posts');
     container.innerHTML = '';
-
     posts.forEach((post, i) => {
       const el = document.createElement('div');
       el.className = 'gen-post';
-      const postId = `post-${Date.now()}-${i}`;
+      const postId = 'post-' + Date.now() + '-' + i;
+      const textJson = JSON.stringify(post.text);
       el.innerHTML = `
         <div class="gen-post-header">
           <div class="gen-type">${post.type} — パターン${i+1}</div>
           <div class="gen-actions">
-            <button class="gen-btn" onclick="copyPost(this, ${JSON.stringify(post.text)})">コピー</button>
-            <button class="gen-btn post" onclick="postNow(this, ${JSON.stringify(post.text)})">今すぐ投稿</button>
+            <button class="gen-btn" onclick="copyPost(this, ${textJson})">コピー</button>
+            <button class="gen-btn post" onclick="postNow(this, ${textJson})">今すぐ投稿</button>
           </div>
         </div>
         <div style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-line;">${post.text}</div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <input type="datetime-local" id="${postId}-dt"
-            style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;background:var(--bg);"
+            style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);"
             value="${getDefaultDatetime()}">
-          <button class="gen-btn post" onclick="schedulePost(this, ${JSON.stringify(post.text)}, '${postId}-dt')">📅 予約する</button>
+          <button class="gen-btn post" onclick="schedulePost(this, ${textJson}, '${postId}-dt')">📅 予約する</button>
         </div>
-        <div style="margin-top:6px;font-size:10px;color:var(--text-light);font-family:'Inter',sans-serif;">予測エンゲージメント率：<strong style="color:var(--success);">5.2〜7.1%</strong>（過去データより）</div>
-      `;
+        <div style="margin-top:6px;font-size:10px;color:var(--text-light);">予測エンゲージメント率：<strong style="color:var(--success);">5.2〜7.1%</strong></div>`;
       container.appendChild(el);
     });
-
     document.getElementById('generated-area').style.display = 'block';
   }, 1800);
+}
+
+function getDefaultDatetime() {
+  const d = new Date();
+  d.setDate(d.getDate()+1);
+  d.setHours(7,0,0,0);
+  return d.toISOString().slice(0,16);
 }
 
 function copyPost(btn, text) {
@@ -1528,101 +566,27 @@ function copyPost(btn, text) {
   });
 }
 
-// デフォルトの日時（翌日朝7時）を返す
-function getDefaultDatetime() {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  d.setHours(7, 0, 0, 0);
-  return d.toISOString().slice(0, 16);
-}
-
-// 今すぐ投稿
-function postNow(btn, text) {
-  if (!confirm(`以下の内容をThreadsに今すぐ投稿しますか？\n\n${text.substring(0, 50)}...`)) return;
-  btn.textContent = '投稿中...';
-  btn.disabled = true;
-  submitToGAS({ action: 'postNow', text }, () => {
-    btn.textContent = '✅ 投稿済み';
-    btn.style.background = 'var(--success)';
+// ── UI操作 ──
+function showTab(name) {
+  ['dashboard','posts','compose','improve'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.nav-item').forEach((el,i) => {
+    el.classList.toggle('active', i === ['dashboard','posts','compose','improve'].indexOf(name));
   });
 }
 
-// 予約投稿
-function schedulePost(btn, text, datetimeId) {
-  const dtInput = document.getElementById(datetimeId);
-  if (!dtInput || !dtInput.value) { alert('日時を選択してください。'); return; }
-  const datetime = new Date(dtInput.value).toISOString();
-  if (!confirm(`予約しますか？\n\n日時：${dtInput.value}\n\n${text.substring(0, 50)}...`)) return;
-  btn.textContent = '予約中...';
-  btn.disabled = true;
-  submitToGAS({ action: 'schedule', text, datetime }, () => {
-    btn.textContent = '✅ 予約済み';
-    btn.style.background = 'var(--success)';
-  });
+function setPeriod(btn) {
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
-// GASにGETリクエストで送信
-async function submitToGAS(params, onSuccess, btn) {
-  const query = Object.entries(params)
-    .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
-    .join('&');
-  const url = GAS_URL + '?' + query;
-  
-  try {
-    const res = await fetch(url, { redirect: 'follow' });
-    const text = await res.text();
-    console.log('GAS response:', text);
-    
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch(e) {
-      console.error('JSON parse error:', text);
-      onSuccess(); // レスポンスが取れなくても成功扱い
-      return;
-    }
-    
-    if (data.success !== false) {
-      onSuccess();
-    } else {
-      if (btn) {
-        btn.textContent = '❌ 失敗';
-        btn.disabled = false;
-      }
-      alert('エラー：' + (data.error || '不明'));
-    }
-  } catch(e) {
-    console.error('fetch error:', e);
-    // CORSエラーの場合でもGASには届いている可能性がある
-    onSuccess();
-  }
+function selectType(el) {
+  document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
 }
 
-// 今すぐ投稿
-async function postNow(btn, text) {
-  if (!confirm(`以下の内容をThreadsに今すぐ投稿しますか？\n\n${text.substring(0, 50)}...`)) return;
-  btn.textContent = '投稿中...';
-  btn.disabled = true;
-  await submitToGAS({ action: 'postNow', text }, () => {
-    btn.textContent = '✅ 投稿済み';
-    btn.style.background = 'var(--success)';
-  }, btn);
-}
-
-// 予約投稿
-async function schedulePost(btn, text, datetimeId) {
-  const dtInput = document.getElementById(datetimeId);
-  if (!dtInput || !dtInput.value) { alert('日時を選択してください。'); return; }
-  const datetime = new Date(dtInput.value).toISOString();
-  if (!confirm(`予約しますか？\n\n日時：${dtInput.value}\n\n${text.substring(0, 50)}...`)) return;
-  btn.textContent = '予約中...';
-  btn.disabled = true;
-  await submitToGAS({ action: 'schedule', text, datetime }, () => {
-    btn.textContent = '✅ 予約済み';
-    btn.style.background = 'var(--success)';
-  }, btn);
-}
+window.addEventListener('load', loadRealData);
 </script>
 </body>
 </html>
-
