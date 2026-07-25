@@ -345,7 +345,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
                 ondrop="handleDrop(event)">
                 <div style="font-size:24px;margin-bottom:8px;">📸</div>
                 <div style="font-size:13px;color:var(--text-mid);">クリックまたはドラッグ＆ドロップで画像を追加</div>
-                <div style="font-size:11px;color:var(--text-light);margin-top:4px;">PNG・JPG・WEBP対応</div>
+                <div style="font-size:11px;color:var(--text-light);margin-top:4px;">PNG・JPG・WEBP対応 ／ <strong>Ctrl+V でクリップボードから貼り付け可能</strong></div>
                 <input type="file" id="image-upload" multiple accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
               </div>
               <div id="image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
@@ -507,6 +507,28 @@ function handleDrop(event) {
   const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
   addImages(files);
 }
+
+// クリップボードからペースト
+document.addEventListener('paste', function(event) {
+  // 週次自動生成タブが表示されているときだけ動作
+  const weeklyTab = document.getElementById('tab-weekly');
+  if (!weeklyTab || weeklyTab.style.display === 'none') return;
+
+  const items = Array.from(event.clipboardData.items);
+  const imageItems = items.filter(item => item.type.startsWith('image/'));
+
+  if (imageItems.length === 0) return;
+
+  const files = imageItems.map(item => item.getAsFile()).filter(Boolean);
+  addImages(files);
+
+  // 貼り付け成功のフィードバック
+  const uploadArea = document.getElementById('upload-area');
+  if (uploadArea) {
+    uploadArea.style.borderColor = 'var(--success)';
+    setTimeout(() => uploadArea.style.borderColor = 'var(--border)', 1000);
+  }
+});
 
 function addImages(files) {
   const remaining = 10 - uploadedImages.length;
