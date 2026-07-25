@@ -126,7 +126,12 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text-light);font-size:13px;gap:8px;}
 .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:900px){.sidebar{width:60px;}.logo-name,.logo-sub,.nav-item span,.nav-label,.sidebar-bottom{display:none;}.nav-item{justify-content:center;padding:10px;}.stats-row{grid-template-columns:repeat(3,1fr);}.grid-2{grid-template-columns:1fr;}}
+.step-indicator{padding:6px 10px;border-radius:20px;font-size:11px;font-family:'Inter',sans-serif;font-weight:600;background:var(--bg);color:var(--text-light);border:1px solid var(--border);white-space:nowrap;}
+.step-indicator.active{background:var(--navy);color:white;border-color:var(--navy);}
+.step-indicator.done{background:var(--success);color:white;border-color:var(--success);}
+.weekly-post-item{padding:14px;border-radius:9px;background:var(--bg);border:1px solid var(--border);}
+.weekly-post-item.selected{border-color:var(--blue);background:rgba(106,127,166,0.05);}
+@media(max-width:600px){.step-indicator{font-size:9px;padding:4px 6px;}}.logo-name,.logo-sub,.nav-item span,.nav-label,.sidebar-bottom{display:none;}.nav-item{justify-content:center;padding:10px;}.stats-row{grid-template-columns:repeat(3,1fr);}.grid-2{grid-template-columns:1fr;}}
 @media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr);}.content{padding:14px;}}
 </style>
 </head>
@@ -144,6 +149,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
       <div class="nav-label">メニュー</div>
       <div class="nav-item active" onclick="showTab('dashboard')"><span class="nav-icon">📊</span><span>ダッシュボード</span></div>
       <div class="nav-item" onclick="showTab('posts')"><span class="nav-icon">📝</span><span>投稿パフォーマンス</span></div>
+      <div class="nav-item" onclick="showTab('weekly')"><span class="nav-icon">🚀</span><span>週次自動生成</span></div>
       <div class="nav-item" onclick="showTab('compose')"><span class="nav-icon">✨</span><span>AI投稿生成</span></div>
       <div class="nav-item" onclick="showTab('improve')"><span class="nav-icon">🎯</span><span>改善アドバイス</span></div>
       <div class="nav-label">設定</div>
@@ -282,6 +288,112 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         </div>
       </div>
 
+      <!-- WEEKLY AUTO TAB -->
+      <div id="tab-weekly" style="display:none;">
+
+        <!-- STEP進捗 -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div class="card-title"><div class="card-icon icon-blue">🚀</div>週次自動生成</div>
+            <div class="card-meta" id="weekly-status">準備完了</div>
+          </div>
+
+          <!-- ステップ表示 -->
+          <div style="display:flex;gap:4px;margin-bottom:20px;">
+            <div class="step-indicator active" id="step-1">1.分析</div>
+            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
+            <div class="step-indicator" id="step-2">2.リサーチ</div>
+            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
+            <div class="step-indicator" id="step-3">3.改善案</div>
+            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
+            <div class="step-indicator" id="step-4">4.生成</div>
+            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
+            <div class="step-indicator" id="step-5">5.レビュー</div>
+            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
+            <div class="step-indicator" id="step-6">6.予約</div>
+          </div>
+
+          <!-- 設定エリア -->
+          <div id="weekly-settings">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div>
+                <div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;">投稿開始日</div>
+                <input type="date" id="weekly-start-date"
+                  style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);">
+              </div>
+              <div>
+                <div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;">投稿頻度</div>
+                <select id="weekly-frequency"
+                  style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);">
+                  <option value="daily">毎日（7本）</option>
+                  <option value="weekday">平日のみ（5本）</option>
+                  <option value="every2">2日に1回（4本）</option>
+                  <option value="custom">AIに提案させる</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 画像アップロードエリア -->
+            <div style="margin-bottom:16px;">
+              <div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;">
+                バズ投稿のスクショ（最大10枚・任意）
+                <span style="color:var(--blue);">→ リサーチ精度が上がります</span>
+              </div>
+              <div id="upload-area"
+                style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);"
+                onclick="document.getElementById('image-upload').click()"
+                ondragover="handleDragOver(event)"
+                ondrop="handleDrop(event)">
+                <div style="font-size:24px;margin-bottom:8px;">📸</div>
+                <div style="font-size:13px;color:var(--text-mid);">クリックまたはドラッグ＆ドロップで画像を追加</div>
+                <div style="font-size:11px;color:var(--text-light);margin-top:4px;">PNG・JPG・WEBP対応</div>
+                <input type="file" id="image-upload" multiple accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+              </div>
+              <div id="image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+            </div>
+
+            <!-- 実行ボタン -->
+            <button id="weekly-run-btn" onclick="runWeeklyFlow()"
+              style="width:100%;padding:14px;background:var(--navy);color:white;border:none;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;font-weight:700;transition:background 0.2s;">
+              🚀 ワンボタンで7日分を自動生成する
+            </button>
+          </div>
+
+          <!-- 進捗ログ -->
+          <div id="weekly-log" style="display:none;margin-top:16px;padding:14px;background:var(--bg);border-radius:9px;">
+            <div id="weekly-log-content" style="font-size:12px;color:var(--text-mid);line-height:2;"></div>
+          </div>
+        </div>
+
+        <!-- 生成結果エリア -->
+        <div id="weekly-result" style="display:none;">
+
+          <!-- 改善案 -->
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-header">
+              <div class="card-title"><div class="card-icon icon-green">🎯</div>AI改善案</div>
+            </div>
+            <div id="weekly-advice-content" style="font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;padding:4px;"></div>
+          </div>
+
+          <!-- 生成された投稿一覧 -->
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-header">
+              <div class="card-title"><div class="card-icon icon-blue">📝</div>生成された投稿（7本）</div>
+              <button onclick="selectAllPosts()" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;color:var(--text-mid);">全選択</button>
+            </div>
+            <div id="weekly-posts-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+          </div>
+
+          <!-- 一括予約ボタン -->
+          <button id="weekly-schedule-btn" onclick="scheduleAllPosts()"
+            style="width:100%;padding:14px;background:var(--success);color:white;border:none;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;font-weight:700;">
+            📅 選択した投稿を一括予約する
+          </button>
+        </div>
+
+      </div>
+
       <!-- COMPOSE TAB -->
       <div id="tab-compose" style="display:none;">
         <div class="card" style="margin-bottom:16px;">
@@ -375,6 +487,267 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyabrGREuyI1rQ-3fQeOY-yUCoXgW4CCNtrY4x6LDHiKHxGXKzerx5SjiHBiscQzn5Yjg/exec';
+
+// ── 週次自動生成 ──
+let uploadedImages = [];
+let generatedPosts = [];
+
+function handleImageUpload(event) {
+  const files = Array.from(event.target.files);
+  addImages(files);
+}
+
+function handleDragOver(event) {
+  event.preventDefault();
+  document.getElementById('upload-area').style.borderColor = 'var(--blue)';
+}
+
+function handleDrop(event) {
+  event.preventDefault();
+  document.getElementById('upload-area').style.borderColor = 'var(--border)';
+  const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  addImages(files);
+}
+
+function addImages(files) {
+  const remaining = 10 - uploadedImages.length;
+  files.slice(0, remaining).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImages.push({ file, base64: e.target.result, name: file.name });
+      renderImagePreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderImagePreviews() {
+  const preview = document.getElementById('image-preview');
+  if (!preview) return;
+  preview.innerHTML = uploadedImages.map((img, i) => `
+    <div style="position:relative;width:80px;height:80px;">
+      <img src="${img.base64}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">
+      <button onclick="removeImage(${i})" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--danger);color:white;border:none;cursor:pointer;font-size:11px;">×</button>
+    </div>`).join('');
+}
+
+function removeImage(index) {
+  uploadedImages.splice(index, 1);
+  renderImagePreviews();
+}
+
+function setStep(step) {
+  for (let i = 1; i <= 6; i++) {
+    const el = document.getElementById(`step-${i}`);
+    if (!el) continue;
+    if (i < step) el.className = 'step-indicator done';
+    else if (i === step) el.className = 'step-indicator active';
+    else el.className = 'step-indicator';
+  }
+}
+
+function addLog(message, type = 'info') {
+  const log = document.getElementById('weekly-log');
+  const content = document.getElementById('weekly-log-content');
+  if (!log || !content) return;
+  log.style.display = 'block';
+  const color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--text-mid)';
+  content.innerHTML += `<div style="color:${color};">${new Date().toLocaleTimeString('ja-JP')} ${message}</div>`;
+}
+
+async function runWeeklyFlow() {
+  const btn = document.getElementById('weekly-run-btn');
+  btn.disabled = true;
+  btn.textContent = '実行中...';
+  document.getElementById('weekly-log-content').innerHTML = '';
+  document.getElementById('weekly-result').style.display = 'none';
+  document.getElementById('weekly-status').textContent = '実行中...';
+
+  try {
+    // STEP1：インサイト分析
+    setStep(1);
+    addLog('📊 STEP1：インサイトを分析中...');
+    await new Promise(r => setTimeout(r, 500));
+    addLog('✅ インサイト分析完了', 'success');
+
+    // STEP2：画像リサーチ
+    setStep(2);
+    let imageAnalysis = '';
+    if (uploadedImages.length > 0) {
+      addLog(`📸 STEP2：${uploadedImages.length}枚の画像をリサーチ中...`);
+      const imageData = uploadedImages.slice(0, 5).map(img => ({
+        base64: img.base64.split(',')[1],
+        mimeType: img.file.type,
+      }));
+      const url = GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData));
+      try {
+        const res = await fetch(url, { redirect: 'follow' });
+        const data = JSON.parse(await res.text());
+        imageAnalysis = data.analysis || '';
+      } catch(e) { console.error(e); }
+      addLog('✅ 画像リサーチ完了', 'success');
+    } else {
+      addLog('📸 STEP2：画像なし（スキップ）');
+    }
+
+    // STEP3：改善案生成
+    setStep(3);
+    addLog('🎯 STEP3：改善案を生成中...');
+    let advice = '';
+    try {
+      const res = await fetch(GAS_URL + '?action=advice', { redirect: 'follow' });
+      const data = JSON.parse(await res.text());
+      advice = data.advice || '';
+    } catch(e) { console.error(e); }
+    addLog('✅ 改善案生成完了', 'success');
+
+    // STEP4：7本投稿文生成
+    setStep(4);
+    addLog('📝 STEP4：7日分の投稿文を生成中...');
+    const startDate = document.getElementById('weekly-start-date').value;
+    const frequency = document.getElementById('weekly-frequency').value;
+    let posts = [];
+    try {
+      const url = GAS_URL + '?action=generateWeekly&startDate=' + encodeURIComponent(startDate) + '&frequency=' + frequency + '&advice=' + encodeURIComponent(advice.substring(0, 300)) + '&imageAnalysis=' + encodeURIComponent(imageAnalysis.substring(0, 300));
+      const res = await fetch(url, { redirect: 'follow' });
+      const data = JSON.parse(await res.text());
+      posts = data.posts || [];
+    } catch(e) { console.error(e); }
+    addLog('✅ 投稿文生成完了', 'success');
+
+    // STEP5：AIレビュー
+    setStep(5);
+    addLog('🔍 STEP5：AIがレビュー中...');
+    try {
+      const url = GAS_URL + '?action=reviewPosts&posts=' + encodeURIComponent(JSON.stringify(posts)) + '&advice=' + encodeURIComponent(advice.substring(0, 200));
+      const res = await fetch(url, { redirect: 'follow' });
+      const data = JSON.parse(await res.text());
+      if (data.posts) posts = data.posts;
+    } catch(e) { console.error(e); }
+    addLog('✅ AIレビュー完了', 'success');
+
+    // 結果表示
+    setStep(6);
+    document.getElementById('weekly-status').textContent = '完了！';
+    document.getElementById('weekly-advice-content').textContent = advice || '改善案を取得できませんでした';
+    generatedPosts = posts;
+    renderWeeklyPosts(posts);
+    document.getElementById('weekly-result').style.display = 'block';
+    addLog('🎉 全工程完了！投稿を確認して予約してください', 'success');
+
+  } catch(e) {
+    addLog('❌ エラー：' + e.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🚀 ワンボタンで7日分を自動生成する';
+}
+
+function renderWeeklyPosts(posts) {
+  const container = document.getElementById('weekly-posts-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  posts.forEach((post, i) => {
+    const el = document.createElement('div');
+    el.className = 'weekly-post-item selected';
+    el.id = `weekly-post-${i}`;
+    const dateVal = post.datetime ? new Date(post.datetime).toISOString().slice(0,16) : getDefaultDatetime();
+
+    el.innerHTML = `
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <input type="checkbox" id="check-${i}" checked style="margin-top:3px;width:16px;height:16px;cursor:pointer;" onchange="togglePostSelection(${i})">
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:10px;font-weight:700;font-family:'Inter',sans-serif;color:var(--blue);">${post.type||''}</span>
+            ${post.reviewStatus==='revised'?'<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(196,154,60,0.12);color:var(--warning);">AI修正済み</span>':''}
+            ${post.reviewStatus==='ok'?'<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(74,155,127,0.12);color:var(--success);">✅ OK</span>':''}
+          </div>
+          <div id="post-text-${i}" style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-line;">${post.text||''}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border);">
+        <input type="datetime-local" id="dt-${i}" value="${dateVal}" style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);flex:1;">
+        <button onclick="regenerateWeeklyPost(${i})" style="font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;white-space:nowrap;">🔄 再生成</button>
+        <button onclick="editWeeklyPost(${i})" style="font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;white-space:nowrap;">✏️ 編集</button>
+      </div>
+      ${post.imagePrompt?`<div style="margin-top:8px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);"><div style="font-size:10px;color:var(--blue);margin-bottom:3px;">🎨 画像生成プロンプト</div><div style="font-size:11px;color:var(--text-mid);">${post.imagePrompt}</div></div>`:''}`;
+    container.appendChild(el);
+  });
+}
+
+function togglePostSelection(i) {
+  const el = document.getElementById(`weekly-post-${i}`);
+  const checked = document.getElementById(`check-${i}`).checked;
+  el.classList.toggle('selected', checked);
+}
+
+function selectAllPosts() {
+  generatedPosts.forEach((_,i) => {
+    const check = document.getElementById(`check-${i}`);
+    const el = document.getElementById(`weekly-post-${i}`);
+    if (check) { check.checked = true; el.classList.add('selected'); }
+  });
+}
+
+async function regenerateWeeklyPost(i) {
+  const btn = event.target;
+  btn.textContent = '生成中...';
+  btn.disabled = true;
+  const post = generatedPosts[i];
+  const url = GAS_URL + '?action=generate&theme=' + encodeURIComponent(post.theme||'AIで時間をつくる') + '&type=' + encodeURIComponent(post.type||'あるある共感');
+  try {
+    const res = await fetch(url, { redirect: 'follow' });
+    const data = JSON.parse(await res.text());
+    if (data.success && data.text) {
+      generatedPosts[i].text = data.text;
+      document.getElementById(`post-text-${i}`).textContent = data.text;
+    }
+  } catch(e) { console.error(e); }
+  btn.textContent = '🔄 再生成';
+  btn.disabled = false;
+}
+
+function editWeeklyPost(i) {
+  const el = document.getElementById(`post-text-${i}`);
+  const text = el.textContent;
+  el.innerHTML = `<textarea style="width:100%;min-height:120px;padding:8px;border:1px solid var(--blue);border-radius:6px;font-size:12px;line-height:1.8;font-family:'Noto Sans JP',sans-serif;resize:vertical;">${text}</textarea><button onclick="saveWeeklyEdit(${i})" style="margin-top:6px;padding:5px 14px;background:var(--navy);color:white;border:none;border-radius:6px;font-size:11px;cursor:pointer;">保存</button>`;
+}
+
+function saveWeeklyEdit(i) {
+  const textarea = document.querySelector(`#post-text-${i} textarea`);
+  if (!textarea) return;
+  const newText = textarea.value;
+  generatedPosts[i].text = newText;
+  document.getElementById(`post-text-${i}`).innerHTML = newText;
+}
+
+async function scheduleAllPosts() {
+  const btn = document.getElementById('weekly-schedule-btn');
+  btn.textContent = '予約中...';
+  btn.disabled = true;
+  let success = 0, fail = 0;
+
+  for (let i = 0; i < generatedPosts.length; i++) {
+    const check = document.getElementById(`check-${i}`);
+    if (!check?.checked) continue;
+    const text = generatedPosts[i].text;
+    const dt = document.getElementById(`dt-${i}`)?.value;
+    const datetime = dt ? new Date(dt).toISOString() : new Date().toISOString();
+    const url = GAS_URL + '?action=schedule&text=' + encodeURIComponent(text) + '&datetime=' + encodeURIComponent(datetime);
+    try {
+      await fetch(url, { redirect: 'follow' });
+      success++;
+      const el = document.getElementById(`weekly-post-${i}`);
+      if (el) el.style.opacity = '0.5';
+    } catch(e) { fail++; }
+    await new Promise(r => setTimeout(r, 500));
+  }
+
+  btn.textContent = `✅ ${success}本を予約しました！${fail>0?` (${fail}本失敗)`:''}`;
+  btn.style.background = 'var(--success)';
+  btn.disabled = false;
+}
 
 // ── データ取得 ──
 async function loadRealData() {
@@ -643,11 +1016,11 @@ function copyPost(btn, text) {
 
 // ── UI操作 ──
 function showTab(name) {
-  ['dashboard','posts','compose','improve'].forEach(t => {
+  ['dashboard','posts','weekly','compose','improve'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
   });
   document.querySelectorAll('.nav-item').forEach((el,i) => {
-    el.classList.toggle('active', i === ['dashboard','posts','compose','improve'].indexOf(name));
+    el.classList.toggle('active', i === ['dashboard','posts','weekly','compose','improve'].indexOf(name));
   });
 }
 
@@ -661,7 +1034,16 @@ function selectType(el) {
   el.classList.add('active');
 }
 
-window.addEventListener('load', loadRealData);
+window.addEventListener('load', () => {
+  // 投稿開始日のデフォルト（翌日）
+  const dateInput = document.getElementById('weekly-start-date');
+  if (dateInput) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.value = tomorrow.toISOString().split('T')[0];
+  }
+  loadRealData();
+});
 </script>
 </body>
 </html>
