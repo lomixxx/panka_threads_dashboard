@@ -6,21 +6,16 @@
 <title>PANKA — Threads Analytics</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
-:root {
-  --navy:#1E2A3A;--navy-mid:#243345;--blue:#6A7FA6;--blue-light:#A9B7C6;
-  --bg:#E6ECF3;--bg-mid:#D4DCE8;--white:#FFFFFF;--success:#4A9B7F;
-  --warning:#C49A3C;--danger:#C0544A;--text:#1E2A3A;--text-mid:#4A5568;
-  --text-light:#718096;--border:rgba(106,127,166,0.18);
-}
+:root{--navy:#1E2A3A;--blue:#6A7FA6;--blue-light:#A9B7C6;--bg:#E6ECF3;--bg-mid:#D4DCE8;--white:#FFFFFF;--success:#4A9B7F;--warning:#C49A3C;--danger:#C0544A;--text:#1E2A3A;--text-mid:#4A5568;--text-light:#718096;--border:rgba(106,127,166,0.18);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 .layout{display:flex;min-height:100vh;}
-.sidebar{width:220px;background:var(--navy);display:flex;flex-direction:column;padding:0;flex-shrink:0;position:sticky;top:0;height:100vh;}
+.sidebar{width:220px;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;}
 .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
 .logo-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
 .logo-mark{width:34px;height:34px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;color:white;}
 .logo-name{font-family:'Inter',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:1.5px;}
-.logo-sub{font-size:10px;color:var(--blue-light);letter-spacing:0.5px;}
+.logo-sub{font-size:10px;color:var(--blue-light);}
 .sidebar-nav{padding:16px 12px;flex:1;display:flex;flex-direction:column;gap:2px;}
 .nav-label{font-size:10px;color:rgba(169,183,198,0.5);letter-spacing:1px;text-transform:uppercase;padding:10px 8px 4px;font-family:'Inter',sans-serif;}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:all 0.15s;color:var(--blue-light);font-size:13px;}
@@ -37,8 +32,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .period-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-mid);transition:all 0.15s;}
 .period-btn.active{background:var(--navy);color:white;border-color:var(--navy);}
 .topbar-right{display:flex;align-items:center;gap:12px;}
-.refresh-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--navy);color:white;border:none;border-radius:7px;font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:background 0.15s;}
-.refresh-btn:hover{background:var(--blue);}
+.refresh-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--navy);color:white;border:none;border-radius:7px;font-size:12px;cursor:pointer;}
 .content{flex:1;overflow-y:auto;padding:20px 24px;}
 .ai-strip{background:var(--navy);border-radius:12px;padding:14px 18px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
 .panka-face{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
@@ -47,15 +41,14 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .ai-text{font-size:13px;color:white;line-height:1.65;}
 .ai-text strong{color:#A9D4FF;}
 .ai-actions{display:flex;gap:8px;margin-top:10px;}
-.ai-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;border:none;transition:all 0.15s;}
+.ai-btn{padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;border:none;transition:all 0.15s;}
 .ai-btn-primary{background:var(--blue);color:white;}
 .ai-btn-ghost{background:rgba(255,255,255,0.08);color:var(--blue-light);}
 .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
 .stat-card{background:var(--white);border-radius:10px;padding:14px 16px;border:1px solid var(--border);}
 .stat-label{font-size:10px;color:var(--text-light);margin-bottom:8px;font-family:'Inter',sans-serif;}
 .stat-value{font-size:24px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);line-height:1;margin-bottom:6px;}
-.stat-change{font-size:11px;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:3px;}
-.up{color:var(--success);}.down{color:var(--danger);}
+.stat-change{font-size:11px;font-family:'Inter',sans-serif;color:var(--text-light);}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .card{background:var(--white);border-radius:12px;padding:18px 20px;border:1px solid var(--border);}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
@@ -64,74 +57,54 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .icon-blue{background:rgba(106,127,166,0.12);}
 .icon-green{background:rgba(74,155,127,0.12);}
 .icon-yellow{background:rgba(196,154,60,0.12);}
-.card-meta{font-size:11px;color:var(--text-light);font-family:'Inter',sans-serif;}
+.card-meta{font-size:11px;color:var(--text-light);}
 .bar-chart{display:flex;align-items:flex-end;gap:6px;height:140px;padding-bottom:28px;}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;position:relative;}
-.bar-fill{width:100%;border-radius:4px 4px 0 0;background:var(--blue);transition:all 0.6s ease;cursor:pointer;position:relative;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative;}
+.bar-fill{width:100%;border-radius:4px 4px 0 0;background:var(--blue);cursor:pointer;position:relative;}
 .bar-fill:hover{background:var(--navy);}
 .bar-fill.highlight{background:var(--navy);}
-.bar-tooltip{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:var(--navy);color:white;font-size:10px;font-family:'Inter',sans-serif;padding:3px 7px;border-radius:4px;white-space:nowrap;display:none;z-index:10;}
 .bar-fill:hover .bar-tooltip{display:block;}
+.bar-tooltip{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:var(--navy);color:white;font-size:10px;padding:3px 7px;border-radius:4px;white-space:nowrap;display:none;z-index:10;}
 .bar-days{display:flex;gap:6px;margin-top:4px;}
 .bar-day-label{flex:1;text-align:center;font-size:9px;color:var(--text-light);font-family:'Inter',sans-serif;}
 .bar-day-label.today{color:var(--navy);font-weight:700;}
 .post-list{display:flex;flex-direction:column;gap:10px;}
-.post-item{padding:12px 14px;border-radius:9px;background:var(--bg);display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:background 0.15s;border:1px solid transparent;}
-.post-item:hover{background:rgba(106,127,166,0.1);border-color:var(--border);}
+.post-item{padding:12px 14px;border-radius:9px;background:var(--bg);display:flex;gap:14px;align-items:flex-start;border:1px solid transparent;}
 .post-item.top{border-left:3px solid var(--success);}
 .post-item.mid{border-left:3px solid var(--blue);}
 .post-item.low{border-left:3px solid var(--blue-light);}
-.post-rank{font-size:12px;font-weight:700;font-family:'Inter',sans-serif;color:var(--text-light);width:20px;flex-shrink:0;padding-top:2px;}
+.post-rank{font-size:12px;font-weight:700;color:var(--text-light);width:20px;flex-shrink:0;}
 .post-body{flex:1;}
 .post-text{font-size:12px;color:var(--text);line-height:1.6;margin-bottom:8px;}
 .post-metrics{display:flex;gap:14px;}
-.metric{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-light);font-family:'Inter',sans-serif;}
+.metric{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-light);}
 .metric-val{font-weight:600;color:var(--navy);}
-.post-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-family:'Inter',sans-serif;font-weight:600;flex-shrink:0;align-self:flex-start;}
+.post-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;flex-shrink:0;align-self:flex-start;}
 .badge-hot{background:rgba(74,155,127,0.12);color:var(--success);}
 .badge-good{background:rgba(106,127,166,0.12);color:var(--blue);}
 .badge-norm{background:rgba(169,183,198,0.15);color:var(--text-light);}
 .pattern-list{display:flex;flex-direction:column;gap:8px;}
 .pattern-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;background:var(--bg);}
-.pattern-name{flex:1;font-size:12px;color:var(--text);}
+.pattern-name{flex:1;font-size:12px;}
 .pattern-bar-wrap{width:100px;height:5px;background:var(--bg-mid);border-radius:3px;overflow:hidden;}
 .pattern-bar-fill{height:100%;border-radius:3px;background:var(--blue);}
-.pattern-score{font-size:12px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:36px;text-align:right;}
-.compose-area{display:flex;flex-direction:column;gap:12px;}
-.compose-input{width:100%;min-height:80px;padding:12px 14px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);resize:none;outline:none;transition:border-color 0.15s;}
-.compose-input:focus{border-color:var(--blue);background:white;}
-.compose-footer{display:flex;align-items:center;justify-content:space-between;}
-.compose-types{display:flex;gap:6px;flex-wrap:wrap;}
-.type-chip{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid var(--border);cursor:pointer;transition:all 0.15s;color:var(--text-mid);background:transparent;font-family:'Noto Sans JP',sans-serif;}
-.type-chip.active,.type-chip:hover{background:var(--navy);color:white;border-color:var(--navy);}
-.generate-btn{padding:8px 18px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;gap:6px;}
-.generate-btn:hover{background:var(--blue);}
-.generated-posts{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
-.gen-post{padding:12px 14px;border-radius:9px;background:var(--bg);border:1px solid var(--border);font-size:12px;line-height:1.7;position:relative;}
-.gen-post-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.gen-type{font-size:10px;font-weight:600;color:var(--blue);font-family:'Inter',sans-serif;letter-spacing:0.5px;}
-.gen-actions{display:flex;gap:6px;}
-.gen-btn{padding:3px 9px;border-radius:5px;font-size:10px;border:1px solid var(--border);cursor:pointer;background:white;color:var(--text-mid);font-family:'Noto Sans JP',sans-serif;transition:all 0.15s;}
-.gen-btn:hover{background:var(--navy);color:white;border-color:var(--navy);}
-.gen-btn.post{background:var(--navy);color:white;border-color:var(--navy);}
-.improvement-list{display:flex;flex-direction:column;gap:10px;}
-.improvement-item{padding:12px 14px;border-radius:9px;background:var(--bg);border-left:3px solid var(--blue);}
-.improvement-item.urgent{border-left-color:var(--success);}
-.imp-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.imp-desc{font-size:11px;color:var(--text-mid);line-height:1.6;}
-.imp-meta{display:flex;align-items:center;gap:8px;margin-top:8px;}
-.imp-effect{font-size:10px;padding:2px 8px;border-radius:20px;font-family:'Inter',sans-serif;font-weight:600;}
-.effect-high{background:rgba(74,155,127,0.12);color:var(--success);}
-.effect-mid{background:rgba(106,127,166,0.12);color:var(--blue);}
+.pattern-score{font-size:12px;font-weight:700;color:var(--navy);width:36px;text-align:right;}
 .loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text-light);font-size:13px;gap:8px;}
 .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.step-indicator{padding:6px 10px;border-radius:20px;font-size:11px;font-family:'Inter',sans-serif;font-weight:600;background:var(--bg);color:var(--text-light);border:1px solid var(--border);white-space:nowrap;}
+/* AI分析+投稿タブ */
+.step-indicator{padding:6px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--bg);color:var(--text-light);border:1px solid var(--border);white-space:nowrap;}
 .step-indicator.active{background:var(--navy);color:white;border-color:var(--navy);}
 .step-indicator.done{background:var(--success);color:white;border-color:var(--success);}
-.weekly-post-item{padding:14px;border-radius:9px;background:var(--bg);border:1px solid var(--border);}
+.scope-card{border:2px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all 0.2s;}
+.scope-card.selected{border-color:var(--blue);background:rgba(106,127,166,0.05);}
+.scope-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.scope-card-desc{font-size:11px;color:var(--text-mid);}
+.weekly-post-item{padding:14px;border-radius:9px;background:var(--bg);border:1px solid var(--border);margin-bottom:10px;}
 .weekly-post-item.selected{border-color:var(--blue);background:rgba(106,127,166,0.05);}
-@media(max-width:600px){.step-indicator{font-size:9px;padding:4px 6px;}.stats-row{grid-template-columns:repeat(2,1fr);}.content{padding:14px;}}
+.gen-btn{padding:3px 9px;border-radius:5px;font-size:10px;border:1px solid var(--border);cursor:pointer;background:white;color:var(--text-mid);transition:all 0.15s;}
+.gen-btn:hover,.gen-btn.post{background:var(--navy);color:white;border-color:var(--navy);}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr);}.content{padding:14px;}.grid-2{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -148,9 +121,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
       <div class="nav-label">メニュー</div>
       <div class="nav-item active" onclick="showTab('dashboard')"><span class="nav-icon">📊</span><span>ダッシュボード</span></div>
       <div class="nav-item" onclick="showTab('posts')"><span class="nav-icon">📝</span><span>投稿パフォーマンス</span></div>
-      <div class="nav-item" onclick="showTab('weekly')"><span class="nav-icon">🚀</span><span>週次自動生成</span></div>
-      <div class="nav-item" onclick="showTab('compose')"><span class="nav-icon">✨</span><span>AI投稿生成</span></div>
-      <div class="nav-item" onclick="showTab('improve')"><span class="nav-icon">🎯</span><span>改善アドバイス</span></div>
+      <div class="nav-item" onclick="showTab('ai')"><span class="nav-icon">🚀</span><span>AI分析＋投稿</span></div>
       <div class="nav-label">設定</div>
       <div class="nav-item"><span class="nav-icon">⚙️</span><span>API設定</span></div>
     </nav>
@@ -167,7 +138,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         <button class="period-btn" onclick="setPeriod(this)">30日</button>
       </div>
       <div class="topbar-right">
-        <span id="last-updated" style="font-size:11px;color:var(--text-light);font-family:'Inter',sans-serif;">最終更新：取得中...</span>
+        <span id="last-updated" style="font-size:11px;color:var(--text-light);">最終更新：取得中...</span>
         <button class="refresh-btn" onclick="loadRealData()"><span>🔄</span> データ取得</button>
       </div>
     </div>
@@ -182,30 +153,25 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
             <div class="ai-label">ぱんか AI分析</div>
             <div class="ai-text" id="ai-text">データを取得中です...</div>
             <div class="ai-actions">
-              <button class="ai-btn ai-btn-primary" onclick="showTab('compose')">✨ 次の投稿を生成する</button>
-              <button class="ai-btn ai-btn-ghost" onclick="showTab('improve')">📋 改善案を見る</button>
+              <button class="ai-btn ai-btn-primary" onclick="showTab('ai')">🚀 AI分析＋投稿を開く</button>
             </div>
           </div>
         </div>
-
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">総インプレッション</div><div class="stat-value" id="stat-imp">-</div><div class="stat-change up">Threadsデータ</div></div>
-          <div class="stat-card"><div class="stat-label">いいね数</div><div class="stat-value" id="stat-likes">-</div><div class="stat-change up">Threadsデータ</div></div>
-          <div class="stat-card"><div class="stat-label">リポスト</div><div class="stat-value" id="stat-reposts">-</div><div class="stat-change up">Threadsデータ</div></div>
-          <div class="stat-card"><div class="stat-label">フォロワー</div><div class="stat-value" id="stat-followers">-</div><div class="stat-change up">Threadsデータ</div></div>
-          <div class="stat-card"><div class="stat-label">投稿数</div><div class="stat-value" id="stat-posts">-</div><div class="stat-change up">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">総インプレッション</div><div class="stat-value" id="stat-imp">-</div><div class="stat-change">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">いいね数</div><div class="stat-value" id="stat-likes">-</div><div class="stat-change">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">リポスト</div><div class="stat-value" id="stat-reposts">-</div><div class="stat-change">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">フォロワー</div><div class="stat-value" id="stat-followers">-</div><div class="stat-change">Threadsデータ</div></div>
+          <div class="stat-card"><div class="stat-label">投稿数</div><div class="stat-value" id="stat-posts">-</div><div class="stat-change">Threadsデータ</div></div>
         </div>
-
         <div class="grid-2">
           <div class="card">
-            <div class="card-header">
-              <div class="card-title"><div class="card-icon icon-blue">📈</div>日別インプレッション</div>
-            </div>
+            <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">📈</div>日別インプレッション</div></div>
             <div class="bar-chart">
               <div class="bar-col"><div class="bar-fill" style="height:52%"><div class="bar-tooltip">月</div></div></div>
               <div class="bar-col"><div class="bar-fill" style="height:38%"><div class="bar-tooltip">火</div></div></div>
               <div class="bar-col"><div class="bar-fill" style="height:61%"><div class="bar-tooltip">水</div></div></div>
-              <div class="bar-col"><div class="bar-fill highlight" style="height:89%"><div class="bar-tooltip">木 🔥</div></div></div>
+              <div class="bar-col"><div class="bar-fill highlight" style="height:89%"><div class="bar-tooltip">木🔥</div></div></div>
               <div class="bar-col"><div class="bar-fill" style="height:74%"><div class="bar-tooltip">金</div></div></div>
               <div class="bar-col"><div class="bar-fill" style="height:45%"><div class="bar-tooltip">土</div></div></div>
               <div class="bar-col"><div class="bar-fill" style="height:37%"><div class="bar-tooltip">日</div></div></div>
@@ -215,11 +181,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
               <div class="bar-day-label today">木</div><div class="bar-day-label">金</div><div class="bar-day-label">土</div><div class="bar-day-label">日</div>
             </div>
           </div>
-
           <div class="card">
-            <div class="card-header">
-              <div class="card-title"><div class="card-icon icon-green">🎯</div>投稿タイプ別エンゲージメント率</div>
-            </div>
+            <div class="card-header"><div class="card-title"><div class="card-icon icon-green">🎯</div>投稿タイプ別エンゲージメント率</div></div>
             <div class="pattern-list">
               <div class="pattern-item"><div class="pattern-name">あるある共感型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:88%"></div></div><div class="pattern-score" style="color:var(--success)">6.8%</div></div>
               <div class="pattern-item"><div class="pattern-name">Before/After型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:72%"></div></div><div class="pattern-score">5.6%</div></div>
@@ -230,25 +193,20 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
             </div>
           </div>
         </div>
-
         <div class="card" style="margin-bottom:16px;">
-          <div class="card-header">
-            <div class="card-title"><div class="card-icon icon-blue">👥</div>フォロワー推移（30日）</div>
-            <div class="card-meta">目標：500人</div>
-          </div>
+          <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">👥</div>フォロワー推移（30日）</div><div class="card-meta">目標：500人</div></div>
           <div id="follower-graph" style="display:flex;align-items:flex-end;gap:4px;height:80px;">
-            <div style="flex:1;height:100%;display:flex;align-items:flex-end;"><div style="width:100%;height:10%;background:var(--navy);border-radius:3px 3px 0 0;"></div></div>
+            <div style="flex:1;height:10%;background:var(--navy);border-radius:3px 3px 0 0;"></div>
           </div>
-          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-light);font-family:'Inter',sans-serif;">
-            <span id="follower-start-date">-</span>
-            <span id="follower-latest">取得中</span>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-light);">
+            <span id="follower-start-date">-</span><span id="follower-latest">取得中</span>
           </div>
           <div style="margin-top:10px;background:var(--bg);border-radius:7px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;">
             <span style="font-size:11px;color:var(--text-mid);" id="follower-remaining">500人まで あと 500人</span>
             <div style="flex:1;margin:0 12px;height:5px;background:var(--bg-mid);border-radius:3px;overflow:hidden;">
               <div id="follower-progress-bar" style="width:0%;height:100%;background:var(--navy);border-radius:3px;"></div>
             </div>
-            <span id="follower-progress-pct" style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);">0%</span>
+            <span id="follower-progress-pct" style="font-size:11px;font-weight:700;color:var(--navy);">0%</span>
           </div>
         </div>
       </div>
@@ -256,228 +214,137 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
       <!-- POSTS TAB -->
       <div id="tab-posts" style="display:none;">
         <div class="card" style="margin-bottom:16px;">
-          <div class="card-header">
-            <div class="card-title"><div class="card-icon icon-blue">🏆</div>投稿パフォーマンス</div>
-            <div class="card-meta">パフォーマンス順</div>
-          </div>
-          <div class="post-list" id="post-ranking">
-            <div style="padding:20px;text-align:center;color:var(--text-light);">データ取得中...</div>
-          </div>
+          <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">🏆</div>投稿パフォーマンス</div><div class="card-meta">パフォーマンス順</div></div>
+          <div class="post-list" id="post-ranking"><div style="padding:20px;text-align:center;color:var(--text-light);">データ取得中...</div></div>
         </div>
-
         <div class="card">
-          <div class="card-header">
-            <div class="card-title"><div class="card-icon icon-yellow">⏰</div>投稿時間帯別 平均エンゲージメント率</div>
-            <div class="card-meta">AIが最適時間を推奨</div>
-          </div>
+          <div class="card-header"><div class="card-title"><div class="card-icon icon-yellow">⏰</div>投稿時間帯別エンゲージメント率</div></div>
           <div style="display:flex;gap:6px;align-items:flex-end;height:100px;">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">28%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:28%;"></div><div style="font-size:9px;color:var(--text-light);">6時</div></div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--success);">72%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--success);height:72%;"></div><div style="font-size:9px;color:var(--navy);font-weight:700;">7時</div></div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">61%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:61%;"></div><div style="font-size:9px;color:var(--text-light);">8時</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">45%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:45%;"></div><div style="font-size:9px;color:var(--text-light);">9時</div></div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">58%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:58%;"></div><div style="font-size:9px;color:var(--text-light);">12時</div></div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">52%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:52%;"></div><div style="font-size:9px;color:var(--text-light);">18時</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">35%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:35%;"></div><div style="font-size:9px;color:var(--text-light);">21時</div></div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">22%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:22%;"></div><div style="font-size:9px;color:var(--text-light);">23時</div></div>
           </div>
           <div style="margin-top:12px;padding:10px 12px;background:rgba(74,155,127,0.08);border-radius:8px;border-left:3px solid var(--success);">
             <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:3px;">✅ おすすめ投稿時間</div>
-            <div style="font-size:11px;color:var(--text-mid);">朝7時（エンゲージメント率 +72%）・朝8時・昼12時の順で効果的です。</div>
+            <div style="font-size:11px;color:var(--text-mid);">朝7時が最も効果的（エンゲージメント率+72%）</div>
           </div>
         </div>
       </div>
 
-      <!-- WEEKLY AUTO TAB -->
-      <div id="tab-weekly" style="display:none;">
+      <!-- AI分析+投稿 TAB -->
+      <div id="tab-ai" style="display:none;">
 
-        <!-- STEP進捗 -->
+        <!-- 設定カード -->
         <div class="card" style="margin-bottom:16px;">
           <div class="card-header">
-            <div class="card-title"><div class="card-icon icon-blue">🚀</div>週次自動生成</div>
-            <div class="card-meta" id="weekly-status">準備完了</div>
+            <div class="card-title"><div class="card-icon icon-blue">🚀</div>AI分析＋投稿</div>
+            <div class="card-meta" id="ai-status">準備完了</div>
           </div>
 
-          <!-- ステップ表示 -->
-          <div style="display:flex;gap:4px;margin-bottom:20px;">
-            <div class="step-indicator active" id="step-1">1.分析</div>
-            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
-            <div class="step-indicator" id="step-2">2.リサーチ</div>
-            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
-            <div class="step-indicator" id="step-3">3.改善案</div>
-            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
-            <div class="step-indicator" id="step-4">4.生成</div>
-            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
-            <div class="step-indicator" id="step-5">5.レビュー</div>
-            <div style="flex:1;height:2px;background:var(--border);margin-top:12px;"></div>
-            <div class="step-indicator" id="step-6">6.予約</div>
-          </div>
-
-          <!-- 設定エリア -->
-          <div id="weekly-settings">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-              <div>
-                <div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;">投稿開始日</div>
-                <input type="date" id="weekly-start-date"
-                  style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);">
+          <!-- 実施範囲選択 -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">① 実施範囲を選択</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+              <div class="scope-card selected" id="scope-research" onclick="selectScope('research')">
+                <div style="font-size:20px;margin-bottom:6px;">🔍</div>
+                <div class="scope-card-title">リサーチのみ</div>
+                <div class="scope-card-desc">改善案を確認して次の投稿の参考にする</div>
               </div>
+              <div class="scope-card" id="scope-generate" onclick="selectScope('generate')">
+                <div style="font-size:20px;margin-bottom:6px;">✍️</div>
+                <div class="scope-card-title">改善案＋生成</div>
+                <div class="scope-card-desc">改善案をもとに投稿文を生成する</div>
+              </div>
+              <div class="scope-card" id="scope-full" onclick="selectScope('full')">
+                <div style="font-size:20px;margin-bottom:6px;">🎯</div>
+                <div class="scope-card-title">全部（生成→予約）</div>
+                <div class="scope-card-desc">生成・レビュー・予約まで一気に実行</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 投稿数・開始日（generate/full時のみ） -->
+          <div id="post-settings" style="display:none;margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">② 投稿設定</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div>
-                <div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;">投稿頻度</div>
-                <select id="weekly-frequency"
-                  style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);">
-                  <option value="daily">毎日（7本）</option>
-                  <option value="weekday">平日のみ（5本）</option>
-                  <option value="every2">2日に1回（4本）</option>
-                  <option value="custom">AIに提案させる</option>
+                <div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;">投稿数</div>
+                <select id="post-count" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);">
+                  <option value="1">1本</option>
+                  <option value="2">2本</option>
+                  <option value="3">3本</option>
+                  <option value="4">4本</option>
+                  <option value="5">5本</option>
+                  <option value="6">6本</option>
+                  <option value="7" selected>7本</option>
                 </select>
               </div>
-            </div>
-
-            <!-- 画像アップロードエリア -->
-            <div style="margin-bottom:16px;">
-              <div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;">
-                バズ投稿のスクショ（最大10枚・任意）
-                <span style="color:var(--blue);">→ リサーチ精度が上がります</span>
+              <div>
+                <div style="font-size:11px;color:var(--text-mid);margin-bottom:6px;">投稿開始日</div>
+                <input type="date" id="post-start-date" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);">
               </div>
-              <div id="upload-area"
-                style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);"
-                onclick="document.getElementById('image-upload').click()"
-                ondragover="handleDragOver(event)"
-                ondrop="handleDrop(event)">
-                <div style="font-size:24px;margin-bottom:8px;">📸</div>
-                <div style="font-size:13px;color:var(--text-mid);">クリックまたはドラッグ＆ドロップで画像を追加</div>
-                <div style="font-size:11px;color:var(--text-light);margin-top:4px;">PNG・JPG・WEBP対応 ／ <strong>Ctrl+V でクリップボードから貼り付け可能</strong></div>
-                <input type="file" id="image-upload" multiple accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
-              </div>
-              <div id="image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
             </div>
-
-            <!-- 実行ボタン -->
-            <button id="weekly-run-btn" onclick="runWeeklyFlow()"
-              style="width:100%;padding:14px;background:var(--navy);color:white;border:none;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;font-weight:700;transition:background 0.2s;">
-              🚀 ワンボタンで7日分を自動生成する
-            </button>
           </div>
 
-          <!-- 進捗ログ -->
-          <div id="weekly-log" style="display:none;margin-top:16px;padding:14px;background:var(--bg);border-radius:9px;">
-            <div id="weekly-log-content" style="font-size:12px;color:var(--text-mid);line-height:2;"></div>
+          <!-- 画像アップロード -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">
+              バズ投稿のスクショ（任意・最大10枚）
+              <span style="font-weight:400;color:var(--blue);">→ リサーチ精度が上がります</span>
+            </div>
+            <div id="upload-area"
+              style="border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:var(--bg);"
+              onclick="document.getElementById('image-upload').click()"
+              ondragover="handleDragOver(event)"
+              ondrop="handleDrop(event)">
+              <div style="font-size:20px;margin-bottom:6px;">📸</div>
+              <div style="font-size:12px;color:var(--text-mid);">クリック・ドラッグ＆ドロップ・<strong>Ctrl+V</strong> で追加</div>
+              <input type="file" id="image-upload" multiple accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+            </div>
+            <div id="image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+          </div>
+
+          <!-- 実行ボタン -->
+          <button id="ai-run-btn" onclick="runAIFlow()"
+            style="width:100%;padding:14px;background:var(--navy);color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-weight:700;">
+            🚀 実行する
+          </button>
+        </div>
+
+        <!-- 進捗ログ -->
+        <div id="ai-log" style="display:none;margin-bottom:16px;">
+          <div class="card">
+            <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">📋</div>実行ログ</div></div>
+            <div id="ai-log-content" style="font-size:12px;color:var(--text-mid);line-height:2;max-height:200px;overflow-y:auto;"></div>
           </div>
         </div>
 
-        <!-- 生成結果エリア -->
-        <div id="weekly-result" style="display:none;">
-
-          <!-- 改善案 -->
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card-header">
-              <div class="card-title"><div class="card-icon icon-green">🎯</div>AI改善案</div>
-            </div>
-            <div id="weekly-advice-content" style="font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;padding:4px;"></div>
+        <!-- 改善案 -->
+        <div id="ai-advice-section" style="display:none;margin-bottom:16px;">
+          <div class="card">
+            <div class="card-header"><div class="card-title"><div class="card-icon icon-green">🎯</div>AI改善案</div></div>
+            <div id="ai-advice-content" style="font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;"></div>
           </div>
+        </div>
 
-          <!-- 生成された投稿一覧 -->
+        <!-- 生成された投稿 -->
+        <div id="ai-posts-section" style="display:none;">
           <div class="card" style="margin-bottom:16px;">
             <div class="card-header">
-              <div class="card-title"><div class="card-icon icon-blue">📝</div>生成された投稿（7本）</div>
+              <div class="card-title"><div class="card-icon icon-blue">📝</div>生成された投稿</div>
               <button onclick="selectAllPosts()" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;color:var(--text-mid);">全選択</button>
             </div>
-            <div id="weekly-posts-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+            <div id="ai-posts-list"></div>
           </div>
-
-          <!-- 一括予約ボタン -->
-          <button id="weekly-schedule-btn" onclick="scheduleAllPosts()"
-            style="width:100%;padding:14px;background:var(--success);color:white;border:none;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;font-weight:700;">
+          <button id="ai-schedule-btn" onclick="scheduleAllPosts()"
+            style="width:100%;padding:14px;background:var(--success);color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-weight:700;">
             📅 選択した投稿を一括予約する
           </button>
         </div>
 
-      </div>
-
-      <!-- COMPOSE TAB -->
-      <div id="tab-compose" style="display:none;">
-        <div class="card" style="margin-bottom:16px;">
-          <div class="card-header">
-            <div class="card-title"><div class="card-icon icon-blue">✨</div>AI投稿生成</div>
-          </div>
-          <div class="compose-area">
-            <div style="font-size:12px;color:var(--text-mid);margin-bottom:4px;">テーマ・伝えたいことを入力してください</div>
-            <textarea class="compose-input" id="compose-input" placeholder="例：AIで情報収集の時間を半分にした方法"></textarea>
-            <div class="compose-footer">
-              <div class="compose-types">
-                <button class="type-chip active" onclick="selectType(this)">あるある共感</button>
-                <button class="type-chip" onclick="selectType(this)">Before/After</button>
-                <button class="type-chip" onclick="selectType(this)">Tips型</button>
-                <button class="type-chip" onclick="selectType(this)">逆効果指摘</button>
-                <button class="type-chip" onclick="selectType(this)">一言刺す</button>
-              </div>
-              <button class="generate-btn" onclick="generatePosts()"><span>🐼</span> 生成する</button>
-            </div>
-          </div>
-        </div>
-        <div id="generating-loader" style="display:none;"><div class="loading"><div class="spinner"></div><span>ぱんかが分析中...</span></div></div>
-        <div id="generated-area" style="display:none;">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title"><div class="card-icon icon-green">📝</div>生成された投稿文</div>
-              <div class="card-meta">データ分析に基づく最適化済み</div>
-            </div>
-            <div class="generated-posts" id="generated-posts"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- IMPROVE TAB -->
-      <div id="tab-improve" style="display:none;">
-        <div class="card" style="margin-bottom:16px;">
-          <div class="card-header">
-            <div class="card-title"><div class="card-icon icon-green">🎯</div>改善アドバイス</div>
-            <button id="advice-btn" onclick="runAdvice()" style="padding:7px 16px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;">
-              🔍 リサーチ＋分析する
-            </button>
-          </div>
-          <div id="advice-loading" style="display:none;" class="loading">
-            <div class="spinner"></div>
-            <span>Threadsをリサーチ中...（30秒ほどかかります）</span>
-          </div>
-          <div id="advice-result" style="display:none;padding:14px;background:var(--bg);border-radius:9px;font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text);"></div>
-          <div class="improvement-list" id="advice-default">
-            <div class="improvement-item urgent">
-              <div class="imp-title">① 朝7時の投稿を毎日に増やす</div>
-              <div class="imp-desc">朝7時の投稿が他の時間帯と比較してエンゲージメント率が2.4倍高い。月〜金の朝7時、土日の朝9時を固定スケジュールにしましょう。</div>
-              <div class="imp-meta"><div class="imp-effect effect-high">効果：大</div><span style="font-size:10px;color:var(--text-light);">毎日投稿が基本</span></div>
-            </div>
-            <div class="improvement-item urgent">
-              <div class="imp-title">② 「時間をつくる」具体的な数字を入れる</div>
-              <div class="imp-desc">「○時間→△分になった」という数字入りの投稿はエンゲージメント率が3倍高い傾向があります。</div>
-              <div class="imp-meta"><div class="imp-effect effect-high">効果：大</div><span style="font-size:10px;color:var(--text-light);">週2本は数字入りにする</span></div>
-            </div>
-            <div class="improvement-item">
-              <div class="imp-title">③ 「AIで時間をつくる」軸に統一する</div>
-              <div class="imp-desc">副業・収益化の話題は今は控えめにして「AIで時間をつくる」という軸を徹底することで、フォロワーの質が上がりやすくなります。</div>
-              <div class="imp-meta"><div class="imp-effect effect-mid">効果：中</div><span style="font-size:10px;color:var(--text-light);">実績が出てから副業テーマを解禁</span></div>
-            </div>
-            <div class="improvement-item">
-              <div class="imp-title">④ あるある共感型を週2〜3本に増やす</div>
-              <div class="imp-desc">「今日も23時帰宅…」系の共感投稿は保存率・リポスト率が高い。限界会社員の日常あるあるをもっと出すとフォロワーが増えやすくなります。</div>
-              <div class="imp-meta"><div class="imp-effect effect-mid">効果：中</div><span style="font-size:10px;color:var(--text-light);">月曜と木曜に配置</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><div class="card-icon icon-yellow">📅</div>来週の投稿スケジュール案</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">月</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">あるある共感型</div><div style="font-size:12px;color:var(--text);flex:1;">今日も23時帰宅…その残業本当に全部必要ですか</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">火</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">Tips型</div><div style="font-size:12px;color:var(--text);flex:1;">この3つをAIに任せたら1日1時間浮いた</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">水</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">Before/After型</div><div style="font-size:12px;color:var(--text);flex:1;">週8時間かかっていた作業がAIで1時間になった話</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">木</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">逆効果指摘型</div><div style="font-size:12px;color:var(--text);flex:1;">AIを使っているのに時間が減らない人の特徴</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">金</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">07:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">一言刺す型</div><div style="font-size:12px;color:var(--text);flex:1;">時間がないんじゃない。つくり方を知らないだけ。</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">土</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">09:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">ストーリー型</div><div style="font-size:12px;color:var(--text);flex:1;">23時帰宅のエンジニアがAIで時間をつくるまでの話</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);width:28px;">日</div><div style="font-size:11px;font-family:'Inter',sans-serif;color:var(--blue);width:40px;">09:00</div><div style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(106,127,166,0.12);color:var(--blue);white-space:nowrap;">まとめ型</div><div style="font-size:12px;color:var(--text);flex:1;">今週AIで時間をつくった3つの方法まとめ</div><button onclick="showTab('compose')" style="font-size:10px;padding:3px 9px;border-radius:5px;background:var(--navy);color:white;border:none;cursor:pointer;white-space:nowrap;">生成する</button></div>
-          </div>
-        </div>
       </div>
 
     </div>
@@ -486,207 +353,193 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyabrGREuyI1rQ-3fQeOY-yUCoXgW4CCNtrY4x6LDHiKHxGXKzerx5SjiHBiscQzn5Yjg/exec';
-
-// ── 週次自動生成 ──
 let uploadedImages = [];
 let generatedPosts = [];
+let selectedScope = 'research';
 
-function handleImageUpload(event) {
-  const files = Array.from(event.target.files);
-  addImages(files);
-}
-
-function handleDragOver(event) {
-  event.preventDefault();
-  document.getElementById('upload-area').style.borderColor = 'var(--blue)';
-}
-
-function handleDrop(event) {
-  event.preventDefault();
-  document.getElementById('upload-area').style.borderColor = 'var(--border)';
-  const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-  addImages(files);
-}
-
-// クリップボードからペースト
-document.addEventListener('paste', function(event) {
-  // 週次自動生成タブが表示されているときだけ動作
-  const weeklyTab = document.getElementById('tab-weekly');
-  if (!weeklyTab || weeklyTab.style.display === 'none') return;
-
-  const items = Array.from(event.clipboardData.items);
-  const imageItems = items.filter(item => item.type.startsWith('image/'));
-
-  if (imageItems.length === 0) return;
-
-  const files = imageItems.map(item => item.getAsFile()).filter(Boolean);
-  addImages(files);
-
-  // 貼り付け成功のフィードバック
-  const uploadArea = document.getElementById('upload-area');
-  if (uploadArea) {
-    uploadArea.style.borderColor = 'var(--success)';
-    setTimeout(() => uploadArea.style.borderColor = 'var(--border)', 1000);
-  }
+// ── 初期化 ──
+window.addEventListener('load', () => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dateInput = document.getElementById('post-start-date');
+  if (dateInput) dateInput.value = tomorrow.toISOString().split('T')[0];
+  loadRealData();
 });
 
+// ── タブ切り替え ──
+function showTab(name) {
+  ['dashboard','posts','ai'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach((el,i) => {
+    el.classList.toggle('active', i === ['dashboard','posts','ai'].indexOf(name));
+  });
+}
+
+function setPeriod(btn) {
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── 実施範囲選択 ──
+function selectScope(scope) {
+  selectedScope = scope;
+  ['research','generate','full'].forEach(s => {
+    document.getElementById('scope-'+s).classList.toggle('selected', s===scope);
+  });
+  document.getElementById('post-settings').style.display = scope==='research'?'none':'block';
+}
+
+// ── 画像アップロード ──
+function handleImageUpload(event) { addImages(Array.from(event.target.files)); }
+function handleDragOver(event) { event.preventDefault(); }
+function handleDrop(event) {
+  event.preventDefault();
+  addImages(Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+}
+document.addEventListener('paste', function(e) {
+  const tab = document.getElementById('tab-ai');
+  if (!tab || tab.style.display === 'none') return;
+  const files = Array.from(e.clipboardData.items).filter(i => i.type.startsWith('image/')).map(i => i.getAsFile()).filter(Boolean);
+  if (files.length) addImages(files);
+});
 function addImages(files) {
   const remaining = 10 - uploadedImages.length;
   files.slice(0, remaining).forEach(file => {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedImages.push({ file, base64: e.target.result, name: file.name });
-      renderImagePreviews();
-    };
+    reader.onload = (e) => { uploadedImages.push({file, base64: e.target.result, name: file.name}); renderImagePreviews(); };
     reader.readAsDataURL(file);
   });
 }
-
 function renderImagePreviews() {
   const preview = document.getElementById('image-preview');
   if (!preview) return;
   preview.innerHTML = uploadedImages.map((img, i) => `
-    <div style="position:relative;width:80px;height:80px;">
-      <img src="${img.base64}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">
-      <button onclick="removeImage(${i})" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--danger);color:white;border:none;cursor:pointer;font-size:11px;">×</button>
+    <div style="position:relative;width:70px;height:70px;">
+      <img src="${img.base64}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">
+      <button onclick="removeImage(${i})" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--danger);color:white;border:none;cursor:pointer;font-size:10px;">×</button>
     </div>`).join('');
 }
+function removeImage(i) { uploadedImages.splice(i, 1); renderImagePreviews(); }
 
-function removeImage(index) {
-  uploadedImages.splice(index, 1);
-  renderImagePreviews();
-}
-
-function setStep(step) {
-  for (let i = 1; i <= 6; i++) {
-    const el = document.getElementById(`step-${i}`);
-    if (!el) continue;
-    if (i < step) el.className = 'step-indicator done';
-    else if (i === step) el.className = 'step-indicator active';
-    else el.className = 'step-indicator';
-  }
-}
-
-function addLog(message, type = 'info') {
-  const log = document.getElementById('weekly-log');
-  const content = document.getElementById('weekly-log-content');
+// ── ログ ──
+function addLog(msg, type='info') {
+  const log = document.getElementById('ai-log');
+  const content = document.getElementById('ai-log-content');
   if (!log || !content) return;
   log.style.display = 'block';
-  const color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--text-mid)';
-  content.innerHTML += `<div style="color:${color};">${new Date().toLocaleTimeString('ja-JP')} ${message}</div>`;
+  const color = type==='success'?'var(--success)':type==='error'?'var(--danger)':'var(--text-mid)';
+  content.innerHTML += `<div style="color:${color};">${new Date().toLocaleTimeString('ja-JP')} ${msg}</div>`;
+  content.scrollTop = content.scrollHeight;
 }
 
-async function runWeeklyFlow() {
-  const btn = document.getElementById('weekly-run-btn');
+// ── メイン実行フロー ──
+async function runAIFlow() {
+  const btn = document.getElementById('ai-run-btn');
   btn.disabled = true;
   btn.textContent = '実行中...';
-  document.getElementById('weekly-log-content').innerHTML = '';
-  document.getElementById('weekly-result').style.display = 'none';
-  document.getElementById('weekly-status').textContent = '実行中...';
+  document.getElementById('ai-log-content').innerHTML = '';
+  document.getElementById('ai-advice-section').style.display = 'none';
+  document.getElementById('ai-posts-section').style.display = 'none';
+  document.getElementById('ai-status').textContent = '実行中...';
 
   try {
-    // STEP1：インサイト分析
-    setStep(1);
-    addLog('📊 STEP1：インサイトを分析中...');
-    await new Promise(r => setTimeout(r, 500));
-    addLog('✅ インサイト分析完了', 'success');
-
-    // STEP2：画像リサーチ
-    setStep(2);
+    // STEP1：画像リサーチ（画像がある場合）
     let imageAnalysis = '';
     if (uploadedImages.length > 0) {
-      addLog(`📸 STEP2：${uploadedImages.length}枚の画像をリサーチ中...`);
+      addLog(`📸 ${uploadedImages.length}枚の画像をリサーチ中...`);
       const imageData = uploadedImages.slice(0, 5).map(img => ({
-        base64: img.base64.split(',')[1],
-        mimeType: img.file.type,
+        base64: img.base64.split(',')[1], mimeType: img.file.type,
       }));
-      const url = GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData));
       try {
-        const res = await fetch(url, { redirect: 'follow' });
+        const res = await fetch(GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData)), {redirect:'follow'});
         const data = JSON.parse(await res.text());
         imageAnalysis = data.analysis || '';
-      } catch(e) { console.error(e); }
-      addLog('✅ 画像リサーチ完了', 'success');
-    } else {
-      addLog('📸 STEP2：画像なし（スキップ）');
+        addLog('✅ 画像リサーチ完了', 'success');
+      } catch(e) { addLog('⚠️ 画像リサーチ失敗（スキップ）'); }
     }
 
-    // STEP3：改善案生成
-    setStep(3);
-    addLog('🎯 STEP3：改善案を生成中...');
+    // STEP2：改善案生成
+    addLog('🎯 改善案を生成中...');
     let advice = '';
     try {
-      const adviceUrl = GAS_URL + '?action=advice&imageAnalysis=' + encodeURIComponent(imageAnalysis.substring(0, 500));
-      const res = await fetch(adviceUrl, { redirect: 'follow' });
+      const res = await fetch(GAS_URL + '?action=advice&imageAnalysis=' + encodeURIComponent(imageAnalysis.substring(0, 500)), {redirect:'follow'});
       const data = JSON.parse(await res.text());
-      advice = data.advice || '';
-      // エラーでも詳細を表示
-      if (!advice && data.error) {
-        addLog('⚠️ 改善案エラー：' + data.error, 'error');
-        advice = '改善案の取得に失敗しました：' + data.error;
-      }
-    } catch(e) { console.error(e); }
-    addLog('✅ 改善案生成完了', 'success');
+      advice = data.advice || data.error || '';
+      addLog('✅ 改善案生成完了', 'success');
+    } catch(e) { addLog('⚠️ 改善案生成失敗', 'error'); }
 
-    // STEP4：7本投稿文生成
-    setStep(4);
-    addLog('📝 STEP4：7日分の投稿文を生成中...');
-    const startDate = document.getElementById('weekly-start-date').value;
-    const frequency = document.getElementById('weekly-frequency').value;
+    // 改善案を表示
+    document.getElementById('ai-advice-content').textContent = advice || '改善案を取得できませんでした';
+    document.getElementById('ai-advice-section').style.display = 'block';
+
+    // リサーチのみの場合はここで終了
+    if (selectedScope === 'research') {
+      document.getElementById('ai-status').textContent = '完了！';
+      addLog('🎉 リサーチ完了！', 'success');
+      btn.disabled = false;
+      btn.textContent = '🚀 実行する';
+      return;
+    }
+
+    // STEP3：投稿文生成
+    addLog('📝 投稿文を生成中...');
+    const count = document.getElementById('post-count').value;
+    const startDate = document.getElementById('post-start-date').value;
     let posts = [];
     try {
-      const url = GAS_URL + '?action=generateWeekly&startDate=' + encodeURIComponent(startDate) + '&frequency=' + frequency + '&advice=' + encodeURIComponent(advice.substring(0, 300)) + '&imageAnalysis=' + encodeURIComponent(imageAnalysis.substring(0, 300));
-      const res = await fetch(url, { redirect: 'follow' });
+      const url = GAS_URL + '?action=generateWeekly&startDate=' + encodeURIComponent(startDate) +
+        '&frequency=custom&count=' + count +
+        '&advice=' + encodeURIComponent(advice.substring(0, 300)) +
+        '&imageAnalysis=' + encodeURIComponent(imageAnalysis.substring(0, 300));
+      const res = await fetch(url, {redirect:'follow'});
       const data = JSON.parse(await res.text());
       posts = data.posts || [];
-    } catch(e) { console.error(e); }
-    addLog('✅ 投稿文生成完了', 'success');
+      addLog(`✅ ${posts.length}本の投稿文生成完了`, 'success');
+    } catch(e) { addLog('⚠️ 投稿文生成失敗', 'error'); }
 
-    // STEP5：AIレビュー
-    setStep(5);
-    addLog('🔍 STEP5：AIがレビュー中...');
-    try {
-      const url = GAS_URL + '?action=reviewPosts&posts=' + encodeURIComponent(JSON.stringify(posts)) + '&advice=' + encodeURIComponent(advice.substring(0, 200));
-      const res = await fetch(url, { redirect: 'follow' });
-      const data = JSON.parse(await res.text());
-      if (data.posts) posts = data.posts;
-    } catch(e) { console.error(e); }
-    addLog('✅ AIレビュー完了', 'success');
+    // full の場合はAIレビューも実施
+    if (selectedScope === 'full' && posts.length > 0) {
+      addLog('🔍 AIがレビュー中...');
+      try {
+        const url = GAS_URL + '?action=reviewPosts&posts=' + encodeURIComponent(JSON.stringify(posts)) + '&advice=' + encodeURIComponent(advice.substring(0, 200));
+        const res = await fetch(url, {redirect:'follow'});
+        const data = JSON.parse(await res.text());
+        if (data.posts) posts = data.posts;
+        addLog('✅ AIレビュー完了', 'success');
+      } catch(e) { addLog('⚠️ レビュー失敗（スキップ）'); }
+    }
 
-    // 結果表示
-    setStep(6);
-    document.getElementById('weekly-status').textContent = '完了！';
-    document.getElementById('weekly-advice-content').textContent = advice || '改善案を取得できませんでした';
     generatedPosts = posts;
-    renderWeeklyPosts(posts);
-    document.getElementById('weekly-result').style.display = 'block';
-    addLog('🎉 全工程完了！投稿を確認して予約してください', 'success');
+    renderPosts(posts);
+    document.getElementById('ai-posts-section').style.display = 'block';
+    document.getElementById('ai-status').textContent = '完了！';
+    addLog('🎉 全工程完了！', 'success');
 
   } catch(e) {
     addLog('❌ エラー：' + e.message, 'error');
   }
 
   btn.disabled = false;
-  btn.textContent = '🚀 ワンボタンで7日分を自動生成する';
+  btn.textContent = '🚀 実行する';
 }
 
-function renderWeeklyPosts(posts) {
-  const container = document.getElementById('weekly-posts-list');
+// ── 投稿レンダリング ──
+function renderPosts(posts) {
+  const container = document.getElementById('ai-posts-list');
   if (!container) return;
   container.innerHTML = '';
-
   posts.forEach((post, i) => {
     const el = document.createElement('div');
     el.className = 'weekly-post-item selected';
-    el.id = `weekly-post-${i}`;
+    el.id = `post-${i}`;
     const dateVal = post.datetime ? new Date(post.datetime).toISOString().slice(0,16) : getDefaultDatetime();
-
     el.innerHTML = `
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <input type="checkbox" id="check-${i}" checked style="margin-top:3px;width:16px;height:16px;cursor:pointer;" onchange="togglePostSelection(${i})">
+        <input type="checkbox" id="check-${i}" checked style="margin-top:3px;width:16px;height:16px;cursor:pointer;" onchange="togglePost(${i})">
         <div style="flex:1;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <span style="font-size:10px;font-weight:700;font-family:'Inter',sans-serif;color:var(--blue);">${post.type||''}</span>
+            <span style="font-size:10px;font-weight:700;color:var(--blue);">${post.type||''}</span>
             ${post.reviewStatus==='revised'?'<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(196,154,60,0.12);color:var(--warning);">AI修正済み</span>':''}
             ${post.reviewStatus==='ok'?'<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(74,155,127,0.12);color:var(--success);">✅ OK</span>':''}
           </div>
@@ -695,31 +548,32 @@ function renderWeeklyPosts(posts) {
       </div>
       <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border);">
         <input type="datetime-local" id="dt-${i}" value="${dateVal}" style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);flex:1;">
-        <button onclick="regenerateWeeklyPost(${i})" style="font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;white-space:nowrap;">🔄 再生成</button>
-        <button onclick="editWeeklyPost(${i})" style="font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;white-space:nowrap;">✏️ 編集</button>
+        <button class="gen-btn" onclick="regenPost(${i})">🔄 再生成</button>
+        <button class="gen-btn" onclick="editPost(${i})">✏️ 編集</button>
       </div>
       <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
         <input type="file" id="img-${i}" accept="image/*" style="display:none;" onchange="attachImage(${i}, this)">
-        <button onclick="document.getElementById('img-${i}').click()"
-          style="font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;white-space:nowrap;">🖼️ 画像を添付</button>
+        <button class="gen-btn" onclick="document.getElementById('img-${i}').click()">🖼️ 画像を添付</button>
         <span id="img-name-${i}" style="font-size:11px;color:var(--text-light);"></span>
-        <button id="img-remove-${i}" onclick="removeAttachedImage(${i})" style="display:none;font-size:11px;padding:3px 8px;border:none;border-radius:5px;background:var(--danger);color:white;cursor:pointer;">×</button>
+        <button id="img-remove-${i}" onclick="removeAttachedImage(${i})" style="display:none;font-size:10px;padding:2px 7px;border:none;border-radius:4px;background:var(--danger);color:white;cursor:pointer;">×</button>
       </div>
       ${post.imagePrompt?`
       <div style="margin-top:8px;">
-        <button onclick="var d=this.nextElementSibling;d.style.display=d.style.display==='none'?'block':'none';this.textContent=d.style.display==='block'?'🎨 プロンプトを隠す':'🎨 画像プロンプトを表示'"
+        <button onclick="var d=this.nextElementSibling;d.style.display=d.style.display==='none'?'block':'none';this.textContent=d.style.display==='block'?'🎨 隠す':'🎨 画像プロンプトを表示'"
           style="font-size:10px;padding:3px 9px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;color:var(--blue);">🎨 画像プロンプトを表示</button>
         <div style="display:none;margin-top:6px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);">
-          <div style="font-size:10px;color:var(--blue);margin-bottom:3px;">画像生成プロンプト（ChatGPT等にコピペして使用）</div>
+          <div style="font-size:10px;color:var(--blue);margin-bottom:3px;">画像生成プロンプト（ChatGPT等にコピペ）</div>
           <div style="font-size:11px;color:var(--text-mid);">${post.imagePrompt}</div>
         </div>
       </div>`:''}`;
+    // イベントリスナー
+    el.querySelector('.gen-btn:nth-of-type(1)'); // dummy
     container.appendChild(el);
   });
 }
 
-function togglePostSelection(i) {
-  const el = document.getElementById(`weekly-post-${i}`);
+function togglePost(i) {
+  const el = document.getElementById(`post-${i}`);
   const checked = document.getElementById(`check-${i}`).checked;
   el.classList.toggle('selected', checked);
 }
@@ -727,175 +581,137 @@ function togglePostSelection(i) {
 function selectAllPosts() {
   generatedPosts.forEach((_,i) => {
     const check = document.getElementById(`check-${i}`);
-    const el = document.getElementById(`weekly-post-${i}`);
+    const el = document.getElementById(`post-${i}`);
     if (check) { check.checked = true; el.classList.add('selected'); }
   });
 }
 
-async function regenerateWeeklyPost(i) {
-  const btn = event.target;
-  btn.textContent = '生成中...';
-  btn.disabled = true;
+async function regenPost(i) {
   const post = generatedPosts[i];
   const url = GAS_URL + '?action=generate&theme=' + encodeURIComponent(post.theme||'AIで時間をつくる') + '&type=' + encodeURIComponent(post.type||'あるある共感');
   try {
-    const res = await fetch(url, { redirect: 'follow' });
+    const res = await fetch(url, {redirect:'follow'});
     const data = JSON.parse(await res.text());
     if (data.success && data.text) {
       generatedPosts[i].text = data.text;
       document.getElementById(`post-text-${i}`).textContent = data.text;
     }
   } catch(e) { console.error(e); }
-  btn.textContent = '🔄 再生成';
-  btn.disabled = false;
 }
 
-function editWeeklyPost(i) {
+function editPost(i) {
   const el = document.getElementById(`post-text-${i}`);
   const text = el.textContent;
-  el.innerHTML = `<textarea style="width:100%;min-height:120px;padding:8px;border:1px solid var(--blue);border-radius:6px;font-size:12px;line-height:1.8;font-family:'Noto Sans JP',sans-serif;resize:vertical;">${text}</textarea><button onclick="saveWeeklyEdit(${i})" style="margin-top:6px;padding:5px 14px;background:var(--navy);color:white;border:none;border-radius:6px;font-size:11px;cursor:pointer;">保存</button>`;
+  el.innerHTML = `<textarea style="width:100%;min-height:100px;padding:8px;border:1px solid var(--blue);border-radius:6px;font-size:12px;line-height:1.8;resize:vertical;">${text}</textarea>
+    <button onclick="saveEdit(${i})" style="margin-top:6px;padding:4px 12px;background:var(--navy);color:white;border:none;border-radius:5px;font-size:11px;cursor:pointer;">保存</button>`;
 }
 
-function saveWeeklyEdit(i) {
-  const textarea = document.querySelector(`#post-text-${i} textarea`);
-  if (!textarea) return;
-  const newText = textarea.value;
-  generatedPosts[i].text = newText;
-  document.getElementById(`post-text-${i}`).innerHTML = newText;
+function saveEdit(i) {
+  const ta = document.querySelector(`#post-text-${i} textarea`);
+  if (!ta) return;
+  generatedPosts[i].text = ta.value;
+  document.getElementById(`post-text-${i}`).textContent = ta.value;
 }
 
-// 画像添付
-function attachImage(index, input) {
+function attachImage(i, input) {
   const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
-    if (!generatedPosts[index]) return;
-    generatedPosts[index].imageBase64 = e.target.result.split(',')[1];
-    generatedPosts[index].imageMimeType = file.type;
-    generatedPosts[index].imageName = file.name;
-    document.getElementById(`img-name-${index}`).textContent = file.name;
-    document.getElementById(`img-remove-${index}`).style.display = 'inline';
-    // プレビュー表示
-    const preview = document.createElement('img');
-    preview.src = e.target.result;
-    preview.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--border);margin-top:4px;';
-    preview.id = `img-preview-${index}`;
-    const existing = document.getElementById(`img-preview-${index}`);
-    if (existing) existing.remove();
-    document.getElementById(`img-name-${index}`).after(preview);
+    generatedPosts[i].imageBase64 = e.target.result.split(',')[1];
+    generatedPosts[i].imageMimeType = file.type;
+    document.getElementById(`img-name-${i}`).textContent = file.name;
+    document.getElementById(`img-remove-${i}`).style.display = 'inline';
   };
   reader.readAsDataURL(file);
 }
 
-// 画像削除
-function removeAttachedImage(index) {
-  if (!generatedPosts[index]) return;
-  delete generatedPosts[index].imageBase64;
-  delete generatedPosts[index].imageMimeType;
-  delete generatedPosts[index].imageName;
-  document.getElementById(`img-name-${index}`).textContent = '';
-  document.getElementById(`img-remove-${index}`).style.display = 'none';
-  document.getElementById(`img-${index}`).value = '';
-  const preview = document.getElementById(`img-preview-${index}`);
-  if (preview) preview.remove();
+function removeAttachedImage(i) {
+  delete generatedPosts[i].imageBase64;
+  delete generatedPosts[i].imageMimeType;
+  document.getElementById(`img-name-${i}`).textContent = '';
+  document.getElementById(`img-remove-${i}`).style.display = 'none';
+  document.getElementById(`img-${i}`).value = '';
 }
 
 async function scheduleAllPosts() {
-  const btn = document.getElementById('weekly-schedule-btn');
+  const btn = document.getElementById('ai-schedule-btn');
   btn.textContent = '予約中...';
   btn.disabled = true;
   let success = 0, fail = 0;
-
   for (let i = 0; i < generatedPosts.length; i++) {
     const check = document.getElementById(`check-${i}`);
     if (!check?.checked) continue;
-
     const post = generatedPosts[i];
-    const text = post.text;
     const dt = document.getElementById(`dt-${i}`)?.value;
     const datetime = dt ? new Date(dt).toISOString() : new Date().toISOString();
-
-    let url;
-    if (post.imageBase64 && post.imageMimeType) {
-      // 画像付き予約
-      url = GAS_URL + '?action=scheduleWithImage&text=' + encodeURIComponent(text) +
-        '&datetime=' + encodeURIComponent(datetime) +
-        '&imageBase64=' + encodeURIComponent(post.imageBase64) +
-        '&mimeType=' + encodeURIComponent(post.imageMimeType);
-    } else {
-      // テキストのみ予約
-      url = GAS_URL + '?action=schedule&text=' + encodeURIComponent(text) +
-        '&datetime=' + encodeURIComponent(datetime);
-    }
-
+    const action = post.imageBase64 ? 'scheduleWithImage' : 'schedule';
+    let url = GAS_URL + '?action=' + action + '&text=' + encodeURIComponent(post.text) + '&datetime=' + encodeURIComponent(datetime);
+    if (post.imageBase64) url += '&imageBase64=' + encodeURIComponent(post.imageBase64) + '&mimeType=' + encodeURIComponent(post.imageMimeType||'image/png');
     try {
-      await fetch(url, { redirect: 'follow' });
+      await fetch(url, {redirect:'follow'});
       success++;
-      const el = document.getElementById(`weekly-post-${i}`);
+      const el = document.getElementById(`post-${i}`);
       if (el) el.style.opacity = '0.5';
     } catch(e) { fail++; }
-
     await new Promise(r => setTimeout(r, 500));
   }
-
   btn.textContent = `✅ ${success}本を予約しました！${fail>0?` (${fail}本失敗)`:''}`;
   btn.style.background = 'var(--success)';
   btn.disabled = false;
 }
 
-// ── データ取得 ──
+function getDefaultDatetime() {
+  const d = new Date();
+  d.setDate(d.getDate()+1);
+  d.setHours(7,0,0,0);
+  return d.toISOString().slice(0,16);
+}
+
+// ── リアルデータ取得 ──
 async function loadRealData() {
   try {
     const res = await fetch(GAS_URL);
     const data = await res.json();
-    console.log('取得データ:', data);
     updateDashboard(data);
-    document.getElementById('last-updated').textContent = '最終更新：' + new Date().toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'});
-  } catch(e) {
-    console.log('データ取得エラー:', e);
-  }
+    document.getElementById('last-updated').textContent = '最終更新：' + new Date().toLocaleTimeString('ja-JP', {hour:'2-digit',minute:'2-digit'});
+  } catch(e) { console.log('データ取得エラー:', e); }
 }
 
 function updateDashboard(data) {
   if (!data) return;
   const posts = data.posts || [];
   const followers = data.followers || [];
-
-  const totalImp = posts.reduce((s,p) => s + (Number(p.impressions)||0), 0);
-  const totalLikes = posts.reduce((s,p) => s + (Number(p.likes)||0), 0);
-  const totalReposts = posts.reduce((s,p) => s + (Number(p.reposts)||0), 0);
-  const latestFollower = followers.length > 0 ? Number(followers[followers.length-1].count)||0 : 0;
-
+  const totalImp = posts.reduce((s,p) => s+(Number(p.impressions)||0), 0);
+  const totalLikes = posts.reduce((s,p) => s+(Number(p.likes)||0), 0);
+  const totalReposts = posts.reduce((s,p) => s+(Number(p.reposts)||0), 0);
+  const latestFollower = followers.length>0 ? Number(followers[followers.length-1].count)||0 : 0;
   document.getElementById('stat-imp').textContent = totalImp.toLocaleString();
   document.getElementById('stat-likes').textContent = totalLikes.toLocaleString();
   document.getElementById('stat-reposts').textContent = totalReposts.toLocaleString();
   document.getElementById('stat-followers').textContent = latestFollower.toLocaleString();
   document.getElementById('stat-posts').textContent = posts.length;
-
-  const topPost = posts.length > 0 ? posts.reduce((a,b) => (Number(a.impressions)||0) > (Number(b.impressions)||0) ? a : b) : null;
-  document.getElementById('ai-text').innerHTML = posts.length === 0
+  const topPost = posts.length>0 ? posts.reduce((a,b) => (Number(a.impressions)||0)>(Number(b.impressions)||0)?a:b) : null;
+  document.getElementById('ai-text').innerHTML = posts.length===0
     ? '投稿データがありません。Threadsに投稿してデータを蓄積しましょう。'
-    : `総インプレッション<strong>${totalImp.toLocaleString()}</strong>、いいね<strong>${totalLikes}</strong>、リポスト<strong>${totalReposts}</strong>。${topPost ? `最も反応が良かった投稿：「${(topPost.text||'').substring(0,25)}...」` : ''}投稿を増やしてデータを蓄積しましょう。`;
-
+    : `総インプレッション<strong>${totalImp.toLocaleString()}</strong>、いいね<strong>${totalLikes}</strong>。${topPost?`最も反応が良かった投稿：「${(topPost.text||'').substring(0,25)}...」`:''}`;
   updateFollowerGraph(followers);
   updatePostRanking(posts);
 }
 
 function updateFollowerGraph(followers) {
-  if (!followers || followers.length === 0) return;
+  if (!followers||followers.length===0) return;
   const graph = document.getElementById('follower-graph');
   const recent = followers.slice(-30);
   const max = Math.max(...recent.map(f => Number(f.count)||0), 1);
   graph.innerHTML = recent.map((f,i,arr) => {
     const h = Math.max(Math.round((Number(f.count)/max)*100), 2);
-    const isLast = i === arr.length-1;
+    const isLast = i===arr.length-1;
     return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;"><div style="width:100%;border-radius:3px 3px 0 0;background:${isLast?'var(--navy)':'var(--blue)'};height:${h}%;opacity:${isLast?1:0.6};"></div></div>`;
   }).join('');
   const latestCount = Number(followers[followers.length-1]?.count)||0;
-  const startDate = followers[0]?.date ? new Date(followers[0].date).toLocaleDateString('ja-JP') : '';
   const progress = Math.round(latestCount/500*1000)/10;
-  document.getElementById('follower-start-date').textContent = startDate;
+  document.getElementById('follower-start-date').textContent = followers[0]?.date ? new Date(followers[0].date).toLocaleDateString('ja-JP') : '';
   document.getElementById('follower-latest').textContent = `今日 ${latestCount}人`;
   document.getElementById('follower-remaining').textContent = `500人まで あと ${Math.max(500-latestCount,0)}人`;
   document.getElementById('follower-progress-bar').style.width = `${Math.min(progress,100)}%`;
@@ -905,7 +721,7 @@ function updateFollowerGraph(followers) {
 function updatePostRanking(posts) {
   const list = document.getElementById('post-ranking');
   if (!list) return;
-  if (posts.length === 0) { list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);">投稿データがありません</div>'; return; }
+  if (posts.length===0) { list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);">投稿データがありません</div>'; return; }
   const sorted = [...posts].sort((a,b) => (Number(b.impressions)||0)-(Number(a.impressions)||0));
   const classes = ['top','mid','mid','low','low'];
   list.innerHTML = sorted.slice(0,5).map((p,i) => `
@@ -917,243 +733,11 @@ function updatePostRanking(posts) {
           <div class="metric">👁 <span class="metric-val">${Number(p.impressions||0).toLocaleString()}</span></div>
           <div class="metric">❤️ <span class="metric-val">${p.likes||0}</span></div>
           <div class="metric">🔁 <span class="metric-val">${p.reposts||0}</span></div>
-          <div class="metric">💬 <span class="metric-val">${p.replies||0}</span></div>
         </div>
       </div>
       <div class="post-badge ${i===0?'badge-hot':i<3?'badge-good':'badge-norm'}">${p.engagementRate||'0%'}</div>
     </div>`).join('');
 }
-
-// ── GASリクエスト送信 ──
-async function submitToGAS(params, onSuccess, btn) {
-  const query = Object.entries(params).map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
-  const url = GAS_URL + '?' + query;
-  console.log('GAS送信URL:', url);
-  try {
-    const res = await fetch(url, {redirect:'follow'});
-    const text = await res.text();
-    console.log('GASレスポンス:', text);
-    let data;
-    try { data = JSON.parse(text); } catch(e) { console.log('JSONパースエラー（成功扱い）:', text); onSuccess(); return; }
-    if (data.success !== false) { onSuccess(); }
-    else { if(btn){btn.textContent='❌ 失敗';btn.disabled=false;} alert('エラー：'+(data.error||'不明')); }
-  } catch(e) {
-    console.log('fetchエラー（成功扱い）:', e.message);
-    onSuccess(); // CORSエラーでもGASには届いている可能性があるので成功扱い
-  }
-}
-
-// ── リサーチ＋改善アドバイス ──
-async function runAdvice() {
-  const btn = document.getElementById('advice-btn');
-  const loading = document.getElementById('advice-loading');
-  const result = document.getElementById('advice-result');
-  const defaultAdvice = document.getElementById('advice-default');
-
-  btn.disabled = true;
-  btn.textContent = '分析中...';
-  loading.style.display = 'flex';
-  result.style.display = 'none';
-  defaultAdvice.style.display = 'none';
-
-  try {
-    // 画像がアップロードされていれば先に分析
-    let imageAnalysis = '';
-    if (uploadedImages && uploadedImages.length > 0) {
-      const imageData = uploadedImages.slice(0, 5).map(img => ({
-        base64: img.base64.split(',')[1],
-        mimeType: img.file.type,
-      }));
-      try {
-        const imgUrl = GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData));
-        const imgRes = await fetch(imgUrl, { redirect: 'follow' });
-        const imgData = JSON.parse(await imgRes.text());
-        imageAnalysis = imgData.analysis || '';
-      } catch(e) { console.error('画像分析エラー:', e); }
-    }
-
-    const url = GAS_URL + '?action=advice&imageAnalysis=' + encodeURIComponent(imageAnalysis.substring(0, 500));
-    const res = await fetch(url, { redirect: 'follow' });
-    const text = await res.text();
-    console.log('アドバイス結果:', text);
-
-    let data;
-    try { data = JSON.parse(text); } catch(e) { data = null; }
-
-    loading.style.display = 'none';
-
-    if (data && data.success && data.advice) {
-      result.textContent = data.advice;
-      result.style.display = 'block';
-    } else {
-      result.textContent = 'アドバイスの取得に失敗しました。もう一度試してください。';
-      result.style.display = 'block';
-    }
-  } catch(e) {
-    loading.style.display = 'none';
-    defaultAdvice.style.display = 'block';
-    console.error('アドバイスエラー:', e);
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '🔍 リサーチ＋分析する';
-}
-
-// ── 投稿機能 ──
-function postNow(btn, text) {
-  if (!confirm('以下の内容をThreadsに今すぐ投稿しますか？\n\n' + text.substring(0,50) + '...')) return;
-  btn.textContent = '投稿中...';
-  btn.disabled = true;
-  submitToGAS({action:'postNow', text}, () => {
-    btn.textContent = '✅ 投稿済み';
-    btn.style.background = 'var(--success)';
-  }, btn);
-}
-
-function schedulePost(btn, text, datetimeId) {
-  const dtInput = document.getElementById(datetimeId);
-  if (!dtInput || !dtInput.value) { alert('日時を選択してください。'); return; }
-  const datetime = new Date(dtInput.value).toISOString();
-  if (!confirm('予約しますか？\n\n日時：' + dtInput.value + '\n\n' + text.substring(0,50) + '...')) return;
-  btn.textContent = '予約中...';
-  btn.disabled = true;
-  submitToGAS({action:'schedule', text, datetime}, () => {
-    btn.textContent = '✅ 予約済み';
-    btn.style.background = 'var(--success)';
-  }, btn);
-}
-
-// ── 投稿生成 ──
-const samplePosts = {
-  'あるある共感': [
-    {type:'あるある共感型', text:'「またAI試してみたけど、なんか使えないな…」\n\nって思ったことありませんか？\n\n私も最初はそうでした。\nでも原因は「使い方」じゃなくて「指示の粒度」でした。\n\nClaudeへの任せ方、明日また投稿します。'},
-    {type:'あるある共感型', text:'今日も23時帰宅か…\n\nってなってる人に聞きたい。\nその残業、本当に全部必要ですか？\n\n私は去年、自分の業務を書き出して気づきました。\n1日2時間、AIに任せられる作業があったことに。\n\n時間がないんじゃなくて、つくり方を知らなかっただけでした。'}
-  ],
-  'Before/After': [
-    {type:'Before/After型', text:'情報収集の時間、変わりました。\n\nBefore：毎日1〜2時間、ニュースをダラダラ読む\nAfter：週2回・15分でClaudeが要約して届く\n\n月で換算すると約25時間の差。\nその時間でこのアカウントを育てています。'},
-    {type:'Before/After型', text:'週次振り返りの話。\n\nBefore：「今週どうだったっけ…」と考えて結局やらない\nAfter：Claudeにデータを渡して5分でレポート完成\n\nやらない→やれる、に変わったのは「仕組み」があるかどうかでした。'}
-  ],
-  'Tips型': [
-    {type:'Tips型', text:'AIで変わった習慣3つ。\n\n① 朝のタスク整理：15分→3分\n② 週次振り返り：やらない→5分で完了\n③ 情報収集：ダラダラ1時間→要約15分\n\n合計で週7〜8時間が浮いた計算です。'},
-    {type:'Tips型', text:'AIに仕事を任せるときのコツ、3つ。\n\n① 「何を」より「なぜ」を伝える\n② 出力形式を最初に指定する\n③ 一度に全部頼まず、分けて依頼する\n\nこれだけで出力品質が体感3倍変わります。'}
-  ],
-  '逆効果指摘': [
-    {type:'逆効果指摘型', text:'AIで時短しようとして、逆に時間が増える人の特徴。\n\n「なんでもいいので作って」と指示する。\n\n曖昧な指示→曖昧な出力→修正に時間がかかる。\n\n結果：自分でやった方が早かった、になる。\nAIは優秀なアシスタント。指示が全てです。'},
-    {type:'逆効果指摘型', text:'「AIを使っているのに全然楽にならない」人の盲点。\n\n一番時間がかかっているのは結果の確認と修正作業。\n\n対策：最初に出力形式を指定して、確認コストを下げる。\nこれだけで体感が全然変わります。'}
-  ],
-  '一言刺す': [
-    {type:'一言刺す型', text:'時間がないんじゃない。\nつくり方を知らないだけ。'},
-    {type:'一言刺す型', text:'AIを「試したことがある」と\n「使いこなしている」の差は、\n問いの立て方だけ。'}
-  ]
-};
-
-function generatePosts() {
-  const input = document.getElementById('compose-input').value.trim();
-  const activeType = document.querySelector('.type-chip.active')?.textContent || 'あるある共感';
-
-  document.getElementById('generated-area').style.display = 'none';
-  document.getElementById('generating-loader').style.display = 'block';
-
-  const url = GAS_URL + '?action=generate&theme=' + encodeURIComponent(input || 'AIで時間をつくる方法') + '&type=' + encodeURIComponent(activeType);
-
-  fetch(url, { redirect: 'follow' })
-    .then(res => res.text())
-    .then(text => {
-      console.log('Gemini生成結果:', text);
-      let data;
-      try { data = JSON.parse(text); } catch(e) { data = null; }
-      document.getElementById('generating-loader').style.display = 'none';
-      const posts = (data && data.success && data.text)
-        ? [{ type: activeType + '型', text: data.text }]
-        : (samplePosts[activeType] || samplePosts['あるある共感']);
-      renderPosts(posts, !!(data && data.success));
-    })
-    .catch(e => {
-      console.log('Gemini取得エラー（サンプル使用）:', e);
-      document.getElementById('generating-loader').style.display = 'none';
-      renderPosts(samplePosts[activeType] || samplePosts['あるある共感'], false);
-    });
-}
-
-function renderPosts(posts, isGemini) {
-  const container = document.getElementById('generated-posts');
-  container.innerHTML = '';
-
-  posts.forEach((post, i) => {
-    const el = document.createElement('div');
-    el.className = 'gen-post';
-    const postId = 'post-' + Date.now() + '-' + i;
-    el.innerHTML = `
-      <div class="gen-post-header">
-        <div class="gen-type">${post.type} — パターン${i+1}</div>
-        <div class="gen-actions">
-          <button class="gen-btn copy-btn">コピー</button>
-          <button class="gen-btn post now-btn">今すぐ投稿</button>
-        </div>
-      </div>
-      <div style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-line;">${post.text}</div>
-      <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        <input type="datetime-local" id="${postId}-dt"
-          style="font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);"
-          value="${getDefaultDatetime()}">
-        <button class="gen-btn post schedule-btn">📅 予約する</button>
-      </div>
-      <div style="margin-top:6px;font-size:10px;color:var(--text-light);">${isGemini ? '✨ Gemini AIが生成' : '📝 サンプル投稿'}</div>`;
-
-    el.querySelector('.copy-btn').addEventListener('click', function() { copyPost(this, post.text); });
-    el.querySelector('.now-btn').addEventListener('click', function() { postNow(this, post.text); });
-    el.querySelector('.schedule-btn').addEventListener('click', function() { schedulePost(this, post.text, postId + '-dt'); });
-
-    container.appendChild(el);
-  });
-
-  document.getElementById('generated-area').style.display = 'block';
-}
-
-function getDefaultDatetime() {
-  const d = new Date();
-  d.setDate(d.getDate()+1);
-  d.setHours(7,0,0,0);
-  return d.toISOString().slice(0,16);
-}
-
-function copyPost(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'コピー済み！';
-    setTimeout(() => btn.textContent = 'コピー', 1500);
-  });
-}
-
-// ── UI操作 ──
-function showTab(name) {
-  ['dashboard','posts','weekly','compose','improve'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
-  });
-  document.querySelectorAll('.nav-item').forEach((el,i) => {
-    el.classList.toggle('active', i === ['dashboard','posts','weekly','compose','improve'].indexOf(name));
-  });
-}
-
-function setPeriod(btn) {
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-function selectType(el) {
-  document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-}
-
-window.addEventListener('load', () => {
-  // 投稿開始日のデフォルト（翌日）
-  const dateInput = document.getElementById('weekly-start-date');
-  if (dateInput) {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    dateInput.value = tomorrow.toISOString().split('T')[0];
-  }
-  loadRealData();
-});
 </script>
 </body>
 </html>
