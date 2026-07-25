@@ -692,6 +692,13 @@ function renderWeeklyPosts(posts) {
         <button onclick="regenerateWeeklyPost(${i})" style="font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;white-space:nowrap;">🔄 再生成</button>
         <button onclick="editWeeklyPost(${i})" style="font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;white-space:nowrap;">✏️ 編集</button>
       </div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+        <input type="file" id="img-${i}" accept="image/*" style="display:none;" onchange="attachImage(${i}, this)">
+        <button onclick="document.getElementById('img-${i}').click()"
+          style="font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:white;cursor:pointer;white-space:nowrap;">🖼️ 画像を添付</button>
+        <span id="img-name-${i}" style="font-size:11px;color:var(--text-light);"></span>
+        <button id="img-remove-${i}" onclick="removeAttachedImage(${i})" style="display:none;font-size:11px;padding:3px 8px;border:none;border-radius:5px;background:var(--danger);color:white;cursor:pointer;">×</button>
+      </div>
       ${post.imagePrompt?`<div style="margin-top:8px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);"><div style="font-size:10px;color:var(--blue);margin-bottom:3px;">🎨 画像生成プロンプト</div><div style="font-size:11px;color:var(--text-mid);">${post.imagePrompt}</div></div>`:''}`;
     container.appendChild(el);
   });
@@ -743,6 +750,43 @@ function saveWeeklyEdit(i) {
   document.getElementById(`post-text-${i}`).innerHTML = newText;
 }
 
+// 画像添付
+function attachImage(index, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (!generatedPosts[index]) return;
+    generatedPosts[index].imageBase64 = e.target.result.split(',')[1];
+    generatedPosts[index].imageMimeType = file.type;
+    generatedPosts[index].imageName = file.name;
+    document.getElementById(`img-name-${index}`).textContent = file.name;
+    document.getElementById(`img-remove-${index}`).style.display = 'inline';
+    // プレビュー表示
+    const preview = document.createElement('img');
+    preview.src = e.target.result;
+    preview.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--border);margin-top:4px;';
+    preview.id = `img-preview-${index}`;
+    const existing = document.getElementById(`img-preview-${index}`);
+    if (existing) existing.remove();
+    document.getElementById(`img-name-${index}`).after(preview);
+  };
+  reader.readAsDataURL(file);
+}
+
+// 画像削除
+function removeAttachedImage(index) {
+  if (!generatedPosts[index]) return;
+  delete generatedPosts[index].imageBase64;
+  delete generatedPosts[index].imageMimeType;
+  delete generatedPosts[index].imageName;
+  document.getElementById(`img-name-${index}`).textContent = '';
+  document.getElementById(`img-remove-${index}`).style.display = 'none';
+  document.getElementById(`img-${index}`).value = '';
+  const preview = document.getElementById(`img-preview-${index}`);
+  if (preview) preview.remove();
+}
+
 async function scheduleAllPosts() {
   const btn = document.getElementById('weekly-schedule-btn');
   btn.textContent = '予約中...';
@@ -752,16 +796,32 @@ async function scheduleAllPosts() {
   for (let i = 0; i < generatedPosts.length; i++) {
     const check = document.getElementById(`check-${i}`);
     if (!check?.checked) continue;
-    const text = generatedPosts[i].text;
+
+    const post = generatedPosts[i];
+    const text = post.text;
     const dt = document.getElementById(`dt-${i}`)?.value;
     const datetime = dt ? new Date(dt).toISOString() : new Date().toISOString();
-    const url = GAS_URL + '?action=schedule&text=' + encodeURIComponent(text) + '&datetime=' + encodeURIComponent(datetime);
+
+    let url;
+    if (post.imageBase64 && post.imageMimeType) {
+      // 画像付き予約
+      url = GAS_URL + '?action=scheduleWithImage&text=' + encodeURIComponent(text) +
+        '&datetime=' + encodeURIComponent(datetime) +
+        '&imageBase64=' + encodeURIComponent(post.imageBase64) +
+        '&mimeType=' + encodeURIComponent(post.imageMimeType);
+    } else {
+      // テキストのみ予約
+      url = GAS_URL + '?action=schedule&text=' + encodeURIComponent(text) +
+        '&datetime=' + encodeURIComponent(datetime);
+    }
+
     try {
       await fetch(url, { redirect: 'follow' });
       success++;
       const el = document.getElementById(`weekly-post-${i}`);
       if (el) el.style.opacity = '0.5';
     } catch(e) { fail++; }
+
     await new Promise(r => setTimeout(r, 500));
   }
 
