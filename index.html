@@ -699,7 +699,15 @@ function renderWeeklyPosts(posts) {
         <span id="img-name-${i}" style="font-size:11px;color:var(--text-light);"></span>
         <button id="img-remove-${i}" onclick="removeAttachedImage(${i})" style="display:none;font-size:11px;padding:3px 8px;border:none;border-radius:5px;background:var(--danger);color:white;cursor:pointer;">×</button>
       </div>
-      ${post.imagePrompt?`<div style="margin-top:8px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);"><div style="font-size:10px;color:var(--blue);margin-bottom:3px;">🎨 画像生成プロンプト</div><div style="font-size:11px;color:var(--text-mid);">${post.imagePrompt}</div></div>`:''}`;
+      ${post.imagePrompt?`
+      <div style="margin-top:8px;">
+        <button onclick="var d=this.nextElementSibling;d.style.display=d.style.display==='none'?'block':'none';this.textContent=d.style.display==='block'?'🎨 プロンプトを隠す':'🎨 画像プロンプトを表示'"
+          style="font-size:10px;padding:3px 9px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;color:var(--blue);">🎨 画像プロンプトを表示</button>
+        <div style="display:none;margin-top:6px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);">
+          <div style="font-size:10px;color:var(--blue);margin-bottom:3px;">画像生成プロンプト（ChatGPT等にコピペして使用）</div>
+          <div style="font-size:11px;color:var(--text-mid);">${post.imagePrompt}</div>
+        </div>
+      </div>`:''}`;
     container.appendChild(el);
   });
 }
