@@ -620,6 +620,11 @@ async function runWeeklyFlow() {
       const res = await fetch(adviceUrl, { redirect: 'follow' });
       const data = JSON.parse(await res.text());
       advice = data.advice || '';
+      // エラーでも詳細を表示
+      if (!advice && data.error) {
+        addLog('⚠️ 改善案エラー：' + data.error, 'error');
+        advice = '改善案の取得に失敗しました：' + data.error;
+      }
     } catch(e) { console.error(e); }
     addLog('✅ 改善案生成完了', 'success');
 
