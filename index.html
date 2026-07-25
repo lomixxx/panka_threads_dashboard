@@ -319,10 +319,17 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
       <div id="tab-improve" style="display:none;">
         <div class="card" style="margin-bottom:16px;">
           <div class="card-header">
-            <div class="card-title"><div class="card-icon icon-green">🎯</div>今週の改善アドバイス</div>
-            <div class="card-meta">インサイトデータ分析より</div>
+            <div class="card-title"><div class="card-icon icon-green">🎯</div>改善アドバイス</div>
+            <button id="advice-btn" onclick="runAdvice()" style="padding:7px 16px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;">
+              🔍 リサーチ＋分析する
+            </button>
           </div>
-          <div class="improvement-list">
+          <div id="advice-loading" style="display:none;" class="loading">
+            <div class="spinner"></div>
+            <span>Threadsをリサーチ中...（30秒ほどかかります）</span>
+          </div>
+          <div id="advice-result" style="display:none;padding:14px;background:var(--bg);border-radius:9px;font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text);"></div>
+          <div class="improvement-list" id="advice-default">
             <div class="improvement-item urgent">
               <div class="imp-title">① 朝7時の投稿を毎日に増やす</div>
               <div class="imp-desc">朝7時の投稿が他の時間帯と比較してエンゲージメント率が2.4倍高い。月〜金の朝7時、土日の朝9時を固定スケジュールにしましょう。</div>
@@ -330,7 +337,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
             </div>
             <div class="improvement-item urgent">
               <div class="imp-title">② 「時間をつくる」具体的な数字を入れる</div>
-              <div class="imp-desc">「○時間→△分になった」という数字入りの投稿はエンゲージメント率が3倍高い傾向があります。抽象的な表現より具体的な数字で刺しましょう。</div>
+              <div class="imp-desc">「○時間→△分になった」という数字入りの投稿はエンゲージメント率が3倍高い傾向があります。</div>
               <div class="imp-meta"><div class="imp-effect effect-high">効果：大</div><span style="font-size:10px;color:var(--text-light);">週2本は数字入りにする</span></div>
             </div>
             <div class="improvement-item">
@@ -466,6 +473,47 @@ async function submitToGAS(params, onSuccess, btn) {
     console.log('fetchエラー（成功扱い）:', e.message);
     onSuccess(); // CORSエラーでもGASには届いている可能性があるので成功扱い
   }
+}
+
+// ── リサーチ＋改善アドバイス ──
+async function runAdvice() {
+  const btn = document.getElementById('advice-btn');
+  const loading = document.getElementById('advice-loading');
+  const result = document.getElementById('advice-result');
+  const defaultAdvice = document.getElementById('advice-default');
+
+  btn.disabled = true;
+  btn.textContent = '分析中...';
+  loading.style.display = 'flex';
+  result.style.display = 'none';
+  defaultAdvice.style.display = 'none';
+
+  try {
+    const url = GAS_URL + '?action=advice';
+    const res = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+    console.log('アドバイス結果:', text);
+
+    let data;
+    try { data = JSON.parse(text); } catch(e) { data = null; }
+
+    loading.style.display = 'none';
+
+    if (data && data.success && data.advice) {
+      result.textContent = data.advice;
+      result.style.display = 'block';
+    } else {
+      result.textContent = 'アドバイスの取得に失敗しました。もう一度試してください。';
+      result.style.display = 'block';
+    }
+  } catch(e) {
+    loading.style.display = 'none';
+    defaultAdvice.style.display = 'block';
+    console.error('アドバイスエラー:', e);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '🔍 リサーチ＋分析する';
 }
 
 // ── 投稿機能 ──
