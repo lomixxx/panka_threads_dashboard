@@ -616,7 +616,8 @@ async function runWeeklyFlow() {
     addLog('🎯 STEP3：改善案を生成中...');
     let advice = '';
     try {
-      const res = await fetch(GAS_URL + '?action=advice', { redirect: 'follow' });
+      const adviceUrl = GAS_URL + '?action=advice&imageAnalysis=' + encodeURIComponent(imageAnalysis.substring(0, 500));
+      const res = await fetch(adviceUrl, { redirect: 'follow' });
       const data = JSON.parse(await res.text());
       advice = data.advice || '';
     } catch(e) { console.error(e); }
@@ -951,7 +952,22 @@ async function runAdvice() {
   defaultAdvice.style.display = 'none';
 
   try {
-    const url = GAS_URL + '?action=advice';
+    // 画像がアップロードされていれば先に分析
+    let imageAnalysis = '';
+    if (uploadedImages && uploadedImages.length > 0) {
+      const imageData = uploadedImages.slice(0, 5).map(img => ({
+        base64: img.base64.split(',')[1],
+        mimeType: img.file.type,
+      }));
+      try {
+        const imgUrl = GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData));
+        const imgRes = await fetch(imgUrl, { redirect: 'follow' });
+        const imgData = JSON.parse(await imgRes.text());
+        imageAnalysis = imgData.analysis || '';
+      } catch(e) { console.error('画像分析エラー:', e); }
+    }
+
+    const url = GAS_URL + '?action=advice&imageAnalysis=' + encodeURIComponent(imageAnalysis.substring(0, 500));
     const res = await fetch(url, { redirect: 'follow' });
     const text = await res.text();
     console.log('アドバイス結果:', text);
