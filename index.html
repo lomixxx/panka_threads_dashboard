@@ -949,11 +949,16 @@ function attachRescheduleImage(index, input) {
   const file = input.files[0];
   if (!file || !scheduledItems[index]) return;
   const reader = new FileReader();
-  reader.onload = (e) => {
-    scheduledItems[index].newImageBase64 = e.target.result.split(',')[1];
-    scheduledItems[index].newImageMimeType = file.type;
-    const name = document.getElementById(`scheduled-img-name-${index}`);
-    if (name) name.textContent = file.name;
+  reader.onload = async (e) => {
+    try {
+      const rawBase64 = e.target.result.split(',')[1];
+      scheduledItems[index].newImageBase64 = await compressImage(rawBase64, file.type);
+      scheduledItems[index].newImageMimeType = 'image/jpeg';
+      const name = document.getElementById(`scheduled-img-name-${index}`);
+      if (name) name.textContent = file.name + '（圧縮済み）';
+    } catch(err) {
+      showScheduleMessage('画像の圧縮に失敗しました：' + err.message, 'error');
+    }
   };
   reader.readAsDataURL(file);
 }
