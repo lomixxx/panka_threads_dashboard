@@ -396,6 +396,24 @@ function renderImagePreviews() {
 }
 function removeImage(i) { uploadedImages.splice(i, 1); renderImagePreviews(); }
 
+// 画像を圧縮してBase64を返す
+async function compressImage(base64, mimeType) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX = 400;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > MAX) { h = h * MAX / w; w = MAX; } }
+      else { if (h > MAX) { w = w * MAX / h; h = MAX; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.5).split(',')[1]);
+    };
+    img.src = `data:${mimeType};base64,${base64}`;
+  });
+}
+
 function addLog(msg, type='info') {
   const log = document.getElementById('ai-log');
   const content = document.getElementById('ai-log-content');
@@ -419,11 +437,14 @@ async function runAIFlow() {
     let imageAnalysis = '';
     if (uploadedImages.length > 0) {
       addLog(`📸 ${uploadedImages.length}枚の画像をリサーチ中...`);
-      const imageData = uploadedImages.slice(0, 3).map(img => ({
-        base64: img.base64.split(',')[1].substring(0, 10000),
-        mimeType: img.file.type,
-      }));
       try {
+        const compressedImages = await Promise.all(
+          uploadedImages.slice(0, 2).map(img => compressImage(img.base64.split(',')[1], img.file.type))
+        );
+        const imageData = compressedImages.map((base64, i) => ({
+          base64: base64,
+          mimeType: 'image/jpeg',
+        }));
         const url = GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData));
         const res = await fetch(url, {redirect:'follow'});
         const data = JSON.parse(await res.text());
