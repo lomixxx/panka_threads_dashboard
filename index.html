@@ -127,6 +127,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         <button class="period-btn" onclick="setPeriod(this, 30)">30日</button>
       </div>
       <div class="topbar-right">
+        <span style="font-size:11px;color:var(--text-light);">毎朝6時ごろ Threadsデータ自動取得</span>
         <span id="last-updated" style="font-size:11px;color:var(--text-light);">最終更新：取得中...</span>
         <button class="refresh-btn" onclick="loadRealData()"><span>🔄</span> データ更新</button>
       </div>
@@ -193,7 +194,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         </div>
 
         <div class="card">
-          <div class="card-header"><div class="card-title"><div class="card-icon icon-green">🎯</div>投稿タイプ別エンゲージメント率</div><div class="card-meta">毎朝6時ごろ 自動取得</div></div>
+          <div class="card-header"><div class="card-title"><div class="card-icon icon-green">🎯</div>投稿タイプ別エンゲージメント率</div></div>
           <div class="pattern-list" id="type-performance">
             <div style="padding:20px;text-align:center;color:var(--text-light);">データ取得中...</div>
           </div>
