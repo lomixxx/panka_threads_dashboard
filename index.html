@@ -110,6 +110,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
       <div class="nav-label">メニュー</div>
       <div class="nav-item active" onclick="showTab('dashboard')"><span class="nav-icon">📊</span><span>ダッシュボード</span></div>
       <div class="nav-item" onclick="showTab('ai')"><span class="nav-icon">🚀</span><span>AI分析＋投稿</span></div>
+      <div class="nav-item" onclick="showTab('schedule')"><span class="nav-icon">🗓️</span><span>予約管理</span></div>
       <div class="nav-label">設定</div>
       <div class="nav-item"><span class="nav-icon">⚙️</span><span>API設定</span></div>
     </nav>
@@ -155,18 +156,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         </div>
 
         <div class="card" id="dashboard-alert" style="display:none;border-left:3px solid var(--danger);"></div>
-
-        <div class="grid-2">
-          <div class="card" style="margin-bottom:0;">
-            <div class="card-header"><div class="card-title"><div class="card-icon icon-green">✅</div>運用ステータス</div><div class="card-meta" id="system-health">確認中</div></div>
-            <div id="sync-status-detail" style="font-size:12px;line-height:1.8;color:var(--text-mid);">データ取得中...</div>
-          </div>
-
-          <div class="card" style="margin-bottom:0;">
-            <div class="card-header"><div class="card-title"><div class="card-icon icon-yellow">🗓️</div>予約投稿</div><div class="card-meta" id="scheduled-count">確認中</div></div>
-            <div id="scheduled-posts-list" style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--text-mid);">データ取得中...</div>
-          </div>
-        </div>
 
         <div class="grid-2">
           <div class="card" style="margin-bottom:0;">
@@ -219,6 +208,23 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
             <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:3px;">✅ おすすめ投稿時間</div>
             <div id="hourly-recommendation" style="font-size:11px;color:var(--text-mid);">データ取得中...</div>
           </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><div class="card-icon icon-green">✅</div>運用ステータス</div><div class="card-meta" id="system-health">確認中</div></div>
+          <div id="sync-status-detail" style="font-size:12px;line-height:1.8;color:var(--text-mid);">データ取得中...</div>
+        </div>
+      </div>
+
+      <!-- 予約管理 -->
+      <div id="tab-schedule" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-icon icon-yellow">🗓️</div>予約投稿管理</div>
+            <div class="card-meta" id="scheduled-count">確認中</div>
+          </div>
+          <div id="scheduled-manager-message" style="display:none;margin-bottom:12px;padding:10px 12px;border-radius:8px;font-size:12px;"></div>
+          <div id="scheduled-posts-list" style="display:flex;flex-direction:column;gap:12px;font-size:12px;color:var(--text-mid);">データ取得中...</div>
         </div>
       </div>
 
@@ -329,6 +335,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbyabrGREuyI1rQ-3fQeOY-y
 let uploadedImages = [];
 let generatedPosts = [];
 let selectedScope = 'full';
+let scheduledItems = [];
 
 window.addEventListener('load', () => {
   const tomorrow = new Date();
@@ -341,11 +348,11 @@ window.addEventListener('load', () => {
 });
 
 function showTab(name) {
-  ['dashboard','ai'].forEach(t => {
+  ['dashboard','ai','schedule'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t===name?'block':'none';
   });
   document.querySelectorAll('.nav-item').forEach((el,i) => {
-    el.classList.toggle('active', i === ['dashboard','ai'].indexOf(name));
+    el.classList.toggle('active', i === ['dashboard','ai','schedule'].indexOf(name));
   });
 }
 
@@ -789,31 +796,94 @@ function updateScheduledPosts(posts) {
   const count = document.getElementById('scheduled-count');
   const list = document.getElementById('scheduled-posts-list');
   if (!count || !list) return;
-  if (!posts || posts.length === 0) {
+  scheduledItems = (posts || []).filter(p => !String(p.status || '').includes('投稿済'));
+  if (scheduledItems.length === 0) {
     count.textContent = '0件';
-    list.innerHTML = '<div style="padding:10px 0;color:var(--text-light);">予約投稿はありません</div>';
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);">管理対象の予約投稿はありません</div>';
     return;
   }
-  const now = new Date();
-  const active = posts.filter(p => String(p.status || '').includes('予約') || new Date(p.datetime) >= now);
-  count.textContent = `${active.length}件`;
-  list.innerHTML = posts
+  count.textContent = `${scheduledItems.length}件`;
+  list.innerHTML = scheduledItems
     .slice()
     .sort((a,b) => new Date(a.datetime) - new Date(b.datetime))
-    .slice(0, 5)
-    .map(p => {
+    .map((p, index) => {
       const status = p.status || '未設定';
       const isError = status.includes('エラー');
-      const isDone = status.includes('投稿済');
-      const color = isError ? 'var(--danger)' : isDone ? 'var(--success)' : 'var(--blue)';
-      return `<div style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);">
-        <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:4px;">
-          <strong style="color:var(--navy);">${formatDateTime(p.datetime)}</strong>
+      const color = isError ? 'var(--danger)' : 'var(--blue)';
+      const dt = toLocalInputValue(p.datetime);
+      const text = escapeHtml(String(p.text || ''));
+      return `<div style="padding:14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);" data-row="${p.row}">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px;">
+          <div>
+            <div style="font-size:10px;color:var(--text-light);margin-bottom:2px;">行 ${p.row}</div>
+            <strong style="color:var(--navy);">${formatDateTime(p.datetime)}</strong>
+          </div>
           <span style="color:${color};font-weight:700;">${escapeHtml(status)}</span>
         </div>
-        <div style="color:var(--text-mid);line-height:1.5;">${escapeHtml(String(p.text || '').substring(0, 90))}${String(p.text || '').length > 90 ? '...' : ''}</div>
+        <textarea id="scheduled-text-${index}" style="width:100%;min-height:88px;resize:vertical;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;line-height:1.6;color:var(--text);box-sizing:border-box;">${text}</textarea>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+          <input id="scheduled-dt-${index}" type="datetime-local" value="${dt}" style="font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;">
+          <button class="gen-btn" onclick="rescheduleItem(${index})">再予約</button>
+          <button class="gen-btn" onclick="deleteScheduledItem(${index})" style="border-color:var(--danger);color:var(--danger);">削除</button>
+          ${p.imageUrl ? '<span style="font-size:11px;color:var(--text-light);">画像あり</span>' : ''}
+        </div>
       </div>`;
     }).join('');
+}
+
+function toLocalInputValue(value) {
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return '';
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function showScheduleMessage(message, type='info') {
+  const el = document.getElementById('scheduled-manager-message');
+  if (!el) return;
+  el.style.display = message ? 'block' : 'none';
+  el.style.background = type === 'error' ? 'rgba(197,92,92,0.08)' : 'rgba(74,155,127,0.08)';
+  el.style.color = type === 'error' ? 'var(--danger)' : 'var(--success)';
+  el.textContent = message || '';
+}
+
+async function rescheduleItem(index) {
+  const item = scheduledItems[index];
+  if (!item) return;
+  const datetime = document.getElementById(`scheduled-dt-${index}`).value;
+  const text = document.getElementById(`scheduled-text-${index}`).value;
+  if (!datetime) {
+    showScheduleMessage('予約日時を入力してください', 'error');
+    return;
+  }
+  try {
+    const url = GAS_URL + '?action=rescheduleScheduled&row=' + encodeURIComponent(item.row) +
+      '&datetime=' + encodeURIComponent(new Date(datetime).toISOString()) +
+      '&text=' + encodeURIComponent(text);
+    const res = await fetch(url, {redirect:'follow'});
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || '再予約に失敗しました');
+    showScheduleMessage('再予約しました');
+    await loadRealData();
+  } catch(e) {
+    showScheduleMessage('再予約に失敗しました：' + e.message, 'error');
+  }
+}
+
+async function deleteScheduledItem(index) {
+  const item = scheduledItems[index];
+  if (!item) return;
+  if (!confirm('この予約投稿を削除しますか？')) return;
+  try {
+    const url = GAS_URL + '?action=deleteScheduled&row=' + encodeURIComponent(item.row);
+    const res = await fetch(url, {redirect:'follow'});
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || '削除に失敗しました');
+    showScheduleMessage('削除しました');
+    await loadRealData();
+  } catch(e) {
+    showScheduleMessage('削除に失敗しました：' + e.message, 'error');
+  }
 }
 
 function escapeHtml(value) {
