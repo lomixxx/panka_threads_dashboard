@@ -154,6 +154,20 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
           <div class="stat-card"><div class="stat-label">投稿数</div><div class="stat-value" id="stat-posts">-</div><div class="stat-change">Threadsデータ</div></div>
         </div>
 
+        <div class="card" id="dashboard-alert" style="display:none;border-left:3px solid var(--danger);"></div>
+
+        <div class="grid-2">
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-header"><div class="card-title"><div class="card-icon icon-green">✅</div>運用ステータス</div><div class="card-meta" id="system-health">確認中</div></div>
+            <div id="sync-status-detail" style="font-size:12px;line-height:1.8;color:var(--text-mid);">データ取得中...</div>
+          </div>
+
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-header"><div class="card-title"><div class="card-icon icon-yellow">🗓️</div>予約投稿</div><div class="card-meta" id="scheduled-count">確認中</div></div>
+            <div id="scheduled-posts-list" style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--text-mid);">データ取得中...</div>
+          </div>
+        </div>
+
         <div class="grid-2">
           <div class="card" style="margin-bottom:0;">
             <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">📈</div>日別インプレッション</div></div>
@@ -694,16 +708,25 @@ function getDefaultDatetime() {
 async function loadRealData() {
   try {
     const res = await fetch(GAS_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    if (data && data.success === false) throw new Error(data.error || 'GASデータ取得に失敗しました');
+    showDashboardError('');
     updateDashboard(data);
     document.getElementById('last-updated').textContent = '最終更新：' + new Date().toLocaleTimeString('ja-JP', {hour:'2-digit',minute:'2-digit'});
-  } catch(e) { console.log('データ取得エラー:', e); }
+  } catch(e) {
+    console.log('データ取得エラー:', e);
+    showDashboardError('データ取得に失敗しました：' + e.message);
+    document.getElementById('last-updated').textContent = '最終更新：失敗';
+  }
 }
 
 function updateDashboard(data) {
   if (!data) return;
   const posts = data.posts || [];
   const followers = data.followers || [];
+  const scheduledPosts = data.scheduledPosts || [];
+  const meta = data.meta || {};
   const totalImp = posts.reduce((s,p) => s+(Number(p.impressions)||0), 0);
   const totalLikes = posts.reduce((s,p) => s+(Number(p.likes)||0), 0);
   const totalReposts = posts.reduce((s,p) => s+(Number(p.reposts)||0), 0);
@@ -722,6 +745,79 @@ function updateDashboard(data) {
   updatePostRanking(posts);
   updateTypePerformance(posts);
   updateHourlyEngagement(posts);
+  updateOperationalStatus(meta, posts, followers, scheduledPosts);
+  updateScheduledPosts(scheduledPosts);
+}
+
+function showDashboardError(message) {
+  const alert = document.getElementById('dashboard-alert');
+  if (!alert) return;
+  if (!message) {
+    alert.style.display = 'none';
+    alert.innerHTML = '';
+    return;
+  }
+  alert.style.display = 'block';
+  alert.innerHTML = `<div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:4px;">データ取得エラー</div><div style="font-size:12px;color:var(--text-mid);">${escapeHtml(message)}</div>`;
+}
+
+function formatDateTime(value) {
+  if (!value) return '-';
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return '-';
+  return d.toLocaleString('ja-JP', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+
+function updateOperationalStatus(meta, posts, followers, scheduledPosts) {
+  const health = document.getElementById('system-health');
+  const detail = document.getElementById('sync-status-detail');
+  if (!health || !detail) return;
+  const lastFetched = meta.lastDataFetchedAt ? formatDateTime(meta.lastDataFetchedAt) : '-';
+  const generatedAt = meta.generatedAt ? formatDateTime(meta.generatedAt) : '-';
+  const hasCoreData = posts.length > 0 || followers.length > 0;
+  const failedScheduled = scheduledPosts.filter(p => String(p.status || '').includes('エラー')).length;
+  health.textContent = failedScheduled > 0 ? `要確認 ${failedScheduled}件` : hasCoreData ? '正常' : 'データ待ち';
+  health.style.color = failedScheduled > 0 ? 'var(--danger)' : hasCoreData ? 'var(--success)' : 'var(--text-light)';
+  detail.innerHTML = `
+    <div>Threadsデータ取得成功：<strong>${lastFetched}</strong></div>
+    <div>画面データ生成：${generatedAt}</div>
+    <div>投稿データ：${posts.length}件 / フォロワー履歴：${followers.length}件 / 予約投稿：${scheduledPosts.length}件</div>
+  `;
+}
+
+function updateScheduledPosts(posts) {
+  const count = document.getElementById('scheduled-count');
+  const list = document.getElementById('scheduled-posts-list');
+  if (!count || !list) return;
+  if (!posts || posts.length === 0) {
+    count.textContent = '0件';
+    list.innerHTML = '<div style="padding:10px 0;color:var(--text-light);">予約投稿はありません</div>';
+    return;
+  }
+  const now = new Date();
+  const active = posts.filter(p => String(p.status || '').includes('予約') || new Date(p.datetime) >= now);
+  count.textContent = `${active.length}件`;
+  list.innerHTML = posts
+    .slice()
+    .sort((a,b) => new Date(a.datetime) - new Date(b.datetime))
+    .slice(0, 5)
+    .map(p => {
+      const status = p.status || '未設定';
+      const isError = status.includes('エラー');
+      const isDone = status.includes('投稿済');
+      const color = isError ? 'var(--danger)' : isDone ? 'var(--success)' : 'var(--blue)';
+      return `<div style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);">
+        <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:4px;">
+          <strong style="color:var(--navy);">${formatDateTime(p.datetime)}</strong>
+          <span style="color:${color};font-weight:700;">${escapeHtml(status)}</span>
+        </div>
+        <div style="color:var(--text-mid);line-height:1.5;">${escapeHtml(String(p.text || '').substring(0, 90))}${String(p.text || '').length > 90 ? '...' : ''}</div>
+      </div>`;
+    }).join('');
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function updateDailyImpressions(posts) {
