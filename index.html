@@ -618,7 +618,10 @@ function renderPosts(posts) {
       </div>
       ${post.imagePrompt?`
       <div style="margin-top:8px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);">
-        <div style="font-size:10px;color:var(--blue);margin-bottom:3px;">画像推奨：生成プロンプト</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px;">
+          <div style="font-size:10px;color:var(--blue);">画像推奨：生成プロンプト</div>
+          <button class="gen-btn" onclick="copyText(${JSON.stringify(post.imagePrompt).replace(/"/g, '&quot;')}, this)" style="font-size:10px;padding:2px 8px;">コピー</button>
+        </div>
         <div style="font-size:11px;color:var(--text-mid);line-height:1.6;">${escapeHtml(post.imagePrompt)}</div>
       </div>`:`
       <div style="margin-top:8px;padding:8px 12px;background:rgba(120,130,145,0.08);border-radius:7px;border-left:3px solid var(--border);">
@@ -667,6 +670,25 @@ function saveEdit(i) {
   document.getElementById(`post-text-${i}`).textContent = ta.value;
 }
 
+async function copyText(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text || '');
+    if (btn) {
+      const old = btn.textContent;
+      btn.textContent = 'コピー済み';
+      setTimeout(() => btn.textContent = old, 1200);
+    }
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = text || '';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (btn) btn.textContent = 'コピー済み';
+  }
+}
+
 function attachImage(i, input) {
   const file = input.files[0];
   if (!file) return;
@@ -700,20 +722,54 @@ async function scheduleAllPosts() {
     const dt = document.getElementById(`dt-${i}`)?.value;
     const datetime = dt ? new Date(dt).toISOString() : new Date().toISOString();
     const action = post.imageBase64 ? 'scheduleWithImage' : 'schedule';
-    let url = GAS_URL + '?action=' + action + '&text=' + encodeURIComponent(post.text) + '&datetime=' + encodeURIComponent(datetime);
-    if (post.imagePrompt) url += '&imagePrompt=' + encodeURIComponent(post.imagePrompt);
-    if (post.imageBase64) url += '&imageBase64=' + encodeURIComponent(post.imageBase64) + '&mimeType=' + encodeURIComponent(post.imageMimeType||'image/png');
     try {
-      await fetch(url, {redirect:'follow'});
+      const body = new URLSearchParams({
+        action,
+        text: post.text || '',
+        datetime,
+        imagePrompt: post.imagePrompt || '',
+      });
+      if (post.imageBase64) {
+        body.set('imageBase64', post.imageBase64);
+        body.set('mimeType', post.imageMimeType || 'image/png');
+      }
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        body,
+        redirect:'follow',
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || '予約に失敗しました');
       success++;
       const el = document.getElementById(`post-${i}`);
       if (el) el.style.opacity = '0.5';
-    } catch(e) { fail++; }
+    } catch(e) {
+      fail++;
+      await saveFailedSchedule(post, datetime, e.message);
+    }
     await new Promise(r => setTimeout(r, 500));
   }
   btn.textContent = `✅ ${success}本を予約しました！${fail>0?` (${fail}本失敗)`:''}`;
   btn.style.background = 'var(--success)';
   btn.disabled = false;
+}
+
+async function saveFailedSchedule(post, datetime, error) {
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      body: new URLSearchParams({
+        action: 'scheduleFailed',
+        text: post.text || '',
+        datetime,
+        imagePrompt: post.imagePrompt || '',
+        error: error || '予約処理に失敗',
+      }),
+      redirect: 'follow',
+    });
+  } catch(e) {
+    console.error('失敗投稿の記録にも失敗:', e);
+  }
 }
 
 function getDefaultDatetime() {
@@ -849,7 +905,10 @@ function updateScheduledPosts(posts) {
         </div>
         <textarea id="scheduled-text-${index}" style="width:100%;min-height:88px;resize:vertical;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;line-height:1.6;color:var(--text);box-sizing:border-box;">${text}</textarea>
         ${p.imagePrompt ? `<div style="margin-top:8px;">
-          <div style="font-size:10px;color:var(--blue);margin-bottom:4px;">画像生成プロンプト</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">
+            <div style="font-size:10px;color:var(--blue);">画像生成プロンプト</div>
+            <button class="gen-btn" onclick="copyScheduledPrompt(${index}, this)" style="font-size:10px;padding:2px 8px;">コピー</button>
+          </div>
           <textarea id="scheduled-prompt-${index}" style="width:100%;min-height:64px;resize:vertical;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;line-height:1.6;color:var(--text);box-sizing:border-box;">${imagePrompt}</textarea>
         </div>` : `<input type="hidden" id="scheduled-prompt-${index}" value="">`}
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;">
@@ -876,6 +935,11 @@ function showScheduleMessage(message, type='info') {
   el.style.background = type === 'error' ? 'rgba(197,92,92,0.08)' : 'rgba(74,155,127,0.08)';
   el.style.color = type === 'error' ? 'var(--danger)' : 'var(--success)';
   el.textContent = message || '';
+}
+
+function copyScheduledPrompt(index, btn) {
+  const value = document.getElementById(`scheduled-prompt-${index}`)?.value || '';
+  copyText(value, btn);
 }
 
 async function rescheduleItem(index) {
