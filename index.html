@@ -753,8 +753,17 @@ function updateDailyImpressions(posts) {
 }
 
 function updateFollowerGraph(followers) {
-  if (!followers||followers.length===0) return;
   const graph = document.getElementById('follower-graph');
+  if (!graph) return;
+  if (!followers||followers.length===0) {
+    graph.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);width:100%;">フォロワーデータがありません</div>';
+    document.getElementById('follower-start-date').textContent = '-';
+    document.getElementById('follower-latest').textContent = '未取得';
+    document.getElementById('follower-remaining').textContent = '500人まで あと 500人';
+    document.getElementById('follower-progress-bar').style.width = '0%';
+    document.getElementById('follower-progress-pct').textContent = '0%';
+    return;
+  }
   const recent = followers.slice(-30);
   const max = Math.max(...recent.map(f => Number(f.count)||0), 1);
   graph.innerHTML = recent.map((f,i,arr) => {
