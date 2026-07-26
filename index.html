@@ -555,12 +555,19 @@ async function runAIFlow() {
     if (selectedScope === 'full' && posts.length > 0) {
       addLog('🔍 AIがレビュー中...');
       try {
-        const url = GAS_URL + '?action=reviewPosts&posts=' + encodeURIComponent(JSON.stringify(posts)) + '&advice=' + encodeURIComponent(advice.substring(0, 200));
-        const res = await fetch(url, {redirect:'follow'});
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          body: new URLSearchParams({
+            action: 'reviewPosts',
+            posts: JSON.stringify(posts),
+            advice: advice.substring(0, 200),
+          }),
+          redirect:'follow',
+        });
         const data = JSON.parse(await res.text());
         if (data.posts) posts = data.posts;
         addLog('✅ AIレビュー完了', 'success');
-      } catch(e) { addLog('⚠️ レビュー失敗（スキップ）'); }
+      } catch(e) { addLog('⚠️ レビュー失敗（スキップ）：' + e.message); }
     }
 
     generatedPosts = posts;
@@ -610,13 +617,9 @@ function renderPosts(posts) {
         <button id="img-remove-${i}" onclick="removeAttachedImage(${i})" style="display:none;font-size:10px;padding:2px 7px;border:none;border-radius:4px;background:var(--danger);color:white;cursor:pointer;">×</button>
       </div>
       ${post.imagePrompt?`
-      <div style="margin-top:8px;">
-        <button onclick="var d=this.nextElementSibling;d.style.display=d.style.display==='none'?'block':'none';this.textContent=d.style.display==='block'?'🎨 隠す':'🎨 画像プロンプトを表示'"
-          style="font-size:10px;padding:3px 9px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;color:var(--blue);">🎨 画像プロンプトを表示</button>
-        <div style="display:none;margin-top:6px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);">
-          <div style="font-size:10px;color:var(--blue);margin-bottom:3px;">画像生成プロンプト（ChatGPT等にコピペ）</div>
-          <div style="font-size:11px;color:var(--text-mid);">${post.imagePrompt}</div>
-        </div>
+      <div style="margin-top:8px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);">
+        <div style="font-size:10px;color:var(--blue);margin-bottom:3px;">画像推奨：生成プロンプト</div>
+        <div style="font-size:11px;color:var(--text-mid);line-height:1.6;">${escapeHtml(post.imagePrompt)}</div>
       </div>`:''}`;
     container.appendChild(el);
   });
@@ -695,6 +698,7 @@ async function scheduleAllPosts() {
     const datetime = dt ? new Date(dt).toISOString() : new Date().toISOString();
     const action = post.imageBase64 ? 'scheduleWithImage' : 'schedule';
     let url = GAS_URL + '?action=' + action + '&text=' + encodeURIComponent(post.text) + '&datetime=' + encodeURIComponent(datetime);
+    if (post.imagePrompt) url += '&imagePrompt=' + encodeURIComponent(post.imagePrompt);
     if (post.imageBase64) url += '&imageBase64=' + encodeURIComponent(post.imageBase64) + '&mimeType=' + encodeURIComponent(post.imageMimeType||'image/png');
     try {
       await fetch(url, {redirect:'follow'});
@@ -831,6 +835,7 @@ function updateScheduledPosts(posts) {
       const color = isError ? 'var(--danger)' : 'var(--blue)';
       const dt = toLocalInputValue(p.datetime);
       const text = escapeHtml(String(p.text || ''));
+      const imagePrompt = escapeHtml(String(p.imagePrompt || ''));
       return `<div style="padding:14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);" data-row="${p.row}">
         <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px;">
           <div>
@@ -840,6 +845,10 @@ function updateScheduledPosts(posts) {
           <span style="color:${color};font-weight:700;">${escapeHtml(status)}</span>
         </div>
         <textarea id="scheduled-text-${index}" style="width:100%;min-height:88px;resize:vertical;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;line-height:1.6;color:var(--text);box-sizing:border-box;">${text}</textarea>
+        ${p.imagePrompt ? `<div style="margin-top:8px;">
+          <div style="font-size:10px;color:var(--blue);margin-bottom:4px;">画像生成プロンプト</div>
+          <textarea id="scheduled-prompt-${index}" style="width:100%;min-height:64px;resize:vertical;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;line-height:1.6;color:var(--text);box-sizing:border-box;">${imagePrompt}</textarea>
+        </div>` : `<input type="hidden" id="scheduled-prompt-${index}" value="">`}
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;">
           <input id="scheduled-dt-${index}" type="datetime-local" value="${dt}" style="font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;">
           <button class="gen-btn" onclick="rescheduleItem(${index})">再予約</button>
@@ -871,6 +880,7 @@ async function rescheduleItem(index) {
   if (!item) return;
   const datetime = document.getElementById(`scheduled-dt-${index}`).value;
   const text = document.getElementById(`scheduled-text-${index}`).value;
+  const imagePrompt = document.getElementById(`scheduled-prompt-${index}`)?.value || '';
   if (!datetime) {
     showScheduleMessage('予約日時を入力してください', 'error');
     return;
@@ -878,7 +888,8 @@ async function rescheduleItem(index) {
   try {
     const url = GAS_URL + '?action=rescheduleScheduled&row=' + encodeURIComponent(item.row) +
       '&datetime=' + encodeURIComponent(new Date(datetime).toISOString()) +
-      '&text=' + encodeURIComponent(text);
+      '&text=' + encodeURIComponent(text) +
+      '&imagePrompt=' + encodeURIComponent(imagePrompt);
     const res = await fetch(url, {redirect:'follow'});
     const data = await res.json();
     if (!data.success) throw new Error(data.error || '再予約に失敗しました');
