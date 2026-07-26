@@ -127,9 +127,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         <button class="period-btn" onclick="setPeriod(this, 30)">30日</button>
       </div>
       <div class="topbar-right">
-        <span style="font-size:11px;color:var(--text-light);">毎朝6時ごろ Threadsデータ自動取得</span>
         <span id="threads-updated" style="font-size:11px;color:var(--text-light);">Threads最終取得：取得中...</span>
-        <button class="refresh-btn" id="fetch-threads-btn" onclick="fetchThreadsLatest()"><span>🔄</span> Threads最新取得</button>
       </div>
     </div>
 
@@ -793,30 +791,6 @@ async function loadRealData() {
   } catch(e) {
     console.log('データ取得エラー:', e);
     showDashboardError('データ取得に失敗しました：' + e.message);
-  }
-}
-
-async function fetchThreadsLatest() {
-  const btn = document.getElementById('fetch-threads-btn');
-  const oldText = btn ? btn.innerHTML : '';
-  try {
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = '<span>🔄</span> 取得中...';
-    }
-    showDashboardError('');
-    const res = await fetch(GAS_URL + '?action=fetchInsights', {redirect:'follow'});
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!data.success) throw new Error(data.error || 'Threads最新取得に失敗しました');
-    await loadRealData();
-  } catch(e) {
-    showDashboardError('Threads最新取得に失敗しました：' + e.message);
-  } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = oldText;
-    }
   }
 }
 
