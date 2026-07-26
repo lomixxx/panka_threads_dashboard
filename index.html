@@ -29,35 +29,34 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .topbar-left{display:flex;align-items:center;gap:8px;}
-.period-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-mid);transition:all 0.15s;}
+.period-btn{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-mid);transition:all 0.15s;}
 .period-btn.active{background:var(--navy);color:white;border-color:var(--navy);}
 .topbar-right{display:flex;align-items:center;gap:12px;}
 .refresh-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--navy);color:white;border:none;border-radius:7px;font-size:12px;cursor:pointer;}
 .content{flex:1;overflow-y:auto;padding:20px 24px;}
-.ai-strip{background:var(--navy);border-radius:12px;padding:14px 18px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
+.ai-strip{background:var(--navy);border-radius:12px;padding:14px 18px;display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;}
 .panka-face{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .ai-body{flex:1;}
-.ai-label{font-size:9px;font-family:'Inter',sans-serif;color:var(--blue-light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+.ai-label{font-size:9px;color:var(--blue-light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
 .ai-text{font-size:13px;color:white;line-height:1.65;}
 .ai-text strong{color:#A9D4FF;}
 .ai-actions{display:flex;gap:8px;margin-top:10px;}
-.ai-btn{padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;border:none;transition:all 0.15s;}
+.ai-btn{padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;border:none;}
 .ai-btn-primary{background:var(--blue);color:white;}
-.ai-btn-ghost{background:rgba(255,255,255,0.08);color:var(--blue-light);}
-.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
 .stat-card{background:var(--white);border-radius:10px;padding:14px 16px;border:1px solid var(--border);}
-.stat-label{font-size:10px;color:var(--text-light);margin-bottom:8px;font-family:'Inter',sans-serif;}
-.stat-value{font-size:24px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);line-height:1;margin-bottom:6px;}
-.stat-change{font-size:11px;font-family:'Inter',sans-serif;color:var(--text-light);}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.card{background:var(--white);border-radius:12px;padding:18px 20px;border:1px solid var(--border);}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.stat-label{font-size:10px;color:var(--text-light);margin-bottom:8px;}
+.stat-value{font-size:24px;font-weight:700;font-family:'Inter',sans-serif;color:var(--navy);line-height:1;margin-bottom:4px;}
+.stat-change{font-size:11px;color:var(--text-light);}
+.card{background:var(--white);border-radius:12px;padding:18px 20px;border:1px solid var(--border);margin-bottom:16px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .card-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:7px;}
 .card-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;}
 .icon-blue{background:rgba(106,127,166,0.12);}
 .icon-green{background:rgba(74,155,127,0.12);}
 .icon-yellow{background:rgba(196,154,60,0.12);}
 .card-meta{font-size:11px;color:var(--text-light);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .bar-chart{display:flex;align-items:flex-end;gap:6px;height:140px;padding-bottom:28px;}
 .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative;}
 .bar-fill{width:100%;border-radius:4px 4px 0 0;background:var(--blue);cursor:pointer;position:relative;}
@@ -85,42 +84,31 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .badge-norm{background:rgba(169,183,198,0.15);color:var(--text-light);}
 .pattern-list{display:flex;flex-direction:column;gap:8px;}
 .pattern-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;background:var(--bg);}
-.pattern-name{flex:1;font-size:12px;}
-.pattern-bar-wrap{width:100px;height:5px;background:var(--bg-mid);border-radius:3px;overflow:hidden;}
+.pattern-name{flex:1;font-size:12px;color:var(--text);}
+.pattern-bar-wrap{width:120px;height:5px;background:var(--bg-mid);border-radius:3px;overflow:hidden;}
 .pattern-bar-fill{height:100%;border-radius:3px;background:var(--blue);}
-.pattern-score{font-size:12px;font-weight:700;color:var(--navy);width:36px;text-align:right;}
-.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text-light);font-size:13px;gap:8px;}
-.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-/* AI分析+投稿タブ */
-.step-indicator{padding:6px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--bg);color:var(--text-light);border:1px solid var(--border);white-space:nowrap;}
-.step-indicator.active{background:var(--navy);color:white;border-color:var(--navy);}
-.step-indicator.done{background:var(--success);color:white;border-color:var(--success);}
+.pattern-score{font-size:12px;font-weight:700;color:var(--navy);width:40px;text-align:right;}
+/* AI分析タブ */
 .scope-card{border:2px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all 0.2s;}
 .scope-card.selected{border-color:var(--blue);background:rgba(106,127,166,0.05);}
 .scope-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;}
 .scope-card-desc{font-size:11px;color:var(--text-mid);}
-.weekly-post-item{padding:14px;border-radius:9px;background:var(--bg);border:1px solid var(--border);margin-bottom:10px;}
+.weekly-post-item{padding:14px;border-radius:9px;background:var(--bg);border:2px solid transparent;margin-bottom:10px;}
 .weekly-post-item.selected{border-color:var(--blue);background:rgba(106,127,166,0.05);}
-.gen-btn{padding:3px 9px;border-radius:5px;font-size:10px;border:1px solid var(--border);cursor:pointer;background:white;color:var(--text-mid);transition:all 0.15s;}
-.gen-btn:hover,.gen-btn.post{background:var(--navy);color:white;border-color:var(--navy);}
-@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr);}.content{padding:14px;}.grid-2{grid-template-columns:1fr;}}
+.gen-btn{padding:4px 10px;border-radius:5px;font-size:10px;border:1px solid var(--border);cursor:pointer;background:white;color:var(--text-mid);}
+.gen-btn:hover{background:var(--navy);color:white;border-color:var(--navy);}
 </style>
 </head>
 <body>
 <div class="layout">
   <div class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-row">
-        <div class="logo-mark">PA</div>
-        <span class="logo-name">PANKA</span>
-      </div>
+      <div class="logo-row"><div class="logo-mark">PA</div><span class="logo-name">PANKA</span></div>
       <div class="logo-sub">Threads Analytics</div>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-label">メニュー</div>
       <div class="nav-item active" onclick="showTab('dashboard')"><span class="nav-icon">📊</span><span>ダッシュボード</span></div>
-      <div class="nav-item" onclick="showTab('posts')"><span class="nav-icon">📝</span><span>投稿パフォーマンス</span></div>
       <div class="nav-item" onclick="showTab('ai')"><span class="nav-icon">🚀</span><span>AI分析＋投稿</span></div>
       <div class="nav-label">設定</div>
       <div class="nav-item"><span class="nav-icon">⚙️</span><span>API設定</span></div>
@@ -145,7 +133,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 
     <div class="content">
 
-      <!-- DASHBOARD -->
+      <!-- ダッシュボード -->
       <div id="tab-dashboard">
         <div class="ai-strip">
           <div class="panka-face">🐼</div>
@@ -157,6 +145,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
             </div>
           </div>
         </div>
+
         <div class="stats-row">
           <div class="stat-card"><div class="stat-label">総インプレッション</div><div class="stat-value" id="stat-imp">-</div><div class="stat-change">Threadsデータ</div></div>
           <div class="stat-card"><div class="stat-label">いいね数</div><div class="stat-value" id="stat-likes">-</div><div class="stat-change">Threadsデータ</div></div>
@@ -164,8 +153,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
           <div class="stat-card"><div class="stat-label">フォロワー</div><div class="stat-value" id="stat-followers">-</div><div class="stat-change">Threadsデータ</div></div>
           <div class="stat-card"><div class="stat-label">投稿数</div><div class="stat-value" id="stat-posts">-</div><div class="stat-change">Threadsデータ</div></div>
         </div>
+
         <div class="grid-2">
-          <div class="card">
+          <div class="card" style="margin-bottom:0;">
             <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">📈</div>日別インプレッション</div></div>
             <div class="bar-chart">
               <div class="bar-col"><div class="bar-fill" style="height:52%"><div class="bar-tooltip">月</div></div></div>
@@ -181,44 +171,44 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
               <div class="bar-day-label today">木</div><div class="bar-day-label">金</div><div class="bar-day-label">土</div><div class="bar-day-label">日</div>
             </div>
           </div>
-          <div class="card">
-            <div class="card-header"><div class="card-title"><div class="card-icon icon-green">🎯</div>投稿タイプ別エンゲージメント率</div></div>
-            <div class="pattern-list">
-              <div class="pattern-item"><div class="pattern-name">あるある共感型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:88%"></div></div><div class="pattern-score" style="color:var(--success)">6.8%</div></div>
-              <div class="pattern-item"><div class="pattern-name">Before/After型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:72%"></div></div><div class="pattern-score">5.6%</div></div>
-              <div class="pattern-item"><div class="pattern-name">Tips型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:64%"></div></div><div class="pattern-score">4.9%</div></div>
-              <div class="pattern-item"><div class="pattern-name">逆効果指摘型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:55%"></div></div><div class="pattern-score">4.3%</div></div>
-              <div class="pattern-item"><div class="pattern-name">ストーリー型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:42%"></div></div><div class="pattern-score">3.2%</div></div>
-              <div class="pattern-item"><div class="pattern-name">一言刺す型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:35%"></div></div><div class="pattern-score">2.7%</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="card" style="margin-bottom:16px;">
-          <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">👥</div>フォロワー推移（30日）</div><div class="card-meta">目標：500人</div></div>
-          <div id="follower-graph" style="display:flex;align-items:flex-end;gap:4px;height:80px;">
-            <div style="flex:1;height:10%;background:var(--navy);border-radius:3px 3px 0 0;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-light);">
-            <span id="follower-start-date">-</span><span id="follower-latest">取得中</span>
-          </div>
-          <div style="margin-top:10px;background:var(--bg);border-radius:7px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;color:var(--text-mid);" id="follower-remaining">500人まで あと 500人</span>
-            <div style="flex:1;margin:0 12px;height:5px;background:var(--bg-mid);border-radius:3px;overflow:hidden;">
-              <div id="follower-progress-bar" style="width:0%;height:100%;background:var(--navy);border-radius:3px;"></div>
-            </div>
-            <span id="follower-progress-pct" style="font-size:11px;font-weight:700;color:var(--navy);">0%</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- POSTS TAB -->
-      <div id="tab-posts" style="display:none;">
-        <div class="card" style="margin-bottom:16px;">
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">👥</div>フォロワー推移（30日）</div><div class="card-meta">目標：500人</div></div>
+            <div id="follower-graph" style="display:flex;align-items:flex-end;gap:4px;height:100px;">
+              <div style="flex:1;height:10%;background:var(--navy);border-radius:3px 3px 0 0;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-light);">
+              <span id="follower-start-date">-</span><span id="follower-latest">取得中</span>
+            </div>
+            <div style="margin-top:8px;background:var(--bg);border-radius:7px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:11px;color:var(--text-mid);" id="follower-remaining">500人まで あと 500人</span>
+              <div style="flex:1;margin:0 12px;height:5px;background:var(--bg-mid);border-radius:3px;overflow:hidden;">
+                <div id="follower-progress-bar" style="width:0%;height:100%;background:var(--navy);border-radius:3px;"></div>
+              </div>
+              <span id="follower-progress-pct" style="font-size:11px;font-weight:700;color:var(--navy);">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
           <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">🏆</div>投稿パフォーマンス</div><div class="card-meta">パフォーマンス順</div></div>
           <div class="post-list" id="post-ranking"><div style="padding:20px;text-align:center;color:var(--text-light);">データ取得中...</div></div>
         </div>
+
         <div class="card">
-          <div class="card-header"><div class="card-title"><div class="card-icon icon-yellow">⏰</div>投稿時間帯別エンゲージメント率</div></div>
+          <div class="card-header"><div class="card-title"><div class="card-icon icon-green">🎯</div>投稿タイプ別エンゲージメント率</div><div class="card-meta">毎朝6時 自動更新</div></div>
+          <div class="pattern-list" id="type-performance">
+            <div class="pattern-item"><div class="pattern-name">あるある共感型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:88%"></div></div><div class="pattern-score" style="color:var(--success)">6.8%</div></div>
+            <div class="pattern-item"><div class="pattern-name">Before/After型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:72%"></div></div><div class="pattern-score">5.6%</div></div>
+            <div class="pattern-item"><div class="pattern-name">Tips型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:64%"></div></div><div class="pattern-score">4.9%</div></div>
+            <div class="pattern-item"><div class="pattern-name">逆効果指摘型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:55%"></div></div><div class="pattern-score">4.3%</div></div>
+            <div class="pattern-item"><div class="pattern-name">AIニュース型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:48%"></div></div><div class="pattern-score">3.7%</div></div>
+            <div class="pattern-item"><div class="pattern-name">一言刺す型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:35%"></div></div><div class="pattern-score">2.7%</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><div class="card-icon icon-yellow">⏰</div>時間帯別エンゲージメント率</div><div class="card-meta">AIが最適時間を推奨</div></div>
           <div style="display:flex;gap:6px;align-items:flex-end;height:100px;">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">28%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:28%;"></div><div style="font-size:9px;color:var(--text-light);">6時</div></div>
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--success);">72%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--success);height:72%;"></div><div style="font-size:9px;color:var(--navy);font-weight:700;">7時</div></div>
@@ -234,39 +224,30 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         </div>
       </div>
 
-      <!-- AI分析+投稿 TAB -->
+      <!-- AI分析+投稿 -->
       <div id="tab-ai" style="display:none;">
-
-        <!-- 設定カード -->
         <div class="card" style="margin-bottom:16px;">
           <div class="card-header">
             <div class="card-title"><div class="card-icon icon-blue">🚀</div>AI分析＋投稿</div>
             <div class="card-meta" id="ai-status">準備完了</div>
           </div>
 
-          <!-- 実施範囲選択 -->
           <div style="margin-bottom:20px;">
             <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">① 実施範囲を選択</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-              <div class="scope-card selected" id="scope-research" onclick="selectScope('research')">
-                <div style="font-size:20px;margin-bottom:6px;">🔍</div>
-                <div class="scope-card-title">リサーチのみ</div>
-                <div class="scope-card-desc">改善案を確認して次の投稿の参考にする</div>
-              </div>
-              <div class="scope-card" id="scope-generate" onclick="selectScope('generate')">
-                <div style="font-size:20px;margin-bottom:6px;">✍️</div>
-                <div class="scope-card-title">改善案＋生成</div>
-                <div class="scope-card-desc">改善案をもとに投稿文を生成する</div>
-              </div>
-              <div class="scope-card" id="scope-full" onclick="selectScope('full')">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="scope-card selected" id="scope-full" onclick="selectScope('full')">
                 <div style="font-size:20px;margin-bottom:6px;">🎯</div>
                 <div class="scope-card-title">全部（生成→予約）</div>
                 <div class="scope-card-desc">生成・レビュー・予約まで一気に実行</div>
               </div>
+              <div class="scope-card" id="scope-research" onclick="selectScope('research')">
+                <div style="font-size:20px;margin-bottom:6px;">🔍</div>
+                <div class="scope-card-title">リサーチのみ</div>
+                <div class="scope-card-desc">改善案を確認して次の投稿の参考にする</div>
+              </div>
             </div>
           </div>
 
-          <!-- 投稿数・開始日（generate/full時のみ） -->
           <div id="post-settings" style="display:none;margin-bottom:20px;">
             <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;">② 投稿設定</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -289,7 +270,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
             </div>
           </div>
 
-          <!-- 画像アップロード -->
           <div style="margin-bottom:20px;">
             <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">
               バズ投稿のスクショ（任意・最大10枚）
@@ -307,22 +287,19 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
             <div id="image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
           </div>
 
-          <!-- 実行ボタン -->
           <button id="ai-run-btn" onclick="runAIFlow()"
             style="width:100%;padding:14px;background:var(--navy);color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-weight:700;">
             🚀 実行する
           </button>
         </div>
 
-        <!-- 進捗ログ -->
         <div id="ai-log" style="display:none;margin-bottom:16px;">
           <div class="card">
             <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">📋</div>実行ログ</div></div>
-            <div id="ai-log-content" style="font-size:12px;color:var(--text-mid);line-height:2;max-height:200px;overflow-y:auto;"></div>
+            <div id="ai-log-content" style="font-size:12px;color:var(--text-mid);line-height:2;max-height:180px;overflow-y:auto;"></div>
           </div>
         </div>
 
-        <!-- 改善案 -->
         <div id="ai-advice-section" style="display:none;margin-bottom:16px;">
           <div class="card">
             <div class="card-header"><div class="card-title"><div class="card-icon icon-green">🎯</div>AI改善案</div></div>
@@ -330,7 +307,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
           </div>
         </div>
 
-        <!-- 生成された投稿 -->
         <div id="ai-posts-section" style="display:none;">
           <div class="card" style="margin-bottom:16px;">
             <div class="card-header">
@@ -344,7 +320,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
             📅 選択した投稿を一括予約する
           </button>
         </div>
-
       </div>
 
     </div>
@@ -355,24 +330,24 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyabrGREuyI1rQ-3fQeOY-yUCoXgW4CCNtrY4x6LDHiKHxGXKzerx5SjiHBiscQzn5Yjg/exec';
 let uploadedImages = [];
 let generatedPosts = [];
-let selectedScope = 'research';
+let selectedScope = 'full';
 
-// ── 初期化 ──
 window.addEventListener('load', () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const dateInput = document.getElementById('post-start-date');
-  if (dateInput) dateInput.value = tomorrow.toISOString().split('T')[0];
+  const di = document.getElementById('post-start-date');
+  if (di) di.value = tomorrow.toISOString().split('T')[0];
+  // デフォルトはfull（投稿設定を表示）
+  document.getElementById('post-settings').style.display = 'block';
   loadRealData();
 });
 
-// ── タブ切り替え ──
 function showTab(name) {
-  ['dashboard','posts','ai'].forEach(t => {
+  ['dashboard','ai'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t===name?'block':'none';
   });
   document.querySelectorAll('.nav-item').forEach((el,i) => {
-    el.classList.toggle('active', i === ['dashboard','posts','ai'].indexOf(name));
+    el.classList.toggle('active', i === ['dashboard','ai'].indexOf(name));
   });
 }
 
@@ -381,21 +356,20 @@ function setPeriod(btn) {
   btn.classList.add('active');
 }
 
-// ── 実施範囲選択 ──
 function selectScope(scope) {
   selectedScope = scope;
-  ['research','generate','full'].forEach(s => {
-    document.getElementById('scope-'+s).classList.toggle('selected', s===scope);
+  ['full','research'].forEach(s => {
+    const el = document.getElementById('scope-'+s);
+    if (el) el.classList.toggle('selected', s===scope);
   });
   document.getElementById('post-settings').style.display = scope==='research'?'none':'block';
 }
 
-// ── 画像アップロード ──
-function handleImageUpload(event) { addImages(Array.from(event.target.files)); }
-function handleDragOver(event) { event.preventDefault(); }
-function handleDrop(event) {
-  event.preventDefault();
-  addImages(Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+function handleImageUpload(e) { addImages(Array.from(e.target.files)); }
+function handleDragOver(e) { e.preventDefault(); }
+function handleDrop(e) {
+  e.preventDefault();
+  addImages(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
 }
 document.addEventListener('paste', function(e) {
   const tab = document.getElementById('tab-ai');
@@ -422,7 +396,6 @@ function renderImagePreviews() {
 }
 function removeImage(i) { uploadedImages.splice(i, 1); renderImagePreviews(); }
 
-// ── ログ ──
 function addLog(msg, type='info') {
   const log = document.getElementById('ai-log');
   const content = document.getElementById('ai-log-content');
@@ -433,7 +406,6 @@ function addLog(msg, type='info') {
   content.scrollTop = content.scrollHeight;
 }
 
-// ── メイン実行フロー ──
 async function runAIFlow() {
   const btn = document.getElementById('ai-run-btn');
   btn.disabled = true;
@@ -444,22 +416,21 @@ async function runAIFlow() {
   document.getElementById('ai-status').textContent = '実行中...';
 
   try {
-    // STEP1：画像リサーチ（画像がある場合）
     let imageAnalysis = '';
     if (uploadedImages.length > 0) {
       addLog(`📸 ${uploadedImages.length}枚の画像をリサーチ中...`);
-      const imageData = uploadedImages.slice(0, 5).map(img => ({
-        base64: img.base64.split(',')[1], mimeType: img.file.type,
-      }));
+      const imageData = uploadedImages.slice(0, 5).map(img => ({base64: img.base64.split(',')[1], mimeType: img.file.type}));
       try {
-        const res = await fetch(GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData)), {redirect:'follow'});
+        const formData = new FormData();
+        formData.append('action', 'analyzeImages');
+        formData.append('data', JSON.stringify(imageData));
+        const res = await fetch(GAS_URL, {method:'POST', body:formData, redirect:'follow'});
         const data = JSON.parse(await res.text());
         imageAnalysis = data.analysis || '';
         addLog('✅ 画像リサーチ完了', 'success');
       } catch(e) { addLog('⚠️ 画像リサーチ失敗（スキップ）'); }
     }
 
-    // STEP2：改善案生成
     addLog('🎯 改善案を生成中...');
     let advice = '';
     try {
@@ -469,11 +440,9 @@ async function runAIFlow() {
       addLog('✅ 改善案生成完了', 'success');
     } catch(e) { addLog('⚠️ 改善案生成失敗', 'error'); }
 
-    // 改善案を表示
     document.getElementById('ai-advice-content').textContent = advice || '改善案を取得できませんでした';
     document.getElementById('ai-advice-section').style.display = 'block';
 
-    // リサーチのみの場合はここで終了
     if (selectedScope === 'research') {
       document.getElementById('ai-status').textContent = '完了！';
       addLog('🎉 リサーチ完了！', 'success');
@@ -482,7 +451,6 @@ async function runAIFlow() {
       return;
     }
 
-    // STEP3：投稿文生成
     addLog('📝 投稿文を生成中...');
     const count = document.getElementById('post-count').value;
     const startDate = document.getElementById('post-start-date').value;
@@ -498,7 +466,6 @@ async function runAIFlow() {
       addLog(`✅ ${posts.length}本の投稿文生成完了`, 'success');
     } catch(e) { addLog('⚠️ 投稿文生成失敗', 'error'); }
 
-    // full の場合はAIレビューも実施
     if (selectedScope === 'full' && posts.length > 0) {
       addLog('🔍 AIがレビュー中...');
       try {
@@ -524,7 +491,6 @@ async function runAIFlow() {
   btn.textContent = '🚀 実行する';
 }
 
-// ── 投稿レンダリング ──
 function renderPosts(posts) {
   const container = document.getElementById('ai-posts-list');
   if (!container) return;
@@ -566,16 +532,12 @@ function renderPosts(posts) {
           <div style="font-size:11px;color:var(--text-mid);">${post.imagePrompt}</div>
         </div>
       </div>`:''}`;
-    // イベントリスナー
-    el.querySelector('.gen-btn:nth-of-type(1)'); // dummy
     container.appendChild(el);
   });
 }
 
 function togglePost(i) {
-  const el = document.getElementById(`post-${i}`);
-  const checked = document.getElementById(`check-${i}`).checked;
-  el.classList.toggle('selected', checked);
+  document.getElementById(`post-${i}`).classList.toggle('selected', document.getElementById(`check-${i}`).checked);
 }
 
 function selectAllPosts() {
@@ -668,7 +630,6 @@ function getDefaultDatetime() {
   return d.toISOString().slice(0,16);
 }
 
-// ── リアルデータ取得 ──
 async function loadRealData() {
   try {
     const res = await fetch(GAS_URL);
@@ -697,6 +658,7 @@ function updateDashboard(data) {
     : `総インプレッション<strong>${totalImp.toLocaleString()}</strong>、いいね<strong>${totalLikes}</strong>。${topPost?`最も反応が良かった投稿：「${(topPost.text||'').substring(0,25)}...」`:''}`;
   updateFollowerGraph(followers);
   updatePostRanking(posts);
+  updateTypePerformance(posts);
 }
 
 function updateFollowerGraph(followers) {
@@ -707,7 +669,7 @@ function updateFollowerGraph(followers) {
   graph.innerHTML = recent.map((f,i,arr) => {
     const h = Math.max(Math.round((Number(f.count)/max)*100), 2);
     const isLast = i===arr.length-1;
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;"><div style="width:100%;border-radius:3px 3px 0 0;background:${isLast?'var(--navy)':'var(--blue)'};height:${h}%;opacity:${isLast?1:0.6};"></div></div>`;
+    return `<div style="flex:1;display:flex;align-items:flex-end;height:100%;"><div style="width:100%;border-radius:3px 3px 0 0;background:${isLast?'var(--navy)':'var(--blue)'};height:${h}%;opacity:${isLast?1:0.6};"></div></div>`;
   }).join('');
   const latestCount = Number(followers[followers.length-1]?.count)||0;
   const progress = Math.round(latestCount/500*1000)/10;
@@ -736,6 +698,30 @@ function updatePostRanking(posts) {
         </div>
       </div>
       <div class="post-badge ${i===0?'badge-hot':i<3?'badge-good':'badge-norm'}">${p.engagementRate||'0%'}</div>
+    </div>`).join('');
+}
+
+function updateTypePerformance(posts) {
+  if (!posts||posts.length===0) return;
+  const typeMap = {};
+  posts.forEach(p => {
+    const type = p.type||'その他';
+    if (!typeMap[type]) typeMap[type] = {total:0, count:0};
+    typeMap[type].total += parseFloat(p.engagementRate)||0;
+    typeMap[type].count++;
+  });
+  const typeData = Object.entries(typeMap)
+    .map(([type,d]) => ({type, avg: Math.round(d.total/d.count*10)/10}))
+    .sort((a,b) => b.avg-a.avg);
+  if (typeData.length < 2) return;
+  const maxVal = typeData[0].avg || 1;
+  const container = document.getElementById('type-performance');
+  if (!container) return;
+  container.innerHTML = typeData.map(d => `
+    <div class="pattern-item">
+      <div class="pattern-name">${d.type}</div>
+      <div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:${Math.round(d.avg/maxVal*100)}%"></div></div>
+      <div class="pattern-score">${d.avg}%</div>
     </div>`).join('');
 }
 </script>
