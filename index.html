@@ -913,6 +913,9 @@ function updateScheduledPosts(posts) {
         </div>` : `<input type="hidden" id="scheduled-prompt-${index}" value="">`}
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;">
           <input id="scheduled-dt-${index}" type="datetime-local" value="${dt}" style="font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;">
+          <input type="file" id="scheduled-img-${index}" accept="image/*" style="display:none;" onchange="attachRescheduleImage(${index}, this)">
+          <button class="gen-btn" onclick="document.getElementById('scheduled-img-${index}').click()">画像を添付</button>
+          <span id="scheduled-img-name-${index}" style="font-size:11px;color:var(--text-light);">${p.imageUrl ? '既存画像あり' : ''}</span>
           <button class="gen-btn" onclick="rescheduleItem(${index})">再予約</button>
           <button class="gen-btn" onclick="deleteScheduledItem(${index})" style="border-color:var(--danger);color:var(--danger);">削除</button>
           ${p.imageUrl ? '<span style="font-size:11px;color:var(--text-light);">画像あり</span>' : ''}
@@ -942,6 +945,19 @@ function copyScheduledPrompt(index, btn) {
   copyText(value, btn);
 }
 
+function attachRescheduleImage(index, input) {
+  const file = input.files[0];
+  if (!file || !scheduledItems[index]) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    scheduledItems[index].newImageBase64 = e.target.result.split(',')[1];
+    scheduledItems[index].newImageMimeType = file.type;
+    const name = document.getElementById(`scheduled-img-name-${index}`);
+    if (name) name.textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
 async function rescheduleItem(index) {
   const item = scheduledItems[index];
   if (!item) return;
@@ -953,11 +969,22 @@ async function rescheduleItem(index) {
     return;
   }
   try {
-    const url = GAS_URL + '?action=rescheduleScheduled&row=' + encodeURIComponent(item.row) +
-      '&datetime=' + encodeURIComponent(new Date(datetime).toISOString()) +
-      '&text=' + encodeURIComponent(text) +
-      '&imagePrompt=' + encodeURIComponent(imagePrompt);
-    const res = await fetch(url, {redirect:'follow'});
+    const body = new URLSearchParams({
+      action: 'rescheduleScheduled',
+      row: item.row,
+      datetime: new Date(datetime).toISOString(),
+      text,
+      imagePrompt,
+    });
+    if (item.newImageBase64) {
+      body.set('imageBase64', item.newImageBase64);
+      body.set('mimeType', item.newImageMimeType || 'image/png');
+    }
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body,
+      redirect:'follow',
+    });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || '再予約に失敗しました');
     showScheduleMessage('再予約しました');
