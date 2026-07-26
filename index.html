@@ -473,35 +473,34 @@ async function runAIFlow() {
   try {
     let imageAnalysis = '';
     if (uploadedImages.length > 0) {
-      addLog(`📸 ${uploadedImages.length}枚の画像をアップロード中...`);
+      addLog(`📸 ${uploadedImages.length}枚の画像を圧縮・分析中...`);
       try {
-        // GASのAPIキーを取得するためにGASに問い合わせ
-        const keyRes = await fetch(GAS_URL + '?action=getApiKey', {redirect:'follow'});
-        const keyData = JSON.parse(await keyRes.text());
-        const apiKey = keyData.key || '';
-
-        if (!apiKey) throw new Error('APIキー取得失敗');
-
-        // Gemini File APIに画像をアップロード
-        const fileUris = [];
+        // APIキーをブラウザへ渡さず、圧縮した画像データだけをGASへ送って分析する
+        const imageData = [];
         for (const img of uploadedImages.slice(0, 3)) {
-          const uri = await uploadImageToGemini(img.base64.split(',')[1], img.file.type, apiKey);
-          if (uri) fileUris.push({ uri, mimeType: img.file.type });
+          const base64 = img.base64.split(',')[1];
+          const compressed = await compressImage(base64, img.file.type);
+          imageData.push({ base64: compressed, mimeType: 'image/jpeg' });
         }
 
-        if (fileUris.length === 0) throw new Error('アップロード失敗');
+        if (imageData.length === 0) throw new Error('画像データ作成失敗');
 
-        addLog(`✅ ${fileUris.length}枚アップロード完了。分析中...`);
+        addLog(`✅ ${imageData.length}枚をGASへ送信中...`);
 
-        // GASにfileUrisだけ渡して分析
-        const url = GAS_URL + '?action=analyzeByUri&uris=' + encodeURIComponent(JSON.stringify(fileUris));
-        const res = await fetch(url, {redirect:'follow'});
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          body: new URLSearchParams({
+            action: 'analyzeImages',
+            data: JSON.stringify(imageData),
+          }),
+          redirect: 'follow',
+        });
         const data = JSON.parse(await res.text());
         imageAnalysis = data.analysis || '';
         if (imageAnalysis) {
           addLog('✅ 画像リサーチ完了', 'success');
         } else {
-          addLog('⚠️ 画像リサーチ結果なし（スキップ）');
+          addLog('⚠️ 画像リサーチ結果なし（スキップ）' + (data.error ? '：' + data.error : ''));
         }
       } catch(e) {
         console.error('画像リサーチエラー:', e);
