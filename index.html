@@ -419,15 +419,20 @@ async function runAIFlow() {
     let imageAnalysis = '';
     if (uploadedImages.length > 0) {
       addLog(`📸 ${uploadedImages.length}枚の画像をリサーチ中...`);
-      const imageData = uploadedImages.slice(0, 5).map(img => ({base64: img.base64.split(',')[1], mimeType: img.file.type}));
+      const imageData = uploadedImages.slice(0, 3).map(img => ({
+        base64: img.base64.split(',')[1].substring(0, 10000),
+        mimeType: img.file.type,
+      }));
       try {
-        const formData = new FormData();
-        formData.append('action', 'analyzeImages');
-        formData.append('data', JSON.stringify(imageData));
-        const res = await fetch(GAS_URL, {method:'POST', body:formData, redirect:'follow'});
+        const url = GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData));
+        const res = await fetch(url, {redirect:'follow'});
         const data = JSON.parse(await res.text());
         imageAnalysis = data.analysis || '';
-        addLog('✅ 画像リサーチ完了', 'success');
+        if (imageAnalysis) {
+          addLog('✅ 画像リサーチ完了', 'success');
+        } else {
+          addLog('⚠️ 画像リサーチ結果なし（スキップ）');
+        }
       } catch(e) { addLog('⚠️ 画像リサーチ失敗（スキップ）'); }
     }
 
