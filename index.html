@@ -620,7 +620,10 @@ function renderPosts(posts) {
       <div style="margin-top:8px;padding:8px 12px;background:rgba(106,127,166,0.08);border-radius:7px;border-left:3px solid var(--blue);">
         <div style="font-size:10px;color:var(--blue);margin-bottom:3px;">画像推奨：生成プロンプト</div>
         <div style="font-size:11px;color:var(--text-mid);line-height:1.6;">${escapeHtml(post.imagePrompt)}</div>
-      </div>`:''}`;
+      </div>`:`
+      <div style="margin-top:8px;padding:8px 12px;background:rgba(120,130,145,0.08);border-radius:7px;border-left:3px solid var(--border);">
+        <div style="font-size:10px;color:var(--text-light);font-weight:700;">画像なし（AI判断）</div>
+      </div>`}`;
     container.appendChild(el);
   });
 }
