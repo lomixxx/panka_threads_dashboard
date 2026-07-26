@@ -157,14 +157,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         <div class="grid-2">
           <div class="card" style="margin-bottom:0;">
             <div class="card-header"><div class="card-title"><div class="card-icon icon-blue">📈</div>日別インプレッション</div></div>
-            <div class="bar-chart">
-              <div class="bar-col"><div class="bar-fill" style="height:52%"><div class="bar-tooltip">月</div></div></div>
-              <div class="bar-col"><div class="bar-fill" style="height:38%"><div class="bar-tooltip">火</div></div></div>
-              <div class="bar-col"><div class="bar-fill" style="height:61%"><div class="bar-tooltip">水</div></div></div>
-              <div class="bar-col"><div class="bar-fill highlight" style="height:89%"><div class="bar-tooltip">木🔥</div></div></div>
-              <div class="bar-col"><div class="bar-fill" style="height:74%"><div class="bar-tooltip">金</div></div></div>
-              <div class="bar-col"><div class="bar-fill" style="height:45%"><div class="bar-tooltip">土</div></div></div>
-              <div class="bar-col"><div class="bar-fill" style="height:37%"><div class="bar-tooltip">日</div></div></div>
+            <div class="bar-chart" id="daily-impressions">
+              <div style="padding:20px;text-align:center;color:var(--text-light);width:100%;">データ取得中...</div>
             </div>
             <div class="bar-days">
               <div class="bar-day-label">月</div><div class="bar-day-label">火</div><div class="bar-day-label">水</div>
@@ -198,28 +192,18 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
         <div class="card">
           <div class="card-header"><div class="card-title"><div class="card-icon icon-green">🎯</div>投稿タイプ別エンゲージメント率</div><div class="card-meta">毎朝6時 自動更新</div></div>
           <div class="pattern-list" id="type-performance">
-            <div class="pattern-item"><div class="pattern-name">あるある共感型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:88%"></div></div><div class="pattern-score" style="color:var(--success)">6.8%</div></div>
-            <div class="pattern-item"><div class="pattern-name">Before/After型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:72%"></div></div><div class="pattern-score">5.6%</div></div>
-            <div class="pattern-item"><div class="pattern-name">Tips型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:64%"></div></div><div class="pattern-score">4.9%</div></div>
-            <div class="pattern-item"><div class="pattern-name">逆効果指摘型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:55%"></div></div><div class="pattern-score">4.3%</div></div>
-            <div class="pattern-item"><div class="pattern-name">AIニュース型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:48%"></div></div><div class="pattern-score">3.7%</div></div>
-            <div class="pattern-item"><div class="pattern-name">一言刺す型</div><div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:35%"></div></div><div class="pattern-score">2.7%</div></div>
+            <div style="padding:20px;text-align:center;color:var(--text-light);">データ取得中...</div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header"><div class="card-title"><div class="card-icon icon-yellow">⏰</div>時間帯別エンゲージメント率</div><div class="card-meta">AIが最適時間を推奨</div></div>
-          <div style="display:flex;gap:6px;align-items:flex-end;height:100px;">
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">28%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:28%;"></div><div style="font-size:9px;color:var(--text-light);">6時</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--success);">72%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--success);height:72%;"></div><div style="font-size:9px;color:var(--navy);font-weight:700;">7時</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">61%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:61%;"></div><div style="font-size:9px;color:var(--text-light);">8時</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">58%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:58%;"></div><div style="font-size:9px;color:var(--text-light);">12時</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">52%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue);height:52%;"></div><div style="font-size:9px;color:var(--text-light);">18時</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:var(--text-light);">22%</div><div style="width:100%;border-radius:3px 3px 0 0;background:var(--blue-light);height:22%;"></div><div style="font-size:9px;color:var(--text-light);">23時</div></div>
+          <div id="hourly-engagement" style="display:flex;gap:6px;align-items:flex-end;height:100px;">
+            <div style="padding:20px;text-align:center;color:var(--text-light);width:100%;">データ取得中...</div>
           </div>
           <div style="margin-top:12px;padding:10px 12px;background:rgba(74,155,127,0.08);border-radius:8px;border-left:3px solid var(--success);">
             <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:3px;">✅ おすすめ投稿時間</div>
-            <div style="font-size:11px;color:var(--text-mid);">朝7時が最も効果的（エンゲージメント率+72%）</div>
+            <div id="hourly-recommendation" style="font-size:11px;color:var(--text-mid);">データ取得中...</div>
           </div>
         </div>
       </div>
@@ -734,8 +718,38 @@ function updateDashboard(data) {
     ? '投稿データがありません。Threadsに投稿してデータを蓄積しましょう。'
     : `総インプレッション<strong>${totalImp.toLocaleString()}</strong>、いいね<strong>${totalLikes}</strong>。${topPost?`最も反応が良かった投稿：「${(topPost.text||'').substring(0,25)}...」`:''}`;
   updateFollowerGraph(followers);
+  updateDailyImpressions(posts);
   updatePostRanking(posts);
   updateTypePerformance(posts);
+  updateHourlyEngagement(posts);
+}
+
+function updateDailyImpressions(posts) {
+  const graph = document.getElementById('daily-impressions');
+  if (!graph) return;
+  if (!posts || posts.length === 0) {
+    graph.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);width:100%;">投稿データがありません</div>';
+    return;
+  }
+
+  const labels = ['日','月','火','水','木','金','土'];
+  const totals = [0,0,0,0,0,0,0];
+  posts.forEach(p => {
+    const d = new Date(p.date);
+    if (isNaN(d.getTime())) return;
+    totals[d.getDay()] += Number(p.impressions) || 0;
+  });
+
+  const max = Math.max(...totals, 1);
+  const today = new Date().getDay();
+  const order = [1,2,3,4,5,6,0];
+  graph.innerHTML = order.map(day => {
+    const value = totals[day];
+    const h = value > 0 ? Math.max(Math.round(value / max * 100), 3) : 2;
+    const highlight = day === today ? ' highlight' : '';
+    const label = labels[day] + (day === today ? '🔥' : '');
+    return `<div class="bar-col"><div class="bar-fill${highlight}" style="height:${h}%"><div class="bar-tooltip">${label}<br>${value.toLocaleString()}</div></div></div>`;
+  }).join('');
 }
 
 function updateFollowerGraph(followers) {
@@ -779,7 +793,12 @@ function updatePostRanking(posts) {
 }
 
 function updateTypePerformance(posts) {
-  if (!posts||posts.length===0) return;
+  const container = document.getElementById('type-performance');
+  if (!container) return;
+  if (!posts||posts.length===0) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);">投稿データがありません</div>';
+    return;
+  }
   const typeMap = {};
   posts.forEach(p => {
     const type = p.type||'その他';
@@ -790,16 +809,61 @@ function updateTypePerformance(posts) {
   const typeData = Object.entries(typeMap)
     .map(([type,d]) => ({type, avg: Math.round(d.total/d.count*10)/10}))
     .sort((a,b) => b.avg-a.avg);
-  if (typeData.length < 2) return;
+  if (typeData.length === 0) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);">タイプ別データがありません</div>';
+    return;
+  }
   const maxVal = typeData[0].avg || 1;
-  const container = document.getElementById('type-performance');
-  if (!container) return;
   container.innerHTML = typeData.map(d => `
     <div class="pattern-item">
       <div class="pattern-name">${d.type}</div>
       <div class="pattern-bar-wrap"><div class="pattern-bar-fill" style="width:${Math.round(d.avg/maxVal*100)}%"></div></div>
       <div class="pattern-score">${d.avg}%</div>
     </div>`).join('');
+}
+
+function updateHourlyEngagement(posts) {
+  const graph = document.getElementById('hourly-engagement');
+  const recommendation = document.getElementById('hourly-recommendation');
+  if (!graph || !recommendation) return;
+  if (!posts || posts.length === 0) {
+    graph.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);width:100%;">投稿データがありません</div>';
+    recommendation.textContent = '投稿データがありません';
+    return;
+  }
+
+  const byHour = {};
+  posts.forEach(p => {
+    const d = new Date(p.date);
+    if (isNaN(d.getTime())) return;
+    const hour = d.getHours();
+    const rate = parseFloat(p.engagementRate) || 0;
+    if (!byHour[hour]) byHour[hour] = { total: 0, count: 0 };
+    byHour[hour].total += rate;
+    byHour[hour].count++;
+  });
+
+  const hourly = Object.entries(byHour)
+    .map(([hour, d]) => ({ hour: Number(hour), avg: Math.round(d.total / d.count * 10) / 10, count: d.count }))
+    .sort((a, b) => b.avg - a.avg || b.count - a.count)
+    .slice(0, 6)
+    .sort((a, b) => a.hour - b.hour);
+
+  if (hourly.length === 0) {
+    graph.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);width:100%;">時間帯データがありません</div>';
+    recommendation.textContent = '時間帯データがありません';
+    return;
+  }
+
+  const best = [...hourly].sort((a, b) => b.avg - a.avg || b.count - a.count)[0];
+  const max = Math.max(...hourly.map(h => h.avg), 1);
+  graph.innerHTML = hourly.map(h => {
+    const isBest = h.hour === best.hour;
+    const height = h.avg > 0 ? Math.max(Math.round(h.avg / max * 100), 4) : 2;
+    const color = isBest ? 'var(--success)' : h.avg >= max * 0.6 ? 'var(--blue)' : 'var(--blue-light)';
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="font-size:9px;color:${isBest?'var(--success)':'var(--text-light)'};">${h.avg}%</div><div style="width:100%;border-radius:3px 3px 0 0;background:${color};height:${height}%;"></div><div style="font-size:9px;color:${isBest?'var(--navy)':'var(--text-light)'};font-weight:${isBest?'700':'400'};">${h.hour}時</div></div>`;
+  }).join('');
+  recommendation.textContent = `${best.hour}時台が最も効果的（平均エンゲージメント率 ${best.avg}% / ${best.count}投稿）`;
 }
 </script>
 </body>
