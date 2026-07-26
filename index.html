@@ -122,13 +122,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
   <div class="main">
     <div class="topbar">
       <div class="topbar-left">
-        <button class="period-btn active" onclick="setPeriod(this)">7日</button>
-        <button class="period-btn" onclick="setPeriod(this)">14日</button>
-        <button class="period-btn" onclick="setPeriod(this)">30日</button>
+        <button class="period-btn active" onclick="setPeriod(this, 7)">7日</button>
+        <button class="period-btn" onclick="setPeriod(this, 14)">14日</button>
+        <button class="period-btn" onclick="setPeriod(this, 30)">30日</button>
       </div>
       <div class="topbar-right">
         <span id="last-updated" style="font-size:11px;color:var(--text-light);">最終更新：取得中...</span>
-        <button class="refresh-btn" onclick="loadRealData()"><span>🔄</span> データ取得</button>
+        <button class="refresh-btn" onclick="loadRealData()"><span>🔄</span> データ更新</button>
       </div>
     </div>
 
@@ -336,6 +336,8 @@ let uploadedImages = [];
 let generatedPosts = [];
 let selectedScope = 'full';
 let scheduledItems = [];
+let selectedPeriodDays = 7;
+let latestDashboardData = null;
 
 window.addEventListener('load', () => {
   const tomorrow = new Date();
@@ -356,9 +358,11 @@ function showTab(name) {
   });
 }
 
-function setPeriod(btn) {
+function setPeriod(btn, days) {
+  selectedPeriodDays = days;
   document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  if (latestDashboardData) updateDashboard(latestDashboardData);
 }
 
 function selectScope(scope) {
@@ -718,6 +722,7 @@ async function loadRealData() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (data && data.success === false) throw new Error(data.error || 'GASデータ取得に失敗しました');
+    latestDashboardData = data;
     showDashboardError('');
     updateDashboard(data);
     document.getElementById('last-updated').textContent = '最終更新：' + new Date().toLocaleTimeString('ja-JP', {hour:'2-digit',minute:'2-digit'});
@@ -730,8 +735,10 @@ async function loadRealData() {
 
 function updateDashboard(data) {
   if (!data) return;
-  const posts = data.posts || [];
-  const followers = data.followers || [];
+  const allPosts = data.posts || [];
+  const allFollowers = data.followers || [];
+  const posts = filterByPeriod(allPosts, 'date', selectedPeriodDays);
+  const followers = filterByPeriod(allFollowers, 'date', selectedPeriodDays);
   const scheduledPosts = data.scheduledPosts || [];
   const meta = data.meta || {};
   const totalImp = posts.reduce((s,p) => s+(Number(p.impressions)||0), 0);
@@ -754,6 +761,18 @@ function updateDashboard(data) {
   updateHourlyEngagement(posts);
   updateOperationalStatus(meta, posts, followers, scheduledPosts);
   updateScheduledPosts(scheduledPosts);
+}
+
+function filterByPeriod(items, dateKey, days) {
+  if (!items || items.length === 0) return [];
+  const now = new Date();
+  const start = new Date(now);
+  start.setDate(start.getDate() - days + 1);
+  start.setHours(0, 0, 0, 0);
+  return items.filter(item => {
+    const d = new Date(item[dateKey]);
+    return !isNaN(d.getTime()) && d >= start && d <= now;
+  });
 }
 
 function showDashboardError(message) {
@@ -788,7 +807,7 @@ function updateOperationalStatus(meta, posts, followers, scheduledPosts) {
   detail.innerHTML = `
     <div>Threadsデータ取得成功：<strong>${lastFetched}</strong></div>
     <div>画面データ生成：${generatedAt}</div>
-    <div>投稿データ：${posts.length}件 / フォロワー履歴：${followers.length}件 / 予約投稿：${scheduledPosts.length}件</div>
+    <div>表示期間：直近${selectedPeriodDays}日 / 投稿データ：${posts.length}件 / フォロワー履歴：${followers.length}件 / 予約投稿：${scheduledPosts.length}件</div>
   `;
 }
 
