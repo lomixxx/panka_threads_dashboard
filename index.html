@@ -436,16 +436,13 @@ async function runAIFlow() {
   try {
     let imageAnalysis = '';
     if (uploadedImages.length > 0) {
-      addLog(`📸 ${uploadedImages.length}枚の画像をリサーチ中...`);
+      addLog(`📸 ${uploadedImages.length}枚の画像をDriveに保存してリサーチ中...`);
       try {
-        const compressedImages = await Promise.all(
-          uploadedImages.slice(0, 2).map(img => compressImage(img.base64.split(',')[1], img.file.type))
-        );
-        const imageData = compressedImages.map((base64, i) => ({
-          base64: base64,
-          mimeType: 'image/jpeg',
+        const imageData = uploadedImages.slice(0, 3).map(img => ({
+          base64: img.base64.split(',')[1],
+          mimeType: img.file.type,
         }));
-        const url = GAS_URL + '?action=analyzeImages&data=' + encodeURIComponent(JSON.stringify(imageData));
+        const url = GAS_URL + '?action=saveAndAnalyze&data=' + encodeURIComponent(JSON.stringify(imageData));
         const res = await fetch(url, {redirect:'follow'});
         const data = JSON.parse(await res.text());
         imageAnalysis = data.analysis || '';
